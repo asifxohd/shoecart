@@ -1,0 +1,12 @@
+.sizeForImage{
+    width: 28vh;
+}
+.hai{
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+    border: solid black 1px;
+}
+.vh-100 {
+    height: 100vh;
+}

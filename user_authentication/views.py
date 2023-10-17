@@ -13,19 +13,19 @@ from .models import CustomUser  # Import your user model
 
 
 
-@require_POST
-@csrf_exempt  # This decorator may be necessary to bypass CSRF protection for AJAX requests
-def check_email_exists(request):
-    email = request.POST.get('email')
-    exists = CustomUser.objects.filter(email=email).exists()
-    return JsonResponse({'exists': exists})
+# @require_POST
+# @csrf_exempt  # This decorator may be necessary to bypass CSRF protection for AJAX requests
+# def check_email_exists(request):
+#     email = request.POST.get('email')
+#     exists = CustomUser.objects.filter(email=email).exists()
+#     return JsonResponse({'exists': exists})
 
-@require_POST
-@csrf_exempt  # This decorator may be necessary to bypass CSRF protection for AJAX requests
-def check_phone_exists(request):
-    phone_number = request.POST.get('phoneNumber')
-    exists = CustomUser.objects.filter(phone_number=phone_number).exists()
-    return JsonResponse({'exists': exists})
+# @require_POST
+# @csrf_exempt  # This decorator may be necessary to bypass CSRF protection for AJAX requests
+# def check_phone_exists(request):
+#     phone_number = request.POST.get('phoneNumber')
+#     exists = CustomUser.objects.filter(phone_number=phone_number).exists()
+#     return JsonResponse({'exists': exists})
 
 
 
@@ -105,15 +105,16 @@ def signin(request):
 
     return render(request, 'user_auth/loginpage.html')
 
-@login_required
 def otp(request):
     if request.method == 'POST':
-        entered_otp = request.POST['otp']
-        if entered_otp == request.session['otp']:
+        entered_otp = request.POST.get('otp')
+        stored_otp = request.session.get('otp')
+        if entered_otp == stored_otp:
             # User creation after successful OTP verification
             user_data = request.session.get('registration_data')
             if user_data:
                 user = CustomUser.objects.create_user(
+                    username = user_data['email'],
                     first_name=user_data['firstname'],
                     last_name=user_data['lastname'],
                     email=user_data['email'],
@@ -123,11 +124,11 @@ def otp(request):
                 user.save()
                 messages.success(request, 'User created successfully')
                 del request.session['registration_data']
-            return redirect('landing')
+                return redirect('landing')
+            else:
+                messages.error(request, 'Invalid registration data')
         else:
             messages.error(request, 'Invalid OTP')
-            return redirect('otp')
-
     return render(request, 'user_auth/otppage.html')
 
 
