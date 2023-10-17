@@ -1,0 +1,133 @@
+body {
+    color: #F7F7F7;
+    background: #F7F7F7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.form-control {
+    min-height: 41px;
+    background: #f2f2f2;
+    box-shadow: none !important;
+    border: transparent;
+}
+
+.form-control:focus {
+    background: #e2e2e2;
+}
+
+.form-control,
+.btn {
+    border-radius: 5px;
+}
+
+.signup-form {
+    width: 350px;
+    text-align: center;
+    padding: 30px;
+}
+
+.signup-form h2 {
+    margin: 10px 0 25px;
+}
+
+.signup-form .btn {
+    font-size: 16px;
+    font-weight: bold;
+    background: #0e1111;
+    border: none;
+    outline: none !important;
+}
+
+.signup-form .btn:hover,
+.signup-form .btn:focus {
+    background: #000000;
+}
+
+.signup-form a {
+    color: #000;
+    text-decoration: underline;
+}
+
+.signup-form a:hover {
+    text-decoration: none;
+}
+
+.signup-form form a {
+    color: #000;
+    text-decoration: none;
+}
+
+.signup-form form a:hover {
+    text-decoration: underline;
+}
+
+.login_botten_tag {
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+@media (max-width: 600px) {
+    .signup-form {
+        width: 80%;
+    }
+}
+
+.hai {
+    padding-left: 10% !important;
+    padding-bottom: 5% !important;
+}
+.signup-form {
+    margin-left: 20px; /* Adjust the margin to move it to the right of the image */
+}
+.form-control {
+    border-radius: 10px; /* Add a curved dark border to input fields */
+    margin-bottom: 10px; /* Add space between input fields */
+}
+@media (max-width: 1000px) {
+    .hihi {
+        display: none !important; /* Hide the image on screens below 100px width */
+    }
+}
+/* .input-with-border {
+    border: 1px solid black;
+} */
+.sizeForImage{
+    width: 25vh;
+}
+.sizeorImage{
+    width: 75vh;
+}
+
+.input-control input:focus {
+    outline: 0;
+    border-color: #09c372; /* Change the border color when focused */
+}
+
+.input-control.success input {
+    border-color: #09c372;
+}
+
+.input-control.error input {
+    border-color: #ff3860;
+}
+
+.input-control {
+    position: relative;
+}
+
+.error {
+    position: absolute;
+    left: 14px;
+    top: 100%; /* Position the error message below the input */
+    color: red;
+    font-size: 10px;
+}
+/* You can add additional styles as needed */

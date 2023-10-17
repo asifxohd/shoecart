@@ -1,0 +1,57 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/loginpage.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 d-none d-md-block hihi">
+                <img src="{% static 'images/sup.png' %}" alt="Your Photo" class="img-fluid" style="width:75vh;">
+            </div>
+            <div class="col-md-6 col-12 mt-4 hai ml2- pt-5">
+                <div class="signup-form mt-3">
+                    <div class="logoimg pb-4">
+                        <img class="sizeForImage" src="{% static 'images/Asif Logo.png' %}" alt=""
+                            style="width:30vh;">
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="email" class="form-control input-with-border" name="email" placeholder="Email" required="required">
+                        <input type="password" class="form-control input-with-border" name="password" placeholder="Password"
+                            required="required">
+                        <div class="forgotpassword d-flex justify-content-end">
+                            <a class="text-center text-dark small">Forgot Password</a>
+                        </div>
+                        <div class="form-group">
+                            <a id="kkkk" class="login_botten_tag" href="login">
+                                <button class="btn btn-block mt-4 bg-dark buttensignup text-white">Login</button>
+                            </a>
+                        </div>
+                        {% if messages %}  {# Check if there are any messages to display #}
+                        <div class="alert alert-danger mt-3">
+                            <ul>
+                                {% for message in messages %}  {# Loop through messages and display them #}
+                                <li class="text-danger">{{ message }}</li> {# Apply text-danger class to the message #}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        <p class="text-center text-dark small">Dont't Have An account? <a class="text-dark"
+                                href="{% url "signup" %}">
+                            Signup Here!</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
