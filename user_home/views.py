@@ -19,3 +19,6 @@ def shoes(request):
 def contact(request):
     return render(request, 'user_auth/contact.html')
 
+def product_details(request):
+    return render(request, "user_side/product_details.html")
+
