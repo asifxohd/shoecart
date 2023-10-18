@@ -1,0 +1,75 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Products{% endblock title %}
+{% block products %}{% endblock products %}
+{% block content %}
+
+<main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Products</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">Products</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+        <!-- Recent Sales -->
+        <div class="col-12">
+            <div class="card recent-sales overflow-auto">
+                <div class="card-body">
+                    <table class="table table-borderless mt-3">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Prod Name</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>List / Unlist</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+{% comment %}             
+                        {% for user in users %}
+                            <tr>
+                                <td>{{user.id}}</td>
+                                <td>{{user.fullname}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.phone}}</td>
+                                <td>Malappuram, Kerala, India</td>
+                                {% if user.is_active == True %}
+                                <td><a href="block_user/{{user.id}}"><span class="badge bg-danger">Block</span></a></td>
+                                {% else %}
+                                <td><a href="block_user/{{user.id}}"><span class="badge bg-success">Unblock</span></a></td>
+                                {% endif %}
+                            </tr>
+                        
+        
+                        {% endfor %} {% endcomment %}
+
+                             <tr>
+                                <td>05</td>
+                                <td>Premium Watch</td>
+                                <td>Men</td>
+                                <td>Titan</td>
+                                <td>&#8377;1000</td>
+                                <td>15</td>
+                                <td><span class="badge bg-success">Unlist</span></td>
+                                <td><i class="bi bi-pencil-square text-warning" style="font-size:20px;"></i> &nbsp;&nbsp; <i class="bi bi-trash-fill" style="color:red; font-size:20px;"></i></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div><!-- End Recent Sales -->
+
+    </main><!-- End #main -->
+{% endblock content %}

@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user_authentication'
+    'user_authentication',
+    'admin_home',
+    'user_home',
 ]
 
 MIDDLEWARE = [
@@ -123,7 +125,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'user_authentication/static')]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'user_authentication/static'),
+    os.path.join(BASE_DIR, 'admin_home/static'),
+    os.path.join(BASE_DIR, 'user_home/static')
+    ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 # Default primary key field type
