@@ -7,11 +7,11 @@
 <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1 class="text-white" >Users</h1>
+            <h1>Users</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active text-white">Users</li>
+                    <li class="breadcrumb-item">Admin</li>
+                    <li class="breadcrumb-item active">Users</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -25,10 +25,10 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Fullname</th>
+                                <th>Firstname</th>
+                                <th>Lastname</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Address</th>
                                 <th>Block / Unblock</th>
                             </tr>
                         </thead>
@@ -37,18 +37,19 @@
                         {% for user in users %}
                             <tr>
                                 <td>{{user.id}}</td>
-                                <td>{{user.fullname}}</td>
+                                <td>{{user.first_name}}</td>
+                                <td>{{user.last_name}}</td>
                                 <td>{{user.email}}</td>
-                                <td>{{user.phone}}</td>
-                                <td>Malappuram, Kerala, India</td>
-                                {% if user.is_active == True %}
-                                <td><a href="block_user/{{user.id}}"><span class="badge bg-danger">Block</span></a></td>
+                                <td>{{user.phone_number}}</td>
+                                
+                                {% if user.is_active %}
+                                <td><a href='user_status/{{user.id}}'><span class="badge bg-danger">Block</span></a></td>
                                 {% else %}
-                                <td><a href="block_user/{{user.id}}"><span class="badge bg-success">Unblock</span></a></td>
+                                <td><a href='user_status/{{user.id}}'><span class="badge bg-success">Unblock</span></a></td>
                                 {% endif %}
                             </tr>
                         
-        
+                        
                         {% endfor %}
 
 

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Shoecart - Admin{% block title %}{% endblock title %}</title>
+  <title>Shop13 - Admin{% block title %}{% endblock title %}</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -17,7 +17,7 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
-  <link href="{% static 'admin_panel/assets/vendor/bootstrap/css/bootstrap.min.css'%} " rel="stylesheet">
+  <link href="{% static 'admin_panel/assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'admin_panel/assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
   <link href="{% static 'admin_panel/assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
   <link href="{% static 'admin_panel/assets/vendor/quill/quill.snow.css' %}" rel="stylesheet">
@@ -31,14 +31,14 @@
 
 </head>
 
-<body class="bg-dark" >
+<body>
 
   <!-- ======= Header ======= -->
-  <header id="header" class="header  fixed-top d-flex align-items-center">
+  <header id="header" class="header fixed-top d-flex align-items-center">
 
-    <div class="d-flex align-items-center justify-content-between">
-      <a href="admin_panel/index.html" class="logo d-flex align-items-center">
-        <img src="{% static 'admin_panel/assets/img/shop13.png' %}" alt="">
+    <div class="d-flex align-items-center justify-content-between" >
+      <a href="admin_dash" class="logo d-flex align-items-center" >
+        <img src="{% static "user_home/images/shoe.png" %}" alt="">
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -62,7 +62,7 @@
         <li class="nav-item  pe-3">
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" >
             <i class="bx bx-exit" style="font-size: 25px;"></i>
-          </a><!-- End Profile Iamge Icon -->
+          </a><!-- End Profile image Icon -->
         </li><!-- End Profile Nav -->
         <li class="nav-item  pe-3">
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" >
@@ -77,7 +77,7 @@
 
   
   <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar  ">
+  <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
@@ -103,49 +103,56 @@
       </li><!-- End Products Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link {% block categories %}collapsed{% endblock categories %}" href="admin_panel/users-profile.html">
+        <a class="nav-link {% block categories %}collapsed{% endblock categories %}" href="{% url 'admin_catogeory' %}">
           <i class="bi bi-inboxes-fill"></i>
           <span>Categories</span>
         </a>
       </li><!-- End Categories Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link {% block brands %}collapsed{% endblock brands %}" href="admin_panel/users-profile.html">
+        <a class="nav-link {% block brands %}collapsed{% endblock brands %}" href="#">
           <i class="bi bi-intersect"></i>
           <span>Brands</span>
         </a>
       </li><!-- End Brands Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link {% block orders %}collapsed{% endblock orders %}" href="admin_panel/users-profile.html">
+        <a class="nav-link {% block colors %}collapsed{% endblock colors %}" href="#">
+          <i class="bi bi-palette-fill"></i>
+          <span>Colors</span>
+        </a>
+      </li><!-- End Orders Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link {% block orders %}collapsed{% endblock orders %}" href="#">
           <i class="bi bi-cart-fill"></i>
           <span>Orders</span>
         </a>
       </li><!-- End Orders Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link {% block coupons %}collapsed{% endblock coupons %}" href="admin_panel/users-profile.html">
+        <a class="nav-link {% block coupons %}collapsed{% endblock coupons %}" href="#">
           <i class="bi bi-receipt"></i>
           <span>Coupons</span>
         </a>
       </li><!-- End Coupons Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link {% block banners %}collapsed{% endblock banners %}" href="admin_panel/users-profile.html">
+        <a class="nav-link {% block banners %}collapsed{% endblock banners %}" href="#">
           <i class="bi bi-card-image"></i>
           <span>Banners</span>
         </a>
       </li><!-- End Banners Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link {% block offers %}collapsed{% endblock offers %}" href="admin_panel/users-profile.html">
+        <a class="nav-link {% block offers %}collapsed{% endblock offers %}" href="#">
           <i class="bi bi-percent"></i>
           <span>Offers</span>
         </a>
       </li><!-- End Offers Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="admin_panel/users-profile.html">
+        <a class="nav-link {% block payments %}collapsed{% endblock payments %}" href="#">
           <i class="bi bi-credit-card-fill"></i>
           <span>Payments</span>
         </a>
@@ -156,7 +163,7 @@
   </aside><!-- End Sidebar-->
 
 
-  
+  {% block content %}{% endblock content %}
 
 
   <!-- Vendor JS Files -->

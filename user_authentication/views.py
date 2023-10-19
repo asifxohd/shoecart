@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.core.mail import send_mail
 import random
-from .models import CustomUser
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from django.http import JsonResponse
@@ -95,7 +94,7 @@ def signin(request):
         if user is not None:
             if user.email_verified:
                 print(user.email_verified)
-                return redirect('landing')
+                return redirect('homepage')
             else:
                 messages.error(request, 'Email is not verified.')
                 return redirect('signin')
@@ -124,16 +123,10 @@ def otp(request):
                 user.save()
                 messages.success(request, 'User created successfully')
                 del request.session['registration_data']
-                return redirect('landing')
+                return redirect('homepage')
             else:
                 messages.error(request, 'Invalid registration data')
         else:
             messages.error(request, 'Invalid OTP')
     return render(request, 'user_auth/otppage.html')
 
-
-
-# Handle the landing page
-@login_required
-def landing(request):
-    return render(request, 'user_auth/landingpage.html')

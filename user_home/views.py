@@ -4,7 +4,7 @@ from django.shortcuts import render
 def baseuser(request):
     return render(request, 'user_side/base.html')
 
-def landing(request):
+def homepage(request):
     return render(request, 'user_side/index.html')
 
 def product_page(request):

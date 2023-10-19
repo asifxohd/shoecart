@@ -7,4 +7,6 @@ urlpatterns = [
     path('admin_dashboard', views.admin_dash, name='admin_dashboard'),
     path('admin_products', views.admin_products, name='admin_products'),
     path('admin_users', views.admin_users, name='admin_users'),
+    path('admin_catogeory', views.admin_catogory, name="admin_catogeory"),
+    path('user_status/<str:id>', views.user_status, name='user_status'),
 ]
