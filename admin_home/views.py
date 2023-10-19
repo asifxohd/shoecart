@@ -31,6 +31,9 @@ def user_status(request,id):
         user.is_active = True
         user.save()
     return redirect('admin_users')
+
+def add_products(request):
+    return render(request,'admin_panel/add_products.html')
         
     
     
