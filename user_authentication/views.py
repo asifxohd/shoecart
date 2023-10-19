@@ -92,6 +92,9 @@ def signin(request):
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
+            if user.is_active == False:
+                messages.error("user Access denied")
+                return redirect('signin')
             if user.email_verified:
                 print(user.email_verified)
                 return redirect('homepage')

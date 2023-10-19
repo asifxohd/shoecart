@@ -1,0 +1,39 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Categories{% endblock title %}
+{% block categories %}{% endblock categories %}
+{% block content %}
+
+<main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Categories</h1>
+            <nav>
+                <ol class="breadcrumb mt-3 ">
+                    <li class="breadcrumb-item">Admin</li>
+                    <li class="breadcrumb-item ">Categories</li>
+                    <li class="breadcrumb-item active">Edit Categories</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+        <!-- Recent Sales -->
+        <div class="col-12">
+            <div class="card recent-sales overflow-auto">
+
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mt-4">
+                            <label for="categoryName mt-2">&nbsp;&nbsp;<b>Category Name</b></label> <br><br>
+                            &nbsp;&nbsp;<input type="text" id="categoryName" name="category_name" value="{{ category_name}}">
+                        </div>
+                        &nbsp;&nbsp;<button type="submit" class="m1-2 btn btn-dark mt-4">Save</button>
+                    </form>
+                </div>
+
+            </div>
+        </div><!-- End Recent Sales -->
+
+    </main><!-- End #main -->
+{% endblock content %}

@@ -6,15 +6,19 @@
 
 <main id="main" class="main">
 
-        <div class="pagetitle">
-            <h1>Categories</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Admin</li>
-                    <li class="breadcrumb-item active">Categories</li>
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
+    <div class="pagetitle d-flex justify-content-between">
+        <h1>Categories</h1>
+        <div class="addcatogorybutton text-end">
+            <a href="{% url "add_category" %}" class="btn btn-dark">Add Categories</a>
+        </div>
+    </div>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Admin</li>
+            <li class="breadcrumb-item active">Categories</li>
+        </ol>
+    </nav>
+        <!-- End Page Title -->
 
         <!-- Recent Sales -->
         <div class="col-12">
@@ -27,21 +31,29 @@
                                 <th>ID</th>
                                 <th>Category</th>
                                 <th>List / Unlist</th>
+                                <th></th>
                                 <th>Actions</th>
+
                             </tr>
                         </thead>
                         <tbody>
             
-                        {% for cat in categories %}
+                         {% for cat in categories %}
                             <tr>
                                 <td>{{cat.id}}</td>
                                 <td>{{cat.name}}</td>
-                                {% if cat.is_listed %}
+                                {% if cat.is_active %}
                                 <td><a href='category_status/{{cat.id}}'><span class="badge bg-danger">Unlist</span></a></td>
                                 {% else %}
-                                <td><a href='category_status/{{cat.id}}'><span class="badge bg-success">List</span></a></td>
+                                <td><a href='category_status/{{cat.id}}'>&nbsp;&nbsp;&nbsp;<span class="badge bg-success">List</span></a></td>
                                 {% endif %}
-                                <td style='font-size:20px'><i class="bi bi-pencil-square text-warning">&nbsp;&nbsp;&nbsp;</i><i class="bi bi-trash-fill text-danger"></i></td>
+                                    <td></td>
+                                    <td style='font-size:20px; cursor: pointer;'>
+                                        <a href='edit_category/{{cat.id}}' class="btn btn-warning btn-sm edit-category" >
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </a>
+                                        
+                                </td>
                             </tr>
 
                         
