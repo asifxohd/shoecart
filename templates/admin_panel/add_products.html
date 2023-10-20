@@ -3,142 +3,108 @@
 {% block title %} Add Product{% endblock title %}
 {% block products %}{% endblock products %}
 {% block content %}
-
 <main id="main" class="main">
-
-        <div class="pagetitle">
-            <h1>Add Products</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Admin</li>
-                    <li class="breadcrumb-item">Products</li>
-                    <li class="breadcrumb-item active">Add Product</li>
-
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
-
-
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Add a new Product to the database</h5>
-
-        <!-- General Form Elements -->
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="row mb-3">
-              <label for="id_name" class="col-sm-2 col-form-label">Product Name</label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" name="name" id="id_name">
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for="id_description" class="col-sm-2 col-form-label">Description</label>
-              <div class="col-sm-10">
-                  <textarea class="form-control" style="height: 100px" name="description" id="id_description"></textarea>
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for="id_price" class="col-sm-2 col-form-label">Price</label>
-              <div class="col-sm-10 col-md-4">
-                  <input type="number" class="form-control" name="price" id="id_price">
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for="id_discount_price" class="col-sm-2 col-form-label">Discount Price</label>
-              <div class="col-sm-10 col-md-4">
-                  <input type="number" class="form-control" name="discount_price" id="id_discount_price">
-              </div>
-          </div>
-          <div class="row mb-3">
-            <label for="id_size" class="col-sm-2 col-form-label">Size</label>
-            <div class="col-sm-10">
-                <select class="form-select" aria-label="Default select example" name="size" id="id_size">
-                    <option selected></option>
-                    {% for size in sizes %}
-                        <option value="{{ size }}">{{ size }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>        
-          <div class="row mb-3">
-              <label for="id_quantity" class="col-sm-2 col-form-label">Quantity</label>
-              <div class="col-sm-10 col-md-4">
-                  <input type="number" class="form-control" name="quantity" id="id_quantity">
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for="id_category" class="col-sm-2 col-form-label">Category</label>
-              <div class="col-sm-10">
-                  <select class="form-select" aria-label="Default select example" name="category" id="id_category">
-                      <option selected></option>
-                      {% for category in categories %}
-                          <option value="{{ category.id }}">{{ category.name }}</option>
-                      {% endfor %}
-                  </select>
-              </div>
-          </div>
-          <div class="row mb-3">
-            <label for="id_gender" class="col-sm-2 col-form-label">Gender</label>
-            <div class="col-sm-10">
-                <select class="form-select" aria-label="Default select example" name="gender" id="id_gender">
-                    <option selected></option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Unisex">Unisex</option>
-                </select>
-            </div>
-        </div>        
-          <div class="row mb-3">
-              <label for="id_theme_image" class="col-sm-2 col-form-label">Theme Image</label>
-              <div class="col-sm-10">
-                  <input class="form-control" type="file" name="theme_image" id="id_theme_image">
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for="id_side_image_1" class="col-sm-2 col-form-label">Side Image 1</label>
-              <div class="col-sm-10">
-                  <input class="form-control" type="file" name="side_image_1" id="id_side_image_1">
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for="id_side_image_2" class="col-sm-2 col-form-label">Side Image 2</label>
-              <div class="col-sm-10">
-                  <input class="form-control" type="file" name="side_image_2" id="id_side_image_2">
-              </div>
-          </div>
-          <div class="row mb-3">
-              <label for "id_side_image_3" class="col-sm-2 col-form-label">Side Image 3</label>
-              <div class="col-sm-10">
-                  <input class="form-control" type="file" name="side_image_3" id="id_side_image_3">
-              </div>
-          </div>
-          <div class="row mb-3">
-              {% comment %} <legend class="col-form-label col-sm-2 pt-0">Status</legend>
-              <div class="col-sm-10"> {% endcomment %}
-                  {% comment %} <div class="form-check">
-                      <input class="form-check-input" type="checkbox" name="status" id="gridCheck1">
-                      <label class="form-check-label" for="gridCheck1">
-                          is listed
-                      </label>
-                  </div> {% endcomment %}
-              </div>
-          </div>
-          <div class="row mb-3">
-              <div class="col-sm-2"></div>
-              <div class="col-sm-10">
-                  <button type="submit" class="btn btn-dark">Add Product</button>
-              </div>
-          </div>
-      </form>
-      
-      <!-- End General Form Elements -->
-
+    <div class="pagetitle">
+        <h1>Add Products</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item">Products</li>
+                <li class="breadcrumb-item active">Add Product</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Add a new Product to the database</h5>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <label for="{{ product_form.name.id_for_label }}" class="col-sm-2 col-form-label">Product Name</label>
+                    <div class="col-sm-10">
+                        {{ product_form.name }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.description.id_for_label }}" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-10">
+                        {{ product_form.description }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.price.id_for_label }}" class="col-sm-2 col-form-label">Price</label>
+                    <div class="col-sm-10 col-md-4">
+                        {{ product_form.price }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.discount_price.id_for_label }}" class="col-sm-2 col-form-label">Discount Price</label>
+                    <div class="col-sm-10 col-md-4">
+                        {{ product_form.discount_price }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.category.id_for_label }}" class="col-sm-2 col-form-label">Category</label>
+                    <div class="col-sm-10">
+                        {{ product_form.category }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.gender.id_for_label }}" class="col-sm-2 col-form-label">Gender</label>
+                    <div class="col-sm-10">
+                        {{ product_form.gender }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.theme_image.id_for_label }}" class="col-sm-2 col-form-label">Theme Image</label>
+                    <div class="col-sm-10">
+                        {{ product_form.theme_image }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.side_image_1.id_for_label }}" class="col-sm-2 col-form-label">Side Image 1</label>
+                    <div class="col-sm-10">
+                        {{ product_form.side_image_1 }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.side_image_2.id_for_label }}" class="col-sm-2 col-form-label">Side Image 2</label>
+                    <div class="col-sm-10">
+                        {{ product_form.side_image_2 }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="{{ product_form.side_image_3.id_for_label }}" class="col-sm-2 col-form-label">Side Image 3</label>
+                    <div class="col-sm-10">
+                        {{ product_form.side_image_3 }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Size</label>
+                    <div class="col-sm-10">
+                        {% for size in sizes %}
+                            <div class="size-quantity-form">
+                                <div class="row mb-3 mt-3">
+                                    <div class="col-sm-6 col-md-3">
+                                        <label for="id_size_{{ size }}" class="form-label">Size {{ size }}</label>
+                                        <input type="number" name="size_{{ size }}" id="id_size_{{ size }}" class="form-control" placeholder="Quantity">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-dark">Add Product</button>
+                    </div>
+                </div>
+            </form>
         </div>
-      </div>
-
     </div>
+</main>
 
-
-    </main><!-- End #main -->
 {% endblock content %}

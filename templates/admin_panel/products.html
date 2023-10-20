@@ -37,9 +37,8 @@
                                 <th>ID</th>
                                 <th>Product Name</th>
                                 <th>Category</th>
-                                <th>size</th>
                                 <th>Price</th>
-                                <th>Quantity</th>
+                                <th>Product Details</th>
                                 <th>List / Unlist</th>
                                 <th>Actions</th>
                             </tr>
@@ -51,9 +50,8 @@
                                 <td>{{prod.id}}</td>
                                 <td>{{prod.name}}</td>
                                 <td>{{prod.category.name}}</td>
-                                <td>{{prod.brands.name}}</td>
                                 <td>&#8377;{{prod.price}}</td>
-                                <td>{{prod.quantity}}</td>
+                                <td>&nbsp;&nbsp;&nbsp;<a href="product_varient/{{prod.id}}" type="button" class="btn btn-sm btn-secondary">View Details</a></td>
                                 {% if prod.is_listed %}
                                 <td><a href='product_status/{{prod.id}}'><span class="badge bg-danger">Unlist</span></a></td>
                                 {% else %}

@@ -1,8 +1,15 @@
 from django import forms
-from .models import Product
+from django.forms import formset_factory
+from .models import SizeVariant, Product  # Assuming you have a SizeVariant model
 
 class ProductForm(forms.ModelForm):
-    size = forms.CharField(max_length=10, required=False)  # Add the size field
     class Meta:
-        model = Product
-        fields = '__all__'  # This will include all fields in the form
+        model = Product  # Replace with your actual Product model
+        fields = ['name', 'description', 'price', 'discount_price', 'category', 'gender', 'theme_image', 'side_image_1', 'side_image_2', 'side_image_3']
+
+class SizeVariantForm(forms.ModelForm):
+    class Meta:
+        model = SizeVariant
+        fields = ['size', 'quantity']
+
+SizeVariantFormSet = formset_factory(SizeVariantForm, extra=1)

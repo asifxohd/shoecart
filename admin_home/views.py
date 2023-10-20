@@ -2,6 +2,10 @@ from django.shortcuts import render,redirect
 from user_authentication.models import CustomUser
 from admin_home.models import Category,Product,SizeVariant
 from .forms import ProductForm
+from django.db import transaction
+from .forms import ProductForm, SizeVariantFormSet
+from django.contrib import messages
+
 
 
 # function for loading the Admin Base Template
@@ -11,23 +15,25 @@ def admin_base(request):
 
 # function for admin login
 def admin_login(request):
+    
     return render(request, "admin_panel/adminlogin.html")
 
 
 #function for admin DashBoard
 def admin_dash(request):
-    return render(request, "admin_panel/admin_dash.html")
+    
+    return render(request, "admin_panel/admin_dash.html", )
 
 
 # function to show products on the admin side 
 def admin_products(request):
-    return render(request, "admin_panel/products.html")
+    products = Product.objects.all()
+    return render(request, "admin_panel/products.html", {'products':products})
 
 
 # function for showing the all users on the admin side
 def admin_users(request):
     users = CustomUser.objects.all().exclude(is_superuser=True).order_by('id')
-    
     return render(request, "admin_panel/users.html", {'users': users})
 
 
@@ -62,42 +68,46 @@ def category_status(request, id):
     return redirect('admin_catogeory')
 
 
+
+@transaction.atomic
 def add_products(request):
     categories = Category.objects.all()
     sizes = ['41', '42', '43', '44', '45']
 
     if request.method == 'POST':
-        print(request.POST)
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Create a new product instance, but don't save it yet
-            product = form.save(commit=False)
+        product_form = ProductForm(request.POST, request.FILES)
+        size_formset = SizeVariantFormSet(request.POST, prefix='size')
+        size_index = 0  # Initialize a variable to keep track of the size index
 
-            # Handle size and quantity
-            size = request.POST.get('size')
-            quantity = request.POST.get('quantity')
+        if product_form.is_valid() and size_formset.is_valid():
+            # Save the product instance
+            product = product_form.save()
 
-            if size and size in sizes and quantity:
-                product.save()  # Save the product
+            # Loop through size-quantity forms in the formset
+            for size_form in size_formset:
+                if size_form.cleaned_data:  # Check if the form is not empty
+                    size_variant = size_form.save(commit=False)
+                    size_variant.product = product
+                    size_variant.size = sizes[size_index]  # Assign size from the list
+                    size_variant.save()
+                    print(f"Saved size variant for size {sizes[size_index]}")
+                    size_index += 1  # Increment the size index
 
-                # Create a new SizeVariant instance
-                SizeVariant.objects.create(product=product, size=size, quantity=quantity)
-            else:
-                return render(request, 'admin_panel/add_products.html', {'form': form, 'categories': categories, 'sizes': sizes, 'error_message': 'Invalid size or quantity'})
-
-            # Redirect to a success page or any other page
+            print("Product saved successfully")
+            messages.success(request, 'Product and size variants saved successfully.')
             return redirect('admin_products')
         else:
-             print(form.errors)
-
+            messages.error(request, 'Error saving product and size variants. Please check the form.')
+            print("Product form errors:", product_form.errors)
+            print("Size variant formset errors:", size_formset.errors)
+            print("POST data:", request.POST)
     else:
-        form = ProductForm()
+        product_form = ProductForm()
+        size_formset = SizeVariantFormSet(prefix='size')
 
-    return render(request, 'admin_panel/add_products.html', {'form': form, 'categories': categories, 'sizes': sizes})
+    return render(request, 'admin_panel/add_products.html', {'product_form': product_form, 'size_formset': size_formset, 'categories': categories, 'sizes': sizes})
 
 
-
-        
 # function for add catogory
 def edit_category(request, id):
     category = Category.objects.filter(id=id)[0]
@@ -117,3 +127,9 @@ def add_category(request):
         obj.save()
         return redirect('admin_catogeory')
     return render(request,'admin_panel/add_categories.html' )
+
+
+# function for showing the product variant on the product variant page 
+def show_product_varient(request, id):
+    products = SizeVariant.objects.filter(product_id=id).prefetch_related('product')
+    return render(request,'admin_panel/product_varient.html', {'products':products})   

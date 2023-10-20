@@ -1,0 +1,62 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Products{% endblock title %}
+{% block products %}{% endblock products %}
+{% block content %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Products</h1>
+            </div>
+            <div class="col-md-6 text-end">
+            </div>
+        </div>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item">Products</li>
+                <li class="breadcrumb-item active">Product variants</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+    
+        <!-- Recent Sales -->
+        <div class="col-12">
+            <div class="card recent-sales overflow-auto">
+
+                <div class="card-body">
+                    <table class="table table-borderless mt-3">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product Image</th>
+                                <th>Product Name</th>
+                                <th>size</th>
+                                <th>quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for prod in products %}
+                                <tr>
+                                    <td>{{ prod.id }}</td>
+                                    <td><img src="{{ prod.product.theme_image.url }}" alt="{{ prod.product.name }}" width="100" height="100"></td>
+                                    <td>{{ prod.product.name }}</td>
+                                    <td>{{ prod.size }}</td>
+                                    <td>{{ prod.quantity }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        
+                    </table>
+
+                </div>
+
+            </div>
+        </div><!-- End Recent Sales -->
+
+    </main><!-- End #main -->
+{% endblock content %}
