@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from user_authentication.models import CustomUser
 from admin_home.models import Category,Product,SizeVariant
+from .forms import ProductForm
 
 
 # function for loading the Admin Base Template
@@ -61,9 +62,41 @@ def category_status(request, id):
     return redirect('admin_catogeory')
 
 
-# function for adding product on the admin side 
 def add_products(request):
-    return render(request,'admin_panel/add_products.html')
+    categories = Category.objects.all()
+    sizes = ['41', '42', '43', '44', '45']
+
+    if request.method == 'POST':
+        print(request.POST)
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Create a new product instance, but don't save it yet
+            product = form.save(commit=False)
+
+            # Handle size and quantity
+            size = request.POST.get('size')
+            quantity = request.POST.get('quantity')
+
+            if size and size in sizes and quantity:
+                product.save()  # Save the product
+
+                # Create a new SizeVariant instance
+                SizeVariant.objects.create(product=product, size=size, quantity=quantity)
+            else:
+                return render(request, 'admin_panel/add_products.html', {'form': form, 'categories': categories, 'sizes': sizes, 'error_message': 'Invalid size or quantity'})
+
+            # Redirect to a success page or any other page
+            return redirect('admin_products')
+        else:
+             print(form.errors)
+
+    else:
+        form = ProductForm()
+
+    return render(request, 'admin_panel/add_products.html', {'form': form, 'categories': categories, 'sizes': sizes})
+
+
+
         
 # function for add catogory
 def edit_category(request, id):
