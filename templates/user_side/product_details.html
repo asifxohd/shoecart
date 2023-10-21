@@ -155,17 +155,18 @@
 			</a>
 
 			<a href="product.html" class="stext-109 cl8 hov-cl1 trans-04">
-				Men
+				Product Details
 				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
 			</a>
 
 			<span class="stext-109 cl4">
-				Lightweight Jacket
+				
 			</span>
 		</div>
 	</div>
 		
-
+{% for d in details %}
+	
 	<!-- Product Detail -->
 	<section class="sec-product-detail bg0 p-t-65 p-b-60">
 		<div class="container">
@@ -175,38 +176,20 @@
 						<div class="wrap-slick3 flex-sb flex-w">
 							<div class="wrap-slick3-dots"></div>
 							<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
-
+							{% for img in images %}
 							<div class="slick3 gallery-lb">
-								<div class="item-slick3" data-thumb={% static "user_home/images/product-detail-01.jpg" %}>
-									<div class="wrap-pic-w pos-relative">
-										<img src={% static "user_home/images/product-detail-01.jpg" %} alt="IMG-PRODUCT">
+								<div class="item-slick3" data-thumb={{ d.theme_image.url }}>
+									<div class="wrap-pic-w pos-relative main-image-{{ img.url }}">
+										<img id="main-img-{{ img.url }}" src="{{ img.url }}" alt="IMG-PRODUCT" style="height: 40rem;">
 
-										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href={% static "user_home/images/product-detail-01.jpg" %}>
+
+										  <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="{{img.url }}" >
 											<i class="fa fa-expand"></i>
-										</a>
-									</div>
-								</div>
-
-								<div class="item-slick3" data-thumb={% static "user_home/images/product-detail-02.jpg" %}>
-									<div class="wrap-pic-w pos-relative">
-										<img src={% static "user_home/images/product-detail-02.jpg" %} alt="IMG-PRODUCT">
-
-										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href={% static "user_home/images/product-detail-02.jpg" %}>
-											<i class="fa fa-expand"></i>
-										</a>
-									</div>
-								</div>
-
-								<div class="item-slick3" data-thumb={% static "user_home/images/product-detail-03.jpg" %}>
-									<div class="wrap-pic-w pos-relative">
-										<img src={% static "user_home/images/product-detail-03.jpg" %} alt="IMG-PRODUCT">
-
-										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href={% static "user_home/images/product-detail-03.jpg" %}>
-											<i class="fa fa-expand"></i>
-										</a>
-									</div>
-								</div>
+										</a> 
+									 </div>
+								</div> 
 							</div>
+							{% endfor %}
 						</div>
 					</div>
 				</div>
@@ -214,15 +197,15 @@
 				<div class="col-md-6 col-lg-5 p-b-30">
 					<div class="p-r-50 p-t-5 p-lr-0-lg">
 						<h4 class="mtext-105 cl2 js-name-detail p-b-14 mt-4">
-							Lightweight Jacket
+							{{ d.name }}
 						</h4>
 
 						<span class="mtext-106 cl2">
-							$58.79
+							${{ d.price }}
 						</span>
 
 						<p class="stext-102 cl3 p-t-23">
-							Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat ornare feugiat.
+							{{d.description }}
 						</p>
 						
 						<!--  -->
@@ -272,6 +255,8 @@
 					</div>
 				</div>
 			</div>
+
+{% endfor %}
 
 			<div class="bor10 m-t-50 p-t-43 p-b-40">
 				<!-- Tab01 -->
@@ -440,7 +425,7 @@
 										</div>
 									</div>
 
-									<div class="item-slick3" data-thumb="{% static "user_home/images/product-detail-03.jpg" %}">
+									<div class="item-slick" data-thumb="{% static "user_home/images/product-detail-03.jpg" %}">
 										<div class="wrap-pic-w pos-relative">
 											<img src="{% static "user_home/images/product-detail-03.jpg" %}" alt="IMG-PRODUCT">
 
@@ -629,10 +614,118 @@
 				ps.update();
 			})
 		});
+
+
+		{% comment %} product zoom {% endcomment %}
+		{
+			const mainImage = document.querySelector('.main-image-0');
+			const img = document.getElementById('main-img-0');
+			
+			mainImage.addEventListener('mousemove', zoomIn);
+			mainImage.addEventListener('mouseleave', zoomOut);
+			
+			function zoomIn(event) {
+				const boundingRect = mainImage.getBoundingClientRect();
+				const mouseX = event.clientX - boundingRect.left;
+				const mouseY = event.clientY - boundingRect.top;
+			
+				const offsetX = (mouseX / boundingRect.width) * 100;
+				const offsetY = (mouseY / boundingRect.height) * 100;
+			
+				img.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+				img.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+			}
+			
+			function zoomOut() {
+				img.style.transform = 'scale(1)';
+			}
+		}
+		
+		// zoom1
+		{
+			const mainImage = document.querySelector('.main-image-1');
+			const img = document.getElementById('main-img-1');
+			
+			mainImage.addEventListener('mousemove', zoomIn);
+			mainImage.addEventListener('mouseleave', zoomOut);
+			
+			function zoomIn(event) {
+				const boundingRect = mainImage.getBoundingClientRect();
+				const mouseX = event.clientX - boundingRect.left;
+				const mouseY = event.clientY - boundingRect.top;
+			
+				const offsetX = (mouseX / boundingRect.width) * 100;
+				const offsetY = (mouseY / boundingRect.height) * 100;
+			
+				img.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+				img.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+			}
+			
+			function zoomOut() {
+				img.style.transform = 'scale(1)';
+			}
+		}
+		   
+		// zoom2
+		
+		{
+			const mainImage = document.querySelector('.main-image-2');
+			const img = document.getElementById('main-img-2');
+			
+			mainImage.addEventListener('mousemove', zoomIn);
+			mainImage.addEventListener('mouseleave', zoomOut);
+			
+			function zoomIn(event) {
+				const boundingRect = mainImage.getBoundingClientRect();
+				const mouseX = event.clientX - boundingRect.left;
+				const mouseY = event.clientY - boundingRect.top;
+			
+				const offsetX = (mouseX / boundingRect.width) * 100;
+				const offsetY = (mouseY / boundingRect.height) * 100;
+			
+				img.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+				img.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+			}
+			
+			function zoomOut() {
+				img.style.transform = 'scale(1)';
+			}
+		}
+		   
+		
+		// zoom3
+		
+		{
+			const mainImage = document.querySelector('.main-image-3');
+			const img = document.getElementById('main-img-3');
+			
+			mainImage.addEventListener('mousemove', zoomIn);
+			mainImage.addEventListener('mouseleave', zoomOut);
+			
+			function zoomIn(event) {
+				const boundingRect = mainImage.getBoundingClientRect();
+				const mouseX = event.clientX - boundingRect.left;
+				const mouseY = event.clientY - boundingRect.top;
+			
+				const offsetX = (mouseX / boundingRect.width) * 100;
+				const offsetY = (mouseY / boundingRect.height) * 100;
+			
+				img.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+				img.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+			}
+			
+			function zoomOut() {
+				img.style.transform = 'scale(1)';
+			}
+		}
 	</script>
+
 <!--===============================================================================================-->
 	<script src={% static "user_home/js/main.js" %}></script>
 
 </body>
 </html>
 {% endblock content %}
+
+
+

@@ -35,37 +35,45 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Product Image</th>
                                 <th>Product Name</th>
                                 <th>Category</th>
                                 <th>Price</th>
                                 <th>Product Details</th>
-                                <th>List / Unlist</th>
+                                <th>Delete</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-            
-                        {% for prod in products %}
-                            <tr>
+                            {% for prod in products %}
+                            <tr class="align-middle"> <!-- Apply the align-middle class to each table row -->
                                 <td>{{prod.id}}</td>
-                                <td>{{prod.name}}</td>
-                                <td>{{prod.category.name}}</td>
-                                <td>&#8377;{{prod.price}}</td>
-                                <td>&nbsp;&nbsp;&nbsp;<a href="product_varient/{{prod.id}}" type="button" class="btn btn-sm btn-secondary">View Details</a></td>
-                                {% if prod.is_listed %}
-                                <td><a href='product_status/{{prod.id}}'><span class="badge bg-danger">Unlist</span></a></td>
-                                {% else %}
-                                <td><a href='product_status/{{prod.id}}'><span class="badge bg-success">List</span></a></td>
-                                {% endif %}
-                                <td style='font-size:20px'><i class="bi bi-pencil-square text-warning">&nbsp;&nbsp;&nbsp;</i><i class="bi bi-trash-fill text-danger"></i></td>
-
+                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
+                                    <img src="{{ prod.productimage_set.first.image.url }}" alt="{{ prod.name }}" width="100" height="100">
+                                </td>
+                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
+                                    {{prod.name}}
+                                </td>
+                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
+                                    {{prod.category.name}}
+                                </td>
+                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
+                                    &#8377;{{prod.price}}
+                                </td>
+                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
+                                    <a href="product_varient/{{prod.id}}" type="button" class="btn btn-sm btn-secondary">View Details</a>
+                                </td>
+                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
+                                    <a href='product_status/{{prod.id}}'><span class="badge bg-danger">Delete</span></a>
+                                </td>
+                                <td style='font-size:20px' class="align-middle"> <!-- Apply the align-middle class to this table cell -->
+                                    <i class="bi bi-pencil-square text-warning">&nbsp;&nbsp;&nbsp;</i><i class="bi bi-trash-fill text-danger"></i>
+                                </td>
                             </tr>
-
-                        
-                        {% endfor %}
-
+                            {% endfor %}
                         </tbody>
                     </table>
+                    
 
                 </div>
 

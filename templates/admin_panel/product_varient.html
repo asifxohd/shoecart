@@ -4,6 +4,11 @@
 {% block products %}{% endblock products %}
 {% block content %}
 
+<style>
+    th, td {
+        vertical-align: middle; /* Vertically center the content within table cells */
+    }
+</style>
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -35,23 +40,32 @@
                                 <th>ID</th>
                                 <th>Product Image</th>
                                 <th>Product Name</th>
-                                <th>size</th>
-                                <th>quantity</th>
+                                <th>Size</th>
+                                <th>Quantity</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for prod in products %}
+                            {% for size_variant in product.sizevariant_set.all %}
                                 <tr>
-                                    <td>{{ prod.id }}</td>
-                                    <td><img src="{{ prod.product.theme_image.url }}" alt="{{ prod.product.name }}" width="100" height="100"></td>
-                                    <td>{{ prod.product.name }}</td>
-                                    <td>{{ prod.size }}</td>
-                                    <td>{{ prod.quantity }}</td>
+                                    <td>{{ size_variant.id }}</td>
+                                    <td>
+                                        <img src="{{ size_variant.product.productimage_set.first.image.url }}" alt="{{ size_variant.product.name }}" width="100" height="100">
+                                    </td>
+                                    <td>{{ size_variant.product.name }}</td>
+                                    <td>{{ size_variant.size }}</td>
+                                    <td>
+                                        {% if size_variant.quantity > 0 %}
+                                            {{ size_variant.quantity }}
+                                        {% else %}
+                                            <div class="text-danger" >Out of Stock</div>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
-                        
                     </table>
+                    
+                    
 
                 </div>
 

@@ -17,82 +17,89 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Add a new Product to the database</h5>
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" id="add-product-form">
                 {% csrf_token %}
                 <div class="row mb-3">
-                    <label for="{{ product_form.name.id_for_label }}" class="col-sm-2 col-form-label">Product Name</label>
+                    <label for="id_name" class="col-sm-2 col-form-label">Product Name</label>
                     <div class="col-sm-10">
-                        {{ product_form.name }}
+                        <input type="text" name="name" id="id_name" class="form-control">
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="{{ product_form.description.id_for_label }}" class="col-sm-2 col-form-label">Description</label>
+                    <label for="id_description" class="col-sm-2 col-form-label">Description</label>
                     <div class="col-sm-10">
-                        {{ product_form.description }}
+                        <textarea name="description" id="id_description" class="form-control"></textarea>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="{{ product_form.price.id_for_label }}" class="col-sm-2 col-form-label">Price</label>
+                    <label for="id_price" class="col-sm-2 col-form-label">Price</label>
                     <div class="col-sm-10 col-md-4">
-                        {{ product_form.price }}
+                        <input type="number" name="price" id="id_price" class="form-control">
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="{{ product_form.discount_price.id_for_label }}" class="col-sm-2 col-form-label">Discount Price</label>
+                    <label for="id_discount_price" class="col-sm-2 col-form-label">Discount Price</label>
                     <div class="col-sm-10 col-md-4">
-                        {{ product_form.discount_price }}
+                        <input type="number" name="discount_price" id="id_discount_price" class="form-control">
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="{{ product_form.category.id_for_label }}" class="col-sm-2 col-form-label">Category</label>
+                    <label for="id_category" class="col-sm-2 col-form-label">Category</label>
                     <div class="col-sm-10">
-                        {{ product_form.category }}
+                        <select name="category" id="id_category" class="form-select">
+                            <option value="" selected>Choose a category</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="{{ product_form.gender.id_for_label }}" class="col-sm-2 col-form-label">Gender</label>
+                    <label for="id_gender" class="col-sm-2 col-form-label">Gender</label>
                     <div class="col-sm-10">
-                        {{ product_form.gender }}
+                        <select name="gender" id="id_gender" class="form-select">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Unisex" selected>Unisex</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="{{ product_form.theme_image.id_for_label }}" class="col-sm-2 col-form-label">Theme Image</label>
+                    <label for="id_images" class="col-sm-2 col-form-label">Images</label>
                     <div class="col-sm-10">
-                        {{ product_form.theme_image }}
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="{{ product_form.side_image_1.id_for_label }}" class="col-sm-2 col-form-label">Side Image 1</label>
-                    <div class="col-sm-10">
-                        {{ product_form.side_image_1 }}
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="{{ product_form.side_image_2.id_for_label }}" class="col-sm-2 col-form-label">Side Image 2</label>
-                    <div class="col-sm-10">
-                        {{ product_form.side_image_2 }}
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="{{ product_form.side_image_3.id_for_label }}" class="col-sm-2 col-form-label">Side Image 3</label>
-                    <div class="col-sm-10">
-                        {{ product_form.side_image_3 }}
+                        <input type="file" name="images" id="id_images" class="form-control" multiple required>
                     </div>
                 </div>
                 
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label">Size</label>
                     <div class="col-sm-10">
-                        {% for size in sizes %}
-                            <div class="size-quantity-form">
-                                <div class="row mb-3 mt-3">
-                                    <div class="col-sm-6 col-md-3">
-                                        <label for="id_size_{{ size }}" class="form-label">Size {{ size }}</label>
-                                        <input type="number" name="size_{{ size }}" id="id_size_{{ size }}" class="form-control" placeholder="Quantity">
-                                    </div>
+                        <div class="size-quantity-form">
+                            <div class="row mb-3 mt-3">
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_41" class="form-label">Size 41</label>
+                                    <input type="number" name="size_41" id="id_size_41" class="form-control" placeholder="Size/Quantity" value="0">
                                 </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_42" class="form-label">Size 42</label>
+                                    <input type="number" name="size_42" id="id_size_42" class="form-control" placeholder="Size/Quantity" value="0">
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_43" class="form-label">Size 43</label>
+                                    <input type="number" name="size_43" id="id_size_43" class="form-control" placeholder="Size/Quantity" value="0">
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_44" class="form-label">Size 44</label>
+                                    <input type="number" name="size_44" id="id_size_44" class="form-control" placeholder="Size/Quantity" value="0">
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_45" class="form-label">Size 45</label>
+                                    <input type="number" name="size_45" id="id_size_45" class="form-control" placeholder="Size/Quantity" value="0">
+                                </div>
+                                <!-- Repeat the same pattern for each size (41, 42, 43, etc.) -->
+                                
                             </div>
-                        {% endfor %}
+                        </div>
                     </div>
                 </div>
                 
@@ -103,8 +110,71 @@
                     </div>
                 </div>
             </form>
+            
         </div>
     </div>
 </main>
+<!-- Add these lines in the <head> section of your HTML template -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.validator.addMethod("minOrEmpty", function (value, element, param) {
+            return this.optional(element) || (Number(value) === parseInt(value, 10) && parseInt(value) >= param);
+        }, "Please enter a valid quantity.");
+
+        $('#add-product-form').validate({
+            rules: {
+                name: {
+                    required: true
+                },
+                description: {
+                    required: true
+                },
+                price: {
+                    required: true,
+                    min: 1
+                },
+                discount_price: {
+                    required: true,
+                    min: 0
+                },
+                // Add validation for each "size" input field
+                'size[]': {
+                    required: true,
+                    minOrEmpty: 1
+                },
+                // Add similar rules for other fields as needed
+            },
+            messages: {
+                name: {
+                    required: "Please enter a product name"
+                },
+                description: {
+                    required: "Please enter a product description"
+                },
+                price: {
+                    required: "Please enter a price",
+                    min: "Price must be at least 1"
+                },
+                discount_price: {
+                    required: "Please enter a discount price",
+                    min: "Discount price must be at least 0"
+                },
+                // Add messages for the "size" input fields
+                'size[]': {
+                    required: "Please enter a quantity for all sizes",
+                    minOrEmpty: "enter a quantity"
+                },
+                // Add similar messages for other fields as needed
+            },
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.addClass("text-danger");
+                error.insertAfter(element);
+            }
+        });
+    });
+</script>
 
 {% endblock content %}
