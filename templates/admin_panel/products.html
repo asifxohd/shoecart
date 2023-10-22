@@ -1,9 +1,20 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
-{% block title %} Products{% endblock title %}
+{% block title %}Products{% endblock title %}
 {% block products %}{% endblock products %}
 {% block content %}
 
+<!-- Include SweetAlert library and jQuery -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="{% static "your-other-javascript-file.js" %}"></script>
+
+<style>
+    .table td,{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -25,60 +36,120 @@
         </nav>
     </div>
     <!-- End Page Title -->
-    
-        <!-- Recent Sales -->
-        <div class="col-12">
-            <div class="card recent-sales overflow-auto">
 
-                <div class="card-body">
-                    <table class="table table-borderless mt-3">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Product Image</th>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Product Details</th>
-                                <th>Delete</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for prod in products %}
-                            <tr class="align-middle"> <!-- Apply the align-middle class to each table row -->
-                                <td>{{prod.id}}</td>
-                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
-                                    <img src="{{ prod.productimage_set.first.image.url }}" alt="{{ prod.name }}" width="100" height="100">
-                                </td>
-                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
-                                    {{prod.name}}
-                                </td>
-                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
-                                    {{prod.category.name}}
-                                </td>
-                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
-                                    &#8377;{{prod.price}}
-                                </td>
-                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
-                                    <a href="product_varient/{{prod.id}}" type="button" class="btn btn-sm btn-secondary">View Details</a>
-                                </td>
-                                <td class="align-middle"> <!-- Apply the align-middle class to this table cell -->
-                                    <a href='product_status/{{prod.id}}'><span class="badge bg-danger">Delete</span></a>
-                                </td>
-                                <td style='font-size:20px' class="align-middle"> <!-- Apply the align-middle class to this table cell -->
-                                    <i class="bi bi-pencil-square text-warning">&nbsp;&nbsp;&nbsp;</i><i class="bi bi-trash-fill text-danger"></i>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    
-
-                </div>
-
+    <!-- Recent Sales -->
+    <div class="col-12">
+        <div class="card recent-sales overflow-auto">
+            <div class="card-body">
+                <table class="table table-borderless mt-3">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product Image</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Product Details</th>
+                            <th>Delete</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prod in products %}
+                        <tr class="align-middle">
+                            <td>{{prod.id}}</td>
+                            <td class="align-middle">
+                                <img src="{{ prod.productimage_set.first.image.url }}" alt="{{ prod.name }}" width="100" height="100">
+                            </td>
+                            <td class="align-middle">
+                                {{prod.name}}
+                            </td>
+                            <td class="align-middle">
+                                {{prod.category.name}}
+                            </td>
+                            <td class="align-middle">
+                                &#8377;{{prod.price}}
+                            </td>
+                            <td class="align-middle">
+                                <a href='product_varient/{{prod.id}}' type="button" class="btn btn-sm btn-secondary">View Details</a>
+                            </td>
+                            <td class="align-middle">
+                                <a class="badge btn btn-sm bg-danger" href="#" onclick="handleDeleteClick('{{ prod.name }}', {{ prod.id }})">
+                                    Delete
+                                </a>
+                            </td>
+                            <td class="align-middle">
+                                <a class="badge btn btn-warning" href="edit_product/{{prod.id}}">
+                                    Edit
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        </div><!-- End Recent Sales -->
+        </div>
+    </div><!-- End Recent Sales -->
 
-    </main><!-- End #main -->
+</main><!-- End #main -->
+
+<!-- Include SweetAlert library and jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+
+<script>
+    // JavaScript function to handle the delete action
+    function handleDeleteClick(productName, productId) {
+        // Show the SweetAlert dialog
+        swal({
+            title: `Are you sure you want to delete ${productName}?`,
+            text: "",
+            icon: "warning",
+            buttons: {
+                cancel: "No, cancel plx!",
+                confirm: {
+                    text: "Yes, delete it!",
+                    value: true,
+                    visible: true,
+                    className: "bg-danger",
+                    closeModal: false,
+                },
+            },
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                // Handle the delete action with an AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: `/soft_delete_product/${productId}/`,
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function (data) {
+                        swal("Deleted!", `The product ${productName} has been soft-deleted.`, {
+                            icon: "success",
+                        }).then(() => {
+                            // Redirect to a URL after successful deletion
+                            window.location.href = 'admin_products';
+                        });
+                    },
+                    error: function (error) {
+                        swal("Error", "An error occurred while deleting the product.", {
+                            icon: "error",
+                        });
+                    },
+                });
+            } else {
+                swal("Cancelled", `Your ${productName} is safe :)`, {
+                    icon: "error",
+                });
+            }
+        });
+    }
+    
+</script>
+
+
 {% endblock content %}

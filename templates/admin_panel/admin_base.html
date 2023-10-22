@@ -110,13 +110,6 @@
       </li><!-- End Categories Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link {% block brands %}collapsed{% endblock brands %}" href="#">
-          <i class="bi bi-intersect"></i>
-          <span>Brands</span>
-        </a>
-      </li><!-- End Brands Page Nav -->
-
-      <li class="nav-item">
         <a class="nav-link {% block colors %}collapsed{% endblock colors %}" href="#">
           <i class="bi bi-palette-fill"></i>
           <span>Colors</span>
@@ -157,6 +150,14 @@
           <span>Payments</span>
         </a>
       </li><!-- End Payments Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link {% block trash %}collapsed{% endblock trash %}" href="{% url 'admin_trash' %}">
+          <i class="bi bi-trash"></i>
+          <span>Trash</span>
+        </a>
+      </li><!-- End trash Page Nav -->
+
 
       
     </ul>

@@ -1,8 +1,6 @@
 from django.db import models
 
 
-# your code goes here 
-
 # model for catogery managment
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -13,7 +11,6 @@ class Category(models.Model):
 
 
 # model for product details 
-
 class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -30,6 +27,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+    
 # model for product images
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -40,7 +38,6 @@ class ProductImage(models.Model):
 
 
 # model for product variants 
-
 class SizeVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.CharField(max_length=10)
@@ -48,3 +45,5 @@ class SizeVariant(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.size}"
+
+    

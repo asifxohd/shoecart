@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
 from user_authentication.models import CustomUser
 from admin_home.models import Category,Product,SizeVariant,ProductImage
-from django.db.utils import IntegrityError
-from django.http import HttpResponse
+from django.contrib import messages
+
+
 
 # function for loading the Admin Base Template
 def admin_base(request):
@@ -11,21 +12,12 @@ def admin_base(request):
 
 # function for admin login
 def admin_login(request):
-    
     return render(request, "admin_panel/adminlogin.html")
 
 
 #function for admin DashBoard
 def admin_dash(request):
-    
     return render(request, "admin_panel/admin_dash.html", )
-
-
-# function to show products on the admin side 
-def admin_products(request):
-    products = Product.objects.prefetch_related('productimage_set').all()
-    return render(request, "admin_panel/products.html", {'products': products})
-
 
 
 # function for showing the all users on the admin side
@@ -61,7 +53,7 @@ def category_status(request, id):
     else:
         cat.is_active = True
         cat.save()
-    
+        
     return redirect('admin_catogeory')
 
 
@@ -88,14 +80,15 @@ def add_products(request):
 
         product.save()
         
-        for i in range(41, 46):  # Iterate over sizes 41 to 45
+        for i in range(41, 46):  
             size = i
             name = f'size_{i}'
             quantity = request.POST.get(name, 0)  # Use default value 0 if quantity is not provided
             print(quantity, name)
             if int(quantity) >= 0:
-                # Save the size and quantity to the database
                 SizeVariant(product=product, size=size, quantity=quantity).save()
+            else:
+                return redirect('admin_products')
                 
         print('image is comming here')
         images = request.FILES.getlist('images')
@@ -108,7 +101,7 @@ def add_products(request):
     return render(request, 'admin_panel/add_products.html', {'categories': categories})
 
 
-# function for add catogory
+# function for edit catogory
 def edit_category(request, id):
     category = Category.objects.filter(id=id)[0]
     if request.method == 'POST':
@@ -124,6 +117,10 @@ def edit_category(request, id):
 def add_category(request):
     if request.method == 'POST':
         newCatogeryName = request.POST.get('new_updated_catogory')
+        if Category.objects.filter(name=newCatogeryName):
+            messages.error(request, "Category already exists")
+            return redirect('add_category')
+            
         obj = Category(name=newCatogeryName)
         obj.save()
         return redirect('admin_catogeory')
@@ -132,6 +129,105 @@ def add_category(request):
 
 # function for showing the product variant, image on the product variant page 
 def show_product_varient(request, id):
-    product = Product.objects.filter(pk=id).prefetch_related('productimage_set', 'sizevariant_set').first()
+    product = Product.objects.filter(pk=id, status=True).prefetch_related('productimage_set', 'sizevariant_set').first()
     print(product)
     return render(request, 'admin_panel/product_varient.html', {'product': product})
+
+
+# function for showing the product on trash page variant, image on the product variant page 
+def trash_product_varient(request, id):
+    product = Product.objects.filter(pk=id, status=False).prefetch_related('productimage_set', 'sizevariant_set').first()
+    print(product)
+    return render(request, 'admin_panel/product_varient.html', {'product': product})
+
+
+    
+# function to show products on the admin side 
+def admin_products(request):
+    products = Product.objects.prefetch_related('productimage_set').filter(status=True)
+    return render(request, "admin_panel/products.html", {'products': products})
+
+
+# function for soft-deleting the product
+def ajax_soft_delete_product(request, id):
+    product = Product.objects.filter(id=id).first()
+    if product:
+        product.status = False
+        product.save()
+        return redirect('admin_products')  
+    else:
+        return redirect('admin_products')
+    
+    
+# function for loading the product Trash coloumn 
+def admin_trash(request):
+    products = Product.objects.prefetch_related('productimage_set').filter(status=False)
+    return render(request, "admin_panel/trash.html", {'products': products})
+
+
+# function for restoring product from the product Trash
+def restore_product(request, id):
+    product = Product.objects.filter(id=id).first()
+    if product:
+        product.status = True
+        product.save()
+        return render(request,"admin_panel/trash.html")
+    else:
+        return redirect('admin_trash')
+
+
+# function for editing the product details and sending the context for the input fields 
+def edit_product(request, id):
+    product = Product.objects.filter(id=id)[0]
+    images = ProductImage.objects.filter(product=product)
+    size_variants = SizeVariant.objects.filter(product=product)
+    cat = Category.objects.all()
+
+    context = {
+        'cat': cat,
+        'product': product,
+        'images': images,
+        'size_variants': size_variants,
+    }
+
+    if request.method == 'POST':
+        product.name = request.POST['name']
+        product.description = request.POST['description']
+        product.price = request.POST['price']
+        product.discount_price = request.POST.get('discount_price', 0.0)
+        product.category_id = request.POST['category']
+        product.gender = request.POST['gender']
+
+        product.save()
+
+        for i in range(41, 46):
+            size = i
+            name = f'size_{i}'
+            print(request.POST.get(name))
+            quantity = request.POST.get(name, 0)  
+            print(f"Size: {size}, Quantity: {quantity}, Field Name: {name}")
+    
+            if int(quantity) >= 0:
+                existing_size_variant = SizeVariant.objects.filter(product=product, size=size).first()
+                if existing_size_variant:
+                    existing_size_variant.quantity = quantity
+                    existing_size_variant.save()
+                else:
+                    SizeVariant(product=product, size=size, quantity=quantity).save()
+            else:
+                return redirect('admin_products')
+
+        print('Images are coming here')
+        new_images = request.FILES.getlist('images')
+        if new_images:
+            for image in new_images:
+                ProductImage(product=product, image=image).save()
+
+        print("Product updated successfully")
+
+        return redirect('admin_products')
+
+    return render(request, 'admin_panel/edit_products.html', context)
+
+
+    

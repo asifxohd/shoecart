@@ -47,7 +47,6 @@
                     <label for="id_category" class="col-sm-2 col-form-label">Category</label>
                     <div class="col-sm-10">
                         <select name="category" id="id_category" class="form-select">
-                            <option value="" selected>Choose a category</option>
                             {% for category in categories %}
                                 <option value="{{ category.id }}">{{ category.name }}</option>
                             {% endfor %}
@@ -116,8 +115,8 @@
 </main>
 <!-- Add these lines in the <head> section of your HTML template -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-<script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script>
     $(document).ready(function () {
         $.validator.addMethod("minOrEmpty", function (value, element, param) {
             return this.optional(element) || (Number(value) === parseInt(value, 10) && parseInt(value) >= param);
@@ -139,10 +138,25 @@
                     required: true,
                     min: 0
                 },
-                // Add validation for each "size" input field
-                'size[]': {
+                'size_41': {  // Corrected the names of size fields
                     required: true,
-                    minOrEmpty: 1
+                    minOrEmpty: 0
+                },
+                'size_42': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
+                },
+                'size_43': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
+                },
+                'size_44': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
+                },
+                'size_45': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
                 },
                 // Add similar rules for other fields as needed
             },
@@ -161,10 +175,25 @@
                     required: "Please enter a discount price",
                     min: "Discount price must be at least 0"
                 },
-                // Add messages for the "size" input fields
-                'size[]': {
-                    required: "Please enter a quantity for all sizes",
-                    minOrEmpty: "enter a quantity"
+                'size_41': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 41",
+                    minOrEmpty: "Enter a valid quantity for size 41"
+                },
+                'size_42': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 42",
+                    minOrEmpty: "Enter a valid quantity for size 42"
+                },
+                'size_43': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 43",
+                    minOrEmpty: "Enter a valid quantity for size 43"
+                },
+                'size_44': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 44",
+                    minOrEmpty: "Enter a valid quantity for size 44"
+                },
+                'size_45': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 45",
+                    minOrEmpty: "Enter a valid quantity for size 45"
                 },
                 // Add similar messages for other fields as needed
             },

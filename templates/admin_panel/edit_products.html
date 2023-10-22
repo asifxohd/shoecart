@@ -1,0 +1,213 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Edit Product{% endblock title %}
+{% block products %}{% endblock products %}
+{% block content %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Add Products</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item">Products</li>
+                <li class="breadcrumb-item active">Edit Product</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Edit Product</h5>
+            <form method="post" enctype="multipart/form-data" id="edit-product-form">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <label for="id_name" class="col-sm-2 col-form-label">Product Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="name" id="id_name" class="form-control" value="{{ product.name }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_description" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-10">
+                        <textarea name="description" id="id_description" class="form-control">{{ product.description }}</textarea>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_price" class="col-sm-2 col-form-label">Price</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="number" name="price" id="id_price" class="form-control" value="{{ product.price }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for "id_discount_price" class="col-sm-2 col-form-label">Discount Price</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="number" name="discount_price" id="id_discount_price" class="form-control" value="{{ product.discount_price }}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_category" class="col-sm-2 col-form-label">Category</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" aria-label="Default select example" name="category">
+                            {% for item in cat %}
+                            <option {% if item.id == prod.id %}selected{% endif %} value="{{item.id}}">{{item.name}}</option>
+                            {% endfor %}
+                          </select>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <label for="id_gender" class="col-sm-2 col-form-label">Gender</label>
+                    <div class="col-sm-10">
+                        <select name="gender" id="id_gender" class="form-select">
+                            <option value="Male" {% if product.gender == "Male" %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if product.gender == "Female" %}selected{% endif %}>Female</option>
+                            <option value="Unisex" {% if product.gender == "Unisex" %}selected{% endif %}>Unisex</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <label for="id_images" class="col-sm-2 col-form-label">Images</label>
+                    <div class="col-sm-10">
+                        <input type="file" name="images" id="id_images" class="form-control" multiple >
+                    </div>
+                </div>
+            
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Size</label>
+                    <div class="col-sm-10">
+                        <div class="size-quantity-form">
+                            <div class="row mb-3 mt-3">
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_41" class="form-label">Size 41</label>
+                                    <input type="number" name="size_41" id="id_size_41" class="form-control" placeholder="Size/Quantity" value="{{ size_variants.0.quantity }}">
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_42" class="form-label">Size 42</label>
+                                    <input type="number" name="size_42" id="id_size_42" class="form-control" placeholder="Size/Quantity" value="{{ size_variants.1.quantity }}">
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_43" class="form-label">Size 43</label>
+                                    <input type="number" name="size_43" id="id_size_43" class="form-control" placeholder="Size/Quantity" value="{{ size_variants.2.quantity }}">
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_44" class="form-label">Size 44</label>
+                                    <input type="number" name="size_44" id="id_size_44" class="form-control" placeholder="Size/Quantity" value="{{ size_variants.3.quantity }}">
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <label for="id_size_45" class="form-label">Size 45</label>
+                                    <input type="number" name="size_45" id="id_size_45" class="form-control" placeholder="Size/Quantity" value="{{ size_variants.4.quantity }}">
+                                </div>
+                                <!-- Repeat the same pattern for other sizes and quantities based on your data -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="row mb-3">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-dark">Edit Product</button>
+                    </div>
+                </div>
+            </form>
+            
+            
+        </div>
+    </div>
+</main>
+<!-- Add these lines in the <head> section of your HTML template -->
+ <!-- Add these lines in the <head> section of your HTML template -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $.validator.addMethod("minOrEmpty", function (value, element, param) {
+            return this.optional(element) || (Number(value) === parseInt(value, 10) && parseInt(value) >= param);
+        }, "Please enter a valid quantity.");
+
+        $('#edit-product-form').validate({
+            rules: {
+                name: {
+                    required: true
+                },
+                description: {
+                    required: true
+                },
+                price: {
+                    required: true,
+                    min: 1
+                },
+                discount_price: {
+                    required: true,
+                    min: 0
+                },
+                'size_41': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
+                },
+                'size_42': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
+                },
+                'size_43': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
+                },
+                'size_44': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
+                },
+                'size_45': {  // Corrected the names of size fields
+                    required: true,
+                    minOrEmpty: 0
+                },
+                // Add similar rules for other fields as needed
+            },
+            messages: {
+                name: {
+                    required: "Please enter a product name"
+                },
+                description: {
+                    required: "Please enter a product description"
+                },
+                price: {
+                    required: "Please enter a price",
+                    min: "Price must be at least 1"
+                },
+                discount_price: {
+                    required: "Please enter a discount price",
+                    min: "Discount price must be at least 0"
+                },
+                'size_41': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 41",
+                    minOrEmpty: "Enter a valid quantity for size 41"
+                },
+                'size_42': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 42",
+                    minOrEmpty: "Enter a valid quantity for size 42"
+                },
+                'size_43': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 43",
+                    minOrEmpty: "Enter a valid quantity for size 43"
+                },
+                'size_44': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 44",
+                    minOrEmpty: "Enter a valid quantity for size 44"
+                },
+                'size_45': {  // Corrected the names of size fields
+                    required: "Please enter a quantity for size 45",
+                    minOrEmpty: "Enter a valid quantity for size 45"
+                },
+                // Add similar messages for other fields as needed
+            },
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.addClass("text-danger");
+                error.insertAfter(element);
+            }
+        });
+    });
+</script>
+
+
+{% endblock content %}

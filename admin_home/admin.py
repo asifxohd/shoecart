@@ -7,3 +7,4 @@ admin.site.register(SizeVariant)
 admin.site.register(Category)
 admin.site.register(ProductImage)
 
+

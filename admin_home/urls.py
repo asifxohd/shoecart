@@ -15,5 +15,12 @@ urlpatterns = [
     path('edit_category/<str:id>', views.edit_category, name='edit_category'),
     path('add_category', views.add_category, name="add_category"),
     path('product_varient/<str:id>', views.show_product_varient, name='product_varient'),
+    path('admin_trash/product_varient/<str:id>', views.trash_product_varient, name='product_varient'),
+    path('admin_trash/', views.admin_trash, name='admin_trash'),
+    path('soft_delete_product/<str:id>/', views.ajax_soft_delete_product, name='soft_delete_product'),
+    path('restore_product/<str:id>/', views.restore_product, name='restore_product'),
+    path('edit_product/<str:id>/', views.edit_product, name='edit_product')
     
     ]
+    
+    
