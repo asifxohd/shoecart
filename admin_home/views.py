@@ -195,7 +195,7 @@ def edit_product(request, id):
         product.description = request.POST['description']
         product.price = request.POST['price']
         product.discount_price = request.POST.get('discount_price', 0.0)
-        product.category_id = request.POST['category']
+        product.category = request.POST['category']
         product.gender = request.POST['gender']
 
         product.save()

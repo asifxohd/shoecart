@@ -143,12 +143,11 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# smpt email verification configration
-
+# smtp email verification configration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Use the appropriate port for Gmail (587 for TLS)
-EMAIL_HOST_USER = 'asifxohd@gmail.com'  # Replace with your Gmail email
-EMAIL_HOST_PASSWORD = 'nyxv vyiv buek bcih'  # Replace with the App Password
+EMAIL_HOST_USER = 'shoecartcalicut@gmail.com'  # Replace with your Gmail email
+EMAIL_HOST_PASSWORD = 'zmku mkfe hxvk xbrr'  # Replace with the App Password
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False

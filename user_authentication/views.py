@@ -1,32 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.core.mail import send_mail
 import random
-from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
-from .models import CustomUser  # Import your user model
-
-
-
-# @require_POST
-# @csrf_exempt  # This decorator may be necessary to bypass CSRF protection for AJAX requests
-# def check_email_exists(request):
-#     email = request.POST.get('email')
-#     exists = CustomUser.objects.filter(email=email).exists()
-#     return JsonResponse({'exists': exists})
-
-# @require_POST
-# @csrf_exempt  # This decorator may be necessary to bypass CSRF protection for AJAX requests
-# def check_phone_exists(request):
-#     phone_number = request.POST.get('phoneNumber')
-#     exists = CustomUser.objects.filter(phone_number=phone_number).exists()
-#     return JsonResponse({'exists': exists})
-
-
+from .models import CustomUser  
 
 # Function to send a 6-digit OTP email to the user
 def send_6_digit_otp_email(request):
@@ -56,7 +34,6 @@ def send_6_digit_otp_email(request):
 # Handle user registration
 def signup(request):   
     if request.method == 'POST':
-        # Extract user information from the form
         first_name = request.POST['firstname']
         phone_number = request.POST['phonenumber']
         last_name = request.POST['lastname']
@@ -64,7 +41,6 @@ def signup(request):
         password = request.POST['password']
         request.session['recipient_email'] = email
 
-        # Check if the phone number or email is already registered
         if CustomUser.objects.filter(phone_number=phone_number).exists():
             messages.error(request, 'Phone number is taken')
             return redirect('signup')
@@ -112,7 +88,6 @@ def otp(request):
         entered_otp = request.POST.get('otp')
         stored_otp = request.session.get('otp')
         if entered_otp == stored_otp:
-            # User creation after successful OTP verification
             user_data = request.session.get('registration_data')
             if user_data:
                 user = CustomUser.objects.create_user(
@@ -122,6 +97,7 @@ def otp(request):
                     email=user_data['email'],
                     password=user_data['password'],
                     phone_number=user_data['phonenumber'],
+                    email_verified = True
                 )
                 user.save()
                 messages.success(request, 'User created successfully')
