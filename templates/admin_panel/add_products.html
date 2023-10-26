@@ -3,6 +3,8 @@
 {% block title %} Add Product{% endblock title %}
 {% block products %}{% endblock products %}
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <main id="main" class="main">
     <div class="pagetitle">
         <h1>Add Products</h1>
@@ -66,9 +68,9 @@
                 <div class="row mb-3">
                     <label for="id_images" class="col-sm-2 col-form-label">Images</label>
                     <div class="col-sm-10">
-                        <input type="file" name="images" id="id_images" class="form-control" multiple required>
+                        <input type="file" name="images" id="id_images" class="form-control" multiple required onchange="handleImageUpload(this.files)">
                     </div>
-                </div>
+                </div>                
                 
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label">Size</label>
@@ -205,5 +207,46 @@
         });
     });
 </script>
+<script>
+    function handleImageUpload(files) {
+        for (const file of files) {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const image = new Image();
+                    image.src = e.target.result;
+    
+                    image.onload = () => {
+                        const minWidth = 200; // Set your minimum width
+                        const minHeight = 200; // Set your minimum height
+    
+                        if (image.width < minWidth || image.height < minHeight) {
+                            alert(`Image "${file.name}" does not meet the minimum dimensions.`);
+                        } else {
+                            // Create a new image element for Cropper.js
+                            const cropperImage = new Image();
+                            cropperImage.src = e.target.result;
+    
+                            const cropper = new Cropper(cropperImage, {
+                                aspectRatio: 1, // Set the desired aspect ratio (e.g., 1:1 for a square crop)
+                                viewMode: 1, // Set your desired view mode (e.g., 0, 1, 2, 3)
+                            });
+    
+                            // You can use the 'cropper' instance to perform cropping operations if needed
+                            // For example, cropper.getCroppedCanvas() returns the cropped image
+    
+                            // Append the cropperImage to the DOM or perform further actions as needed
+                            document.body.appendChild(cropperImage);
+                        }
+                    };
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert(`File "${file.name}" is not an image.`);
+            }
+        }
+    }
+    </script>
+    
 
 {% endblock content %}

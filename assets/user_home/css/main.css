@@ -3330,3 +3330,7 @@ input.num-product::-webkit-inner-spin-button {
   }
 
 }
+.custom-link:hover {
+  color: #a83ca8; 
+  /
+}

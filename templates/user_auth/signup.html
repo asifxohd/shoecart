@@ -33,22 +33,23 @@
                         </div>
                         <div class="input-control mt-3 ">
                             <input type="email" id="email" class="form-control input-with-border" name="email" placeholder="Email">
-                            <div class="error"></div>
+                            <div class="error"> {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}{{message}}{% endif %} {% endfor %} {% endif %} </div>
                         </div>
                         <div class="input-control mt-3 ">
                             <input type="tel" id="phonenumber" class="form-control input-with-border" name="phonenumber" placeholder="Phone Number">
-                            <div class="error"></div>
+                            <div class="error">{% if messages %} {% for message in messages %} {% if message.tags == 'info' %}{{message}}{% endif %} {% endfor %} {% endif %}</div>
                         </div>
                         <div class="input-control mt-3 ">
                             <input type="password" id="password" class="form-control input-with-border" name="password" placeholder="Password">
                             <div class="error"></div>
                         </div>
                         <div class="input-control mt-3 ">
-                            <input type="password" id="confirm_password" class="form-control input-with-border" name="confirm_password" placeholder="Confirm Password">                        
+                            <input type="password" id="confirm_password" class="form-control input-with-border" name="confirm_password" placeholder="Confirm Password">
+                            <div class="error"></div>                        
                         </div>
-
+                            
                         <div class="form-group">
-                            <a id="kkkk" class="login_botten_tag" href="login">
+                            <a id="kkkk" class="login_botten_tag" href={% url 'send_otp' %}>
                                 <button class="btn btn-block mt-4 bg-dark buttensignup text-white">Sign Up</button>
                             </a>
                         </div>

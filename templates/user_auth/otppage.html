@@ -22,10 +22,11 @@
                         {% csrf_token %}
                         <input type="password" class="form-control input-with-border" name="otp" placeholder="Enter Your OTP" required="required">
                         <div class="form-group">
+                            <center><div class="text-danger">{% if messages %}{% for message in messages  %} {{message}} {% endfor %}{% endif %}</div></center>
                             <button type="submit" class="btn btn-block mt-4 bg-dark buttensignup text-white">VERIFY</button>
 
                         </div>
-                    </form>                    
+                    </form>                   
                     <div class="timeforotp d-flex justify-content-center">
                         <div id="countdown-timer" class="small" >
                             Your OTP will expire in <span id="countdown-seconds"></span>

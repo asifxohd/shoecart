@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,logout,login
 from django.contrib import messages
 from django.core.mail import send_mail
 import random
@@ -8,6 +8,8 @@ from .models import CustomUser
 
 # Function to send a 6-digit OTP email to the user
 def send_6_digit_otp_email(request):
+    if request.user.is_authenticated:
+        return redirect('homepage')  
     # Generate a random 6-digit OTP
     otp = random.randint(100000, 999999)
     request.session['otp'] = str(otp)
@@ -32,7 +34,10 @@ def send_6_digit_otp_email(request):
 
 
 # Handle user registration
-def signup(request):   
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect('homepage')    
+    
     if request.method == 'POST':
         first_name = request.POST['firstname']
         phone_number = request.POST['phonenumber']
@@ -42,7 +47,7 @@ def signup(request):
         request.session['recipient_email'] = email
 
         if CustomUser.objects.filter(phone_number=phone_number).exists():
-            messages.error(request, 'Phone number is taken')
+            messages.info(request, 'Phone number is taken')
             return redirect('signup')
         elif CustomUser.objects.filter(email=email).exists():
             messages.error(request, 'Email is taken')
@@ -62,8 +67,12 @@ def signup(request):
 
 # Handle user login
 def signin(request):
+    if request.user.is_authenticated:
+        return redirect('homepage')
+    
     if request.method == 'POST':
         email = request.POST['email']
+        
         password = request.POST['password']
         user = authenticate(request, username=email, password=password)
 
@@ -72,7 +81,7 @@ def signin(request):
                 messages.error("user Access denied")
                 return redirect('signin')
             if user.email_verified:
-                print(user.email_verified)
+                login(request, user)
                 return redirect('homepage')
             else:
                 messages.error(request, 'Email is not verified.')
@@ -83,7 +92,11 @@ def signin(request):
 
     return render(request, 'user_auth/loginpage.html')
 
+
+# function for otp page
 def otp(request):
+    if request.user.is_authenticated:
+        return redirect('homepage') 
     if request.method == 'POST':
         entered_otp = request.POST.get('otp')
         stored_otp = request.session.get('otp')
@@ -100,12 +113,17 @@ def otp(request):
                     email_verified = True
                 )
                 user.save()
-                messages.success(request, 'User created successfully')
+                
                 del request.session['registration_data']
-                return redirect('homepage')
-            else:
-                messages.error(request, 'Invalid registration data')
+                return redirect('signin')
+                
         else:
             messages.error(request, 'Invalid OTP')
     return render(request, 'user_auth/otppage.html')
 
+
+# function for userlogout
+def user_logout(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect('signin')

@@ -36,14 +36,12 @@
                                 <button class="btn btn-block mt-4 bg-dark buttensignup text-white">Login</button>
                             </a>
                         </div>
-                        {% if messages %}  {# Check if there are any messages to display #}
-                        <div class="alert alert-danger mt-3">
-                            <ul>
-                                {% for message in messages %}  {# Loop through messages and display them #}
-                                <li class="text-danger">{{ message }}</li> {# Apply text-danger class to the message #}
-                                {% endfor %}
-                            </ul>
+                        {% if messages %} 
+                        {% for message in messages %}
+                        <div class="text-danger mt-3">
+                            {{message}}
                         </div>
+                        {% endfor %}
                         {% endif %}
                         <p class="text-center text-dark small">Dont't Have An account? <a class="text-dark"
                                 href="{% url "signup" %}">

@@ -2,37 +2,66 @@ from django.shortcuts import render,redirect
 from user_authentication.models import CustomUser
 from admin_home.models import Category,Product,SizeVariant,ProductImage
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from django.views.decorators.cache import cache_control
+from django.contrib.auth import authenticate, login
 
 
 
 # function for loading the Admin Base Template
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def admin_base(request):
     return render(request, "admin_panel/admin_base.html")
 
 
 # function for admin login
 def admin_login(request):
-    return render(request, "admin_panel/adminlogin.html")
+    if request.user.is_authenticated and request.user.is_superuser:
+        return redirect('admin_dashboard')
+
+    if request.method == 'POST':
+        email = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            if user.is_superuser:
+                login(request, user)
+                return redirect('admin_dashboard')
+            else:
+                messages.error(request, "User has No access to Admin panel")
+                return redirect('admin_login')
+        else:
+            messages.error(request, "Invalid user")
+            return redirect('admin_login')
+    return render(request, 'admin_panel/admin_login.html')
 
 
 #function for admin DashBoard
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def admin_dash(request):
     return render(request, "admin_panel/admin_dash.html", )
 
 
 # function for showing the all users on the admin side
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def admin_users(request):
     users = CustomUser.objects.all().exclude(is_superuser=True).order_by('id')
     return render(request, "admin_panel/users.html", {'users': users})
 
 
 # function for showing all catogerys in the admin side 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def admin_catogory(request):
     catogory = Category.objects.all().order_by('id')
     return render(request, 'admin_panel/categories.html', {'categories':catogory})
 
 
 #function for changing the user status (block and Unblock)
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def user_status(request,id):
     user = CustomUser.objects.filter(id=id)[0]
     if user.is_active == True:
@@ -45,6 +74,8 @@ def user_status(request,id):
 
  
 # function for changing the catogery status (list and Unlist)
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def category_status(request, id):
     cat = Category.objects.filter(id=id)[0]
     if cat.is_active == True:
@@ -58,6 +89,8 @@ def category_status(request, id):
 
 
 # function for adding product data like image ,size variants,etc.
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def add_products(request):
     categories = Category.objects.all()
 
@@ -102,6 +135,8 @@ def add_products(request):
 
 
 # function for edit catogory
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def edit_category(request, id):
     category = Category.objects.filter(id=id)[0]
     if request.method == 'POST':
@@ -114,6 +149,8 @@ def edit_category(request, id):
 
 
 # function for add catogery
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def add_category(request):
     if request.method == 'POST':
         newCatogeryName = request.POST.get('new_updated_catogory')
@@ -128,6 +165,8 @@ def add_category(request):
 
 
 # function for showing the product variant, image on the product variant page 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def show_product_varient(request, id):
     product = Product.objects.filter(pk=id, status=True).prefetch_related('productimage_set', 'sizevariant_set').first()
     print(product)
@@ -135,6 +174,8 @@ def show_product_varient(request, id):
 
 
 # function for showing the product on trash page variant, image on the product variant page 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def trash_product_varient(request, id):
     product = Product.objects.filter(pk=id, status=False).prefetch_related('productimage_set', 'sizevariant_set').first()
     print(product)
@@ -142,13 +183,17 @@ def trash_product_varient(request, id):
 
 
     
-# function to show products on the admin side 
+# function to show products on the admin side
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def admin_products(request):
     products = Product.objects.prefetch_related('productimage_set').filter(status=True)
     return render(request, "admin_panel/products.html", {'products': products})
 
 
 # function for soft-deleting the product
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def ajax_soft_delete_product(request, id):
     product = Product.objects.filter(id=id).first()
     if product:
@@ -160,12 +205,16 @@ def ajax_soft_delete_product(request, id):
     
     
 # function for loading the product Trash coloumn 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def admin_trash(request):
     products = Product.objects.prefetch_related('productimage_set').filter(status=False)
     return render(request, "admin_panel/trash.html", {'products': products})
 
 
 # function for restoring product from the product Trash
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def restore_product(request, id):
     product = Product.objects.filter(id=id).first()
     if product:
@@ -177,8 +226,10 @@ def restore_product(request, id):
 
 
 # function for editing the product details and sending the context for the input fields 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def edit_product(request, id):
-    product = Product.objects.filter(id=id)[0]
+    product = Product.objects.get(id=id)
     images = ProductImage.objects.filter(product=product)
     size_variants = SizeVariant.objects.filter(product=product)
     cat = Category.objects.all()
@@ -195,7 +246,7 @@ def edit_product(request, id):
         product.description = request.POST['description']
         product.price = request.POST['price']
         product.discount_price = request.POST.get('discount_price', 0.0)
-        product.category = request.POST['category']
+        product.category_id = request.POST['category']
         product.gender = request.POST['gender']
 
         product.save()
@@ -205,7 +256,7 @@ def edit_product(request, id):
             name = f'size_{i}'
             print(request.POST.get(name))
             quantity = request.POST.get(name, 0)  
-            print(f"Size: {size}, Quantity: {quantity}, Field Name: {name}")
+            # print(f"Size: {size}, Quantity: {quantity}, Field Name: {name}")
     
             if int(quantity) >= 0:
                 existing_size_variant = SizeVariant.objects.filter(product=product, size=size).first()
@@ -217,11 +268,14 @@ def edit_product(request, id):
             else:
                 return redirect('admin_products')
 
-        print('Images are coming here')
         new_images = request.FILES.getlist('images')
+
         if new_images:
+            # Delete existing images and save the new ones
+            ProductImage.objects.filter(product=product).delete()
             for image in new_images:
                 ProductImage(product=product, image=image).save()
+
 
         print("Product updated successfully")
 
