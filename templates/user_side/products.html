@@ -121,13 +121,18 @@
 		
 		<div class="flex-w flex-l-m filter-tope-group m-tb-10">
 			
-			<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-				All Products
-			</button>
+			<a href="{% url 'product_page' %}" >
+				<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="*">
+					All Products
+				</button>
+			</a>
+
 			{% for c in cat %}
-			<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-				{{c.name}}
-			</button>
+			<a href="../show_catogery/{{c.id}}" >
+				<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5{% if current_category == c.name %} how-active1 {% endif %}" data-filter=".women">
+					{{c.name}}
+				</button>
+			</a>
 
 			{% endfor %}
 
@@ -197,45 +202,40 @@
 					<div class="mtext-102 cl2 p-b-15">
 						Price
 					</div>
-
+				
 					<ul>
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-								All
-							</a>
-						</li>
-
-						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=1000&max_price=3000" class="filter-link stext-106 trans-04">
 								₹1,000 - ₹3,000
 							</a>
 						</li>
-
+				
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=3000&max_price=5000" class="filter-link stext-106 trans-04">
 								₹3,000 - ₹5,000
 							</a>
 						</li>
-
+				
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=5000&max_price=7000" class="filter-link stext-106 trans-04">
 								₹5,000 - ₹7,000
 							</a>
 						</li>
-
+				
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=7000&max_price=10000" class="filter-link stext-106 trans-04">
 								₹7,000 - ₹10,000
 							</a>
 						</li>
-
+				
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=10000&max_price=999999" class="filter-link stext-106 trans-04">
 								₹10,000 +
 							</a>
 						</li>
 					</ul>
 				</div>
+				
 
 				<div class="filter-col3 p-r-15 p-b-27">
 					<div class="mtext-102 cl2 p-b-15">
@@ -243,55 +243,19 @@
 					</div>
 
 					<ul>
+						{% for c in cat  %}
 						<li class="p-b-6">
 							<span class="fs-15 lh-12 m-r-6" style="color: #222;">
 								<i class="zmdi zmdi-circle"></i>
 							</span>
-
+							
 							<a href="#" class="filter-link stext-106 trans-04">
-								Men
+								{{ c.name }}
 							</a>
 						</li>
+						{% endfor %}
 
-						<li class="p-b-6">
-							<span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-								<i class="zmdi zmdi-circle"></i>
-							</span>
-
-							<a href="#" class="filter-link stext-106 trans-04">
-								Women
-							</a>
-						</li>
-
-						<li class="p-b-6">
-							<span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-								<i class="zmdi zmdi-circle"></i>
-							</span>
-
-							<a href="#" class="filter-link stext-106 trans-04">
-								Sneakers
-							</a>
-						</li>
-
-						<li class="p-b-6">
-							<span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
-								<i class="zmdi zmdi-circle"></i>
-							</span>
-
-							<a href="#" class="filter-link stext-106 trans-04">
-								Flips
-							</a>
-						</li>
-
-						<li class="p-b-6">
-							<span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
-								<i class="zmdi zmdi-circle"></i>
-							</span>
-
-							<a href="#" class="filter-link stext-106 trans-04">
-								Unisex
-							</a>
-						</li>
+						
 
 					</ul>
 				</div>
@@ -325,7 +289,7 @@
 				</div>
 			</div>
 		</div>
-	</div>	 
+	</div>	 	 
 
 	
 	<div class="row isotope-grid">
@@ -339,14 +303,14 @@
 					<div class="block2-pic hov-img0">
 						<img src="{{ product.productimage_set.all.0.image.url }}" alt="IMG-PRODUCT" style="height:320px">
 						
-						<a href="product_details/{{ product.id }}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
+						<a href="../product_details/{{ product.id }}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
 							Quick View
 						</a>
 					</div>
 	
 					<div class="block2-txt flex-w flex-t p-t-14">
 						<div class="block2-txt-child1 flex-col-l">
-							<a href="product_details/{{ product.id }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+							<a href="../product_details/{{ product.id }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
 								{{ product.name }}
 							</a>
 	
@@ -366,7 +330,8 @@
 			</div>
 		
 	
-	{% endfor %}</div>
+	{% endfor %}
+</div>
 	<!-- do the pagination here  -->
 	<div class="flex-c-m flex-w w-full p-t-45 mt-3">
 		<nav aria-label="Page navigation example">

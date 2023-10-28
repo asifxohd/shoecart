@@ -60,7 +60,7 @@
         </li><!-- End Search Icon-->
 
         <li class="nav-item  pe-3">
-          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" >
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="{% url "logout" %}" >
             <i class="bx bx-exit" style="font-size: 25px;"></i>
           </a><!-- End Profile image Icon -->
         </li><!-- End Profile Nav -->
@@ -109,12 +109,6 @@
         </a>
       </li><!-- End Categories Page Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link {% block colors %}collapsed{% endblock colors %}" href="#">
-          <i class="bi bi-palette-fill"></i>
-          <span>Colors</span>
-        </a>
-      </li><!-- End Orders Page Nav -->
 
       <li class="nav-item">
         <a class="nav-link {% block orders %}collapsed{% endblock orders %}" href="#">
@@ -153,8 +147,8 @@
 
       <li class="nav-item">
         <a class="nav-link {% block trash %}collapsed{% endblock trash %}" href="{% url 'admin_trash' %}">
-          <i class="bi bi-trash"></i>
-          <span>Trash</span>
+          <i class="bi bi-trash text-danger"></i>
+          <span>Unlisted Products</span>
         </a>
       </li><!-- End trash Page Nav -->
 

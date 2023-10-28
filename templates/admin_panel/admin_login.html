@@ -30,11 +30,8 @@
                         required="required">
                 </div>
 
-                <div class="messages">
-                    <!-- Messages here -->
-                    <!-- Replace this with your messages -->
-                </div>
-
+                <div class="error text-danger"> {% if messages %} {% for message in messages %} {% if message.tags == 'error' %}{{message}}{% endif %} {% endfor %} {% endif %} </div>
+                
                 <div class=" form-group pt-2 ">
                     <button type="submit" class="btn text-light btn-lg btn-block  mt-3">Sign in</button>
                 </div>

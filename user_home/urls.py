@@ -14,5 +14,9 @@ urlpatterns = [
     path('products_men', views.products_men, name="products_men"),
     path('products_women', views.products_women, name="products_women"),
     path('unisex_products', views.unisex, name='unisex_products'),
-    
-   ]
+    path('show_catogery/<int:id>', views.show_category, name='show_catogery'),
+    path('show_price_filtering', views.show_price_filtering, name='show_price_filtering'),
+    path('show_price_between', views.show_price_between, name='show_price_between'),
+    path('autocompleat', views.autocompleat, name='autocompleat'),
+
+    ]

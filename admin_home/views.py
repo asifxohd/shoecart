@@ -7,7 +7,6 @@ from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login
 
 
-
 # function for loading the Admin Base Template
 @user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def admin_base(request):
@@ -138,14 +137,20 @@ def add_products(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u:u.is_superuser, login_url='admin_login')
 def edit_category(request, id):
-    category = Category.objects.filter(id=id)[0]
+    category = Category.objects.get(id=id)
+    
     if request.method == 'POST':
         updated_name = request.POST.get('category_name')
-        category.name= updated_name
-        category.save()
-        return redirect('admin_catogeory')
         
-    return render(request, 'admin_panel/editcat.html', {'category_name': category.name,})
+        if updated_name != category.name:
+            if Category.objects.filter(name=updated_name).exists():
+                messages.error(request, "Category with this name already exists")
+            else:
+                category.name = updated_name
+                category.save()
+                return redirect('admin_category')
+        
+    return render(request, 'admin_panel/editcat.html', {'category_name': category.name})
 
 
 # function for add catogery
@@ -161,7 +166,7 @@ def add_category(request):
         obj = Category(name=newCatogeryName)
         obj.save()
         return redirect('admin_catogeory')
-    return render(request,'admin_panel/add_categories.html' )
+    return render(request,'admin_panel/add_categories.html')
 
 
 # function for showing the product variant, image on the product variant page 

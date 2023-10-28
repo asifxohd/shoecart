@@ -66,27 +66,39 @@
         $('#form').submit(function(e) {
             e.preventDefault();
             $('.error').html('');
-
+    
             var firstname = $('#firstname').val();
             var lastname = $('#lastname').val();
             var email = $('#email').val();
             var phonenumber = $('#phonenumber').val();
             var password = $('#password').val();
             var confirm_password = $('#confirm_password').val();
-
+    
             // Define validation rules here
             var isValid = true;
-
-            if (firstname === '') {
+    
+            if (!/^\s*$/.test(firstname)) {
+                // First name is not only spaces
+                if (firstname.length < 3) {
+                    isValid = false;
+                    $('#firstname').next('.error').html('First Name should contain at least 3 letters.');
+                }
+            } else {
                 isValid = false;
                 $('#firstname').next('.error').html('First Name is required.');
             }
-
-            if (lastname === '') {
+    
+            if (!/^\s*$/.test(lastname)) {
+                // Last name is not only spaces
+                if (lastname.length < 3) {
+                    isValid = false;
+                    $('#lastname').next('.error').html('Last Name should contain at least 3 letters.');
+                }
+            } else {
                 isValid = false;
                 $('#lastname').next('.error').html('Last Name is required.');
             }
-
+    
             if (email === '') {
                 isValid = false;
                 $('#email').next('.error').html('Email is required.');
@@ -94,7 +106,7 @@
                 isValid = false;
                 $('#email').next('.error').html('Invalid email format.');
             }
-
+    
             if (phonenumber === '') {
                 isValid = false;
                 $('#phonenumber').next('.error').html('Phone Number is required.');
@@ -102,7 +114,7 @@
                 isValid = false;
                 $('#phonenumber').next('.error').html('Invalid phone number format. Please enter 10 digits.');
             }
-
+    
             if (password === '') {
                 isValid = false;
                 $('#password').next('.error').html('Password is required.');
@@ -110,7 +122,7 @@
                 isValid = false;
                 $('#password').next('.error').html('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.');
             }
-
+    
             if (confirm_password === '') {
                 isValid = false;
                 $('#confirm_password').next('.error').html('Confirm Password is required.');
@@ -118,32 +130,33 @@
                 isValid = false;
                 $('#confirm_password').next('.error').html('Passwords do not match.');
             }
-
+    
             if (isValid) {
                 // Form is valid, you can submit the data or take further actions here
                 $('#form')[0].submit();
             }
         });
-
+    
         function isValidEmail(email) {
             // You can implement a regular expression for email validation here.
             // For a simple example, you can use the following regex:
             var emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
             return emailRegex.test(email);
         }
-
+    
         function isValidPhoneNumber(phone) {
             // Use a regular expression to check for exactly 10 digits
-            var phoneRegex = /^\d{10}$/;
+            var phoneRegex = /^(?!^(\d)\1{9}$)\d{10}$/;
             return phoneRegex.test(phone);
         }
-
+    
         function isValidPassword(password) {
             // Use a regular expression to check for a high-secure password
             var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             return passwordRegex.test(password);
         }
     });
+    
 </script>
 
 

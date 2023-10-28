@@ -1,6 +1,6 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
-{% block title %}Trash Products{% endblock title %}
+{% block title %}Unlisted Products{% endblock title %}
 {% block trash %} {% endblock trash %}
 {% block content %}
 
@@ -9,7 +9,7 @@
     <div class="pagetitle">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1>Trash Products</h1>
+                <h1>Unlisted Products</h1>
             </div>
             <div class="col-md-6 text-end">
             </div>
@@ -37,7 +37,7 @@
                             <th>Category</th>
                             <th>Price</th>
                             <th>Product Details</th>
-                            <th>Restore</th>
+                            <th>list</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +54,7 @@
                                 <a href="product_varient/{{prod.id}}" type="button" class="btn btn-sm btn-secondary">View Details</a>
                             </td>
                             <td class="align-middle">
-                                <a class="btn btn-sm btn-success" href="#" onclick="handleRestoreClick('{{ prod.name }}', {{ prod.id }})"><span class="badge">Restore</span></a>
+                                <a class="btn btn-sm btn-success" href="#" onclick="handleRestoreClick('{{ prod.name }}', {{ prod.id }})"><span class="badge">list</span></a>
                             </td>                            
                         </tr>
                         {% endfor %}

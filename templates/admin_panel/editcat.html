@@ -27,7 +27,13 @@
                         <div class="form-group mt-4">
                             <label for="categoryName mt-2">&nbsp;&nbsp;<b>Category Name</b></label> <br><br>
                             &nbsp;&nbsp;<input type="text" id="categoryName" name="category_name" value="{{ category_name}}">
+                            {% if messages %}
+                            {% for message in messages %}
+                                <div class="text-danger">&nbsp;&nbsp;&nbsp;{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
                         </div>
+                       
                         &nbsp;&nbsp;<button type="submit" class="m1-2 btn btn-dark mt-4">Save</button>
                     </form>
                 </div>

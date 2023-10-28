@@ -40,6 +40,7 @@
                                 <th>ID</th>
                                 <th>Product Image</th>
                                 <th>Product Name</th>
+                                <th>Price</th>
                                 <th>Size</th>
                                 <th>Quantity</th>
                             </tr>
@@ -52,6 +53,7 @@
                                         <img src="{{ size_variant.product.productimage_set.first.image.url }}" alt="{{ size_variant.product.name }}" width="100" height="100">
                                     </td>
                                     <td>{{ size_variant.product.name }}</td>
+                                    <td> {{ size_variant.product.price }} </td>
                                     <td>{{ size_variant.size }}</td>
                                     <td>
                                         {% if size_variant.quantity > 0 %}

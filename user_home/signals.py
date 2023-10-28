@@ -15,7 +15,7 @@ def send_email_and_respond(sender, **kwargs):
         # Send the email
         send_mail('Contact Form Submission', message, email, ['shoecartcalicut@gmail.com'])
         # Send a response email to the user
-        send_mail('Thank you for contacting us', 'We will get back to you.', 'your@email.com', [email])
+        send_mail('Thank you for contacting us', 'We will get back to you Soon.', 'your@email.com', [email])
         
         # Respond with a success message
         # You can customize the response as needed

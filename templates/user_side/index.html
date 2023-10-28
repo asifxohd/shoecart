@@ -43,7 +43,7 @@
 			<button class="flex-c-m trans-04">
 				<i class="zmdi zmdi-search"></i>
 			</button>
-			<input class="plh3" type="text" name="search" placeholder="Search...">
+			<input id="product" class="plh3" type="text" name="search" placeholder="Search...">
 		</form>
 	</div>
 </div>
@@ -186,7 +186,7 @@
 						</span>
 
 						<span class="block1-info stext-102 trans-04">
-							Spring 2018
+							Spring 2023
 						</span>
 					</div>
 
@@ -265,15 +265,18 @@
 	<div class="flex-w flex-sb-m p-b-52">
 		
 		<div class="flex-w flex-l-m filter-tope-group m-tb-10">
-			
-			<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-				All Products
-			</button>
+			<a href="{% url 'product_page' %}" >
+				<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
+					All Products
+				</button>
+			</a>
 			{% for c in cat %}
-			<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-				{{c.name}}
-			</button>
-
+			<a href='show_catogery/{{c.id}}' > 
+				<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
+					{{c.name}}
+				</button>
+	
+			</a>
 			{% endfor %}
 
 		</div>
@@ -312,29 +315,20 @@
 					</div>
 
 					<ul>
-						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
-								Default
-							</a>
-						</li>
-
-						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
-								Popularity
-							</a>
-						</li>
-
-						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
-								Price: Low to High
-							</a>
-						</li>
-
-						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
-								Price: High to Low
-							</a>
-						</li>
+						<ul>
+							<li class="p-b-6">
+							  <a href="?sort=default" class="filter-link stext-106 trans-04">Default</a>
+							</li>
+							<li class="p-b-6">
+							  <a href="?sort=popularity" class="filter-link stext-106 trans-04">Popularity</a>
+							</li>
+							<li class="p-b-6">
+							  <a href="?sort=price_low_to_high" class="filter-link stext-106 trans-04">Price: Low to High</a>
+							</li>
+							<li class="p-b-6">
+							  <a href="?sort=price_high_to_low" class="filter-link stext-106 trans-04">Price: High to Low</a>
+							</li>
+						  </ul>
 					</ul>
 				</div>
 
@@ -342,45 +336,40 @@
 					<div class="mtext-102 cl2 p-b-15">
 						Price
 					</div>
-
+				
 					<ul>
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-								All
-							</a>
-						</li>
-
-						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=1000&max_price=3000" class="filter-link stext-106 trans-04">
 								₹1,000 - ₹3,000
 							</a>
 						</li>
-
+				
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=3000&max_price=5000" class="filter-link stext-106 trans-04">
 								₹3,000 - ₹5,000
 							</a>
 						</li>
-
+				
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=5000&max_price=7000" class="filter-link stext-106 trans-04">
 								₹5,000 - ₹7,000
 							</a>
 						</li>
-
+				
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=7000&max_price=10000" class="filter-link stext-106 trans-04">
 								₹7,000 - ₹10,000
 							</a>
 						</li>
-
+				
 						<li class="p-b-6">
-							<a href="#" class="filter-link stext-106 trans-04">
+							<a href="{% url 'show_price_between' %}?min_price=10000&max_price=999999" class="filter-link stext-106 trans-04">
 								₹10,000 +
 							</a>
 						</li>
 					</ul>
 				</div>
+				
 
 				<div class="filter-col3 p-r-15 p-b-27">
 					<div class="mtext-102 cl2 p-b-15">
@@ -388,21 +377,18 @@
 					</div>
 
 					<ul>
-						{% for c in cat  %}
-						<li class="p-b-6">
-							<span class="fs-15 lh-12 m-r-6" style="color: #222;">
-								<i class="zmdi zmdi-circle"></i>
-							</span>
-							
-							<a href="#" class="filter-link stext-106 trans-04">
-								{{ c.name }}
-							</a>
-						</li>
+						{% for c in cat %}
+							<li class="p-b-6">
+								<span class="fs-15 lh-12 m-r-6" style="color: #222;">
+									<i class="zmdi zmdi-circle"></i>
+								</span>
+								<a href='show_category/{{c.id}}' class="filter-link stext-106 trans-04">
+									{{ c.name }}
+								</a>
+							</li>
 						{% endfor %}
-
-						
-
 					</ul>
+					
 				</div>
 
 				<div class="filter-col4 p-b-27">
@@ -435,6 +421,7 @@
 			</div>
 		</div>
 	</div>	 
+	 
 
 	
 	<div class="row isotope-grid">
@@ -853,4 +840,16 @@
 		})
 	});
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+	$( function() {
+	  
+	  $( "#product" ).autocomplete({
+		source:"{% url 'autocompleat' %}"
+	  });
+	} );
+
+</script>
+
 {% endblock %}
