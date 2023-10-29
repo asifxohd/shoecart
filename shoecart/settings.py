@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'user_authentication',
     'admin_home',
     'user_home',
+    'user_profile',
 ]
 
 MIDDLEWARE = [
@@ -128,8 +129,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'user_authentication/static'),
     os.path.join(BASE_DIR, 'admin_home/static'),
-    os.path.join(BASE_DIR, 'user_home/static')
+    os.path.join(BASE_DIR, 'user_home/static'),
+    os.path.join(BASE_DIR, 'user_profile/static'),
     ]
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 

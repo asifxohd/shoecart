@@ -26,15 +26,6 @@ def homepage(request):
     else:
         return redirect('signin')
 
-
-# function for rendering the user profile page with the user details
-def user_profile(request):
-    if request.user.is_authenticated:
-        return render(request, "user_side/user_profile.html")
-    else:
-        return redirect('signin')
-
-
 # function for rendering product page with products
 def product_page(request):
     if request.user.is_authenticated:
