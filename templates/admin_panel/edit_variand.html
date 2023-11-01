@@ -1,0 +1,66 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Add Product{% endblock title %}
+{% block products %}{% endblock products %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Add Products</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item">Products</li>
+                <li class="breadcrumb-item ">Product Variand </li>
+                <li class="breadcrumb-item active">Add Product Variand</li>
+
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Add a new Product to the database</h5>
+            <form method="post" enctype="multipart/form-data" id="add-product-form">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <label for="id_size" class="col-sm-2 col-form-label">Variand size</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="text" value={{var.size}} name="size"  class="form-control" disabled>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_quantity" class="col-sm-2 col-form-label">Quantity</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="number" value={{var.quantity}} name="quantity"  class="form-control">
+                    </div>
+                </div> 
+                <div class="row mb-3">
+                    <label for="id_price" class="col-sm-2 col-form-label">Price</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="number" value={{var.price}} name="price" class="form-control">
+                    </div>
+                </div> 
+                <div class="row mb-3">
+                    <label for="id_discount_percent" class="col-sm-2 col-form-label">Discount Price</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="number" value={{var.discount_percent}} name="discount_percent"  class="form-control">
+                    </div>
+                </div> 
+                
+                <div class="row mb-3">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-dark">Update Variand</button>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</main>
+<!-- Add these lines in the <head> section of your HTML template -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+
+{% endblock content %}

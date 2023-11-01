@@ -1,8 +1,10 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
-{% block title %} Edit Product{% endblock title %}
+{% block title %} Add Product{% endblock title %}
 {% block products %}{% endblock products %}
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <main id="main" class="main">
     <div class="pagetitle">
         <h1>Add Products</h1>
@@ -10,93 +12,63 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">Admin</li>
                 <li class="breadcrumb-item">Products</li>
-                <li class="breadcrumb-item active">Edit Product</li>
+                <li class="breadcrumb-item ">Product Variand </li>
+                <li class="breadcrumb-item active">Add Product Variand</li>
+
             </ol>
         </nav>
     </div><!-- End Page Title -->
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Edit Product</h5>
-            <form method="post" enctype="multipart/form-data" id="edit-product-form">
+            <h5 class="card-title">Add a new Product to the database</h5>
+            <form method="post" enctype="multipart/form-data" id="add-product-form">
                 {% csrf_token %}
                 <div class="row mb-3">
-                    <label for="id_name" class="col-sm-2 col-form-label">Product Name</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="name" id="id_name" class="form-control" value="{{ product.name }}">
+                    <label for="id_size" class="col-sm-2 col-form-label">Variand size</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="text" name="size"  class="form-control">
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="id_description" class="col-sm-2 col-form-label">Description</label>
-                    <div class="col-sm-10">
-                        <textarea name="description" id="id_description" class="form-control">{{ product.description }}</textarea>
+                    <label for="id_quantity" class="col-sm-2 col-form-label">Quantity</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="number" name="quantity"  class="form-control">
                     </div>
-                </div>                                                              
+                </div> 
                 <div class="row mb-3">
-                    <label for="id_category" class="col-sm-2 col-form-label">Category</label>
-                    <div class="col-sm-10">
-                        <select class="form-select" aria-label="Default select example" name="category">
-                            {% for item in cat %}
-                            <option {% if item.id == prod.id %}selected{% endif %} value="{{item.id}}">{{item.name}}</option>
-                            {% endfor %}
-                          </select>
+                    <label for="id_price" class="col-sm-2 col-form-label">Price</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="number" name="price" class="form-control">
                     </div>
-                </div>
+                </div> 
+                <div class="row mb-3">
+                    <label for="id_discount_percent" class="col-sm-2 col-form-label">Discount Price</label>
+                    <div class="col-sm-10 col-md-4">
+                        <input type="number" name="discount_percent"  class="form-control">
+                    </div>
+                </div> 
                 
-                <div class="row mb-3">
-                    <label for="id_gender" class="col-sm-2 col-form-label">Gender</label>
-                    <div class="col-sm-10">
-                        <select name="gender" id="id_gender" class="form-select">
-                            <option value="Male" {% if product.gender == "Male" %}selected{% endif %}>Male</option>
-                            <option value="Female" {% if product.gender == "Female" %}selected{% endif %}>Female</option>
-                            <option value="Unisex" {% if product.gender == "Unisex" %}selected{% endif %}>Unisex</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <label for="id_images" class="col-sm-2 col-form-label">Images</label>
-                    <div class="col-sm-10">
-                        <input type="file" name="images" id="id_images" class="form-control" multiple >
-                    </div>
-                </div>
-                <!-- New div for displaying current images -->
-                <div class="row">
-                    <div class="col-sm-2"></div> <!-- Offset for alignment -->
-                    <div class="col-sm-10">
-                        <div id="current-images" style="display: flex; flex-wrap: nowrap; overflow-x: auto; max-width: 100%;">
-                            {% for img in images %}
-                            <div class="current-image" style="margin-right: 10px;">
-                                <img src="{{img.image.url}}" alt="Image" style="max-width: 150px; max-height: 150px;">
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                
-            
                 <div class="row mb-3">
                     <div class="col-sm-2"></div>
-                    <div class="col-sm-10 mt-5">
-                        <button type="submit" class="btn btn-dark">Edit Product</button>
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-dark">Add Variand</button>
                     </div>
                 </div>
             </form>
-            
             
         </div>
     </div>
 </main>
 <!-- Add these lines in the <head> section of your HTML template -->
- <!-- Add these lines in the <head> section of your HTML template -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
     <script>
     $(document).ready(function () {
         $.validator.addMethod("minOrEmpty", function (value, element, param) {
             return this.optional(element) || (Number(value) === parseInt(value, 10) && parseInt(value) >= param);
         }, "Please enter a valid quantity.");
 
-        $('#edit-product-form').validate({
+        $('#add-product-form').validate({
             rules: {
                 name: {
                     required: true
@@ -179,6 +151,46 @@
         });
     });
 </script>
-
+<script>
+    function handleImageUpload(files) {
+        for (const file of files) {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const image = new Image();
+                    image.src = e.target.result;
+    
+                    image.onload = () => {
+                        const minWidth = 200; // Set your minimum width
+                        const minHeight = 200; // Set your minimum height
+    
+                        if (image.width < minWidth || image.height < minHeight) {
+                            alert(`Image "${file.name}" does not meet the minimum dimensions.`);
+                        } else {
+                            // Create a new image element for Cropper.js
+                            const cropperImage = new Image();
+                            cropperImage.src = e.target.result;
+    
+                            const cropper = new Cropper(cropperImage, {
+                                aspectRatio: 1, // Set the desired aspect ratio (e.g., 1:1 for a square crop)
+                                viewMode: 1, // Set your desired view mode (e.g., 0, 1, 2, 3)
+                            });
+    
+                            // You can use the 'cropper' instance to perform cropping operations if needed
+                            // For example, cropper.getCroppedCanvas() returns the cropped image
+    
+                            // Append the cropperImage to the DOM or perform further actions as needed
+                            document.body.appendChild(cropperImage);
+                        }
+                    };
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert(`File "${file.name}" is not an image.`);
+            }
+        }
+    }
+    </script>
+    
 
 {% endblock content %}

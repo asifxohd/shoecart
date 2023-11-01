@@ -14,8 +14,6 @@ class Category(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     gender = models.CharField(
         max_length=10,
@@ -41,7 +39,9 @@ class ProductImage(models.Model):
 class SizeVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.CharField(max_length=10)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(null=False, default=0)
+    price = models.PositiveIntegerField(null=False, default=0)
+    discount_percent = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     def __str__(self):
         return f"{self.product.name} - {self.size}"

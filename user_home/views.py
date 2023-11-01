@@ -120,7 +120,6 @@ def contact(request):
 # function for rendering product details with the product id
 def product_details(request, id):
     if request.user.is_authenticated:
-        prod = Product.objects.get(id=id)
         product = Product.objects.filter(pk=id, status=True).prefetch_related(
             'productimage_set', 'sizevariant_set').first()
         images = product.productimage_set.all()

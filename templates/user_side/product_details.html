@@ -216,7 +216,7 @@
 						</h4>
 
 						<span class="mtext-106 cl2">
-							${{ d.price }}
+							&#8377;{{ d.sizevariant_set.first.price }}
 						</span>
 
 						<p class="stext-102 cl3 p-t-23">
@@ -226,40 +226,20 @@
 						<!--  -->
 						<div class="p-t-33">
 							<div class="pl-5 pl-5 pb-3 pt-3" role="group" aria-label="Basic example">
-								<button type="button" class="btn my-button" data-number="41">41</button>
-								<button type="button" class="btn my-button" data-number="42">42</button>
-								<button type="button" class="btn my-button" data-number="43">43</button>
-								<button type="button" class="btn my-button" data-number="44">44</button>
-								<button type="button" class="btn my-button" data-number="45">45</button>
+								<button type="radio" class="btn my-button" data-number="41" onclick="changeStyle(this)">41</button>
+								<button type="radio" class="btn my-button" data-number="42" onclick="changeStyle(this)">42</button>
+								<button type="radio" class="btn my-button" data-number="43" onclick="changeStyle(this)">43</button>
+								<button type="radio" class="btn my-button" data-number="44" onclick="changeStyle(this)">44</button>
+								<button type="radio" class="btn my-button" data-number="45" onclick="changeStyle(this)">45</button>
 							</div>
-							
-							
+						
 							<div class="flex-w flex-r-m p-b-10">
 								<div class="size-204 flex-w flex-m respon6-next">
-									<div class="wrap-num-product flex-w m-r-20 m-tb-10 ">
-										<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-											<i class="fs-16 zmdi zmdi-minus"></i>
-										</div>
-
-										<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1">
-
-										<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-											<i class="fs-16 zmdi zmdi-plus"></i>
-										</div>
-									</div>
-
-									<button class=" mt-3 lex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-										Add to cart
-									</button>
+									<button class="mt-3 lex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" onclick="addToCart()">Add to cart</button>
 								</div>
-
-							<div class="flex-w flex-r-m p-b ">
-								
-							</div>	
+							</div>
 						</div>
-
-						<!--  -->
-
+						
 					</div>
 				</div>
 			</div>
@@ -467,6 +447,22 @@
 	<script src={% static "user_home/js/main.js" %}></script>
 	  
 
+	
+
+	<script>
+		function changeStyle(button) {
+			const radioButtons = document.querySelectorAll(".btn.my-button");
+	
+			radioButtons.forEach((btn) => {
+				btn.style.backgroundColor = "white";
+				btn.style.color = "#28282B";
+			});
+	
+			button.style.backgroundColor = "#28282B";
+			button.style.color = "white";
+		}
+	</script>
+
 	<script>
 		// Zoom 0
 {
@@ -628,7 +624,7 @@
 				swal(nameProduct, "is added to cart !", "success");
 			});
 		});
-	
+
 	</script>
 </body>
 </html>
