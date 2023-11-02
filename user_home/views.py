@@ -4,6 +4,8 @@ from .signals import contact_form_submitted
 from admin_home.models import Category
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
+from user_authentication.models import CustomUser
+from admin_home.models import SizeVariant
 
 
 
@@ -11,13 +13,17 @@ from django.http import JsonResponse
 def baseuser(request):
     return render(request, 'user_side/base.html')
 
-
-# function for loading product details in the landing page
 def homepage(request):
-    if request.user.is_authenticated:
+    if 'user' in request.session:
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
-            'productimage_set').filter(status=True)
+            'productimage_set', 'sizevariant_set'
+        ).filter(status=True)
+        
+        for product in products:
+            first_variant = product.sizevariant_set.first()
+            product.first_variant_price = first_variant.price if first_variant else None
+
         context = {
             "products": products,
             'cat': cat
@@ -26,9 +32,12 @@ def homepage(request):
     else:
         return redirect('signin')
 
+
+
+
 # function for rendering product page with products
 def product_page(request):
-    if request.user.is_authenticated:
+    if 'user' in request.session:
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set').filter(status=True)
@@ -40,11 +49,10 @@ def product_page(request):
     else:
         return redirect('signin')
 
+
 # page for rendering men catogery shoe collection
-
-
 def products_men(request):
-    if request.user.is_authenticated:
+    if 'user' in request.session:
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set').filter(gender='Male', status=True)
@@ -59,7 +67,7 @@ def products_men(request):
 
 # function for rendering the wome product details page
 def products_women(request):
-    if request.user.is_authenticated:
+    if 'user' in request.session:
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set').filter(gender='Female', status=True)
@@ -74,7 +82,7 @@ def products_women(request):
 
 # product for the unisex page
 def unisex(request):
-    if request.user.is_authenticated:
+    if 'user' in request.session:
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set').filter(gender='Unisex', status=True)
@@ -99,7 +107,7 @@ def shoes(request):
 
 # fucntion for rendering the condact page
 def contact(request):
-    if request.user.is_authenticated:
+    if 'user' in request.session:
         success_message = None
         if request.method == 'POST':
             email = request.POST['email']
@@ -119,16 +127,33 @@ def contact(request):
 
 # function for rendering product details with the product id
 def product_details(request, id):
-    if request.user.is_authenticated:
-        product = Product.objects.filter(pk=id, status=True).prefetch_related(
+    if 'user' in request.session:
+        k=product = Product.objects.filter(pk=id, status=True).prefetch_related(
             'productimage_set', 'sizevariant_set').first()
         images = product.productimage_set.all()
-        # Wrap the product in a list to pass it to the template as an iterable
-        details = [product]
+
+        # Check if the product has variants and get the first one
+        # first_variant = None
+        # if product.sizevariant_set.exists():
+        first_variant = product.sizevariant_set.first()
+
+        return render(request, "user_side/product_details.html", {'images': images, 'variant': first_variant,'k':k})
     else:
         return redirect('signin')
-    return render(request, "user_side/product_details.html", {'images': images, 'details': details})
 
+
+
+def get_variant_details(request, variant_id):
+    size_variant = get_object_or_404(SizeVariant, id=variant_id)
+
+    # Create a dictionary with the details you want to return
+    variant_details = {
+        'price': size_variant.price,
+        'discount_percent':size_variant.discount_percent,
+        'quantity': size_variant.quantity
+    }
+
+    return JsonResponse(variant_details)
 
 # funtion for chatogery filter
 def show_category(request, id):
@@ -160,13 +185,3 @@ def show_price_between(request):
 
     return render(request, 'user_side/products.html', {'products': products, 'cat': cat})
 
-
-# function for auto compleat searching products 
-def autocompleat(request):
-    if 'term' in request.GET:
-        qs = Product.objects.filter(name__icontains=request.GET.get('term'))
-        names = list()
-        for i in qs:
-            names.append(i.name)
-        return JsonResponse(names, safe=False)
-    return render(request, 'user_side/products.html')

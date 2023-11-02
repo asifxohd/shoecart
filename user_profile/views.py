@@ -10,43 +10,45 @@ from .models import Address
 
 #function for rendering user profile with data in it 
 def user_profile(request):
-    if request.user.is_authenticated:
-        user = CustomUser.objects.get(username=request.user.username)
-        addresses = Address.objects.filter(user=request.user)
-        return render(request, "user_side/user_profile.html", {'user': user, 'addresses': addresses})
+    if 'user' in request.session:
+        email = request.session['user']
+        user = CustomUser.objects.get(email=email)
+        addresses = Address.objects.filter(user=user)
+        return render(request, "user_side/user_profile.html", {'addresses': addresses, 'user':user})
     else:
         return redirect('signin')
 
 
 # function for editing the user profile data
 def update_user_profile(request):
-    if request.user.is_authenticated and request.method == 'POST':
-        user = request.user
+    if 'user' in request.session and request.method == 'POST':
+        username = request.session['user']
+        user = CustomUser.objects.filter(email=username).first()
         new_phone_number = request.POST.get('phone_number')
-        if CustomUser.objects.exclude(id=user.id).filter(phone_number=new_phone_number).exists():
+        if CustomUser.objects.exclude(id=user.pk).filter(phone_number=new_phone_number).exists():
             messages.error(
                 request, "phone number already exist in the database")
             return redirect('user_profile')
-
+        
         user.first_name = request.POST.get('first_name', user.first_name)
         user.last_name = request.POST.get('last_name', user.last_name)
         user.phone_number = request.POST.get('phone_number', user.phone_number)
         user.save()
         return redirect('user_profile')
     else:
-        user = CustomUser.objects.get(username=request.user.username)
+        # user = CustomUser.objects.get(username=username)
         return render(request, 'user_side/user_profile.html', {'user': user})
 
+
 # function for reseting the password in the user_profile
-
-
 def change_password(request):
-    if request.user.is_authenticated and request.method == 'POST':
+    if 'user' in request.session and request.method == 'POST':
         current_password = request.POST.get('oldPassword')
         new_password = request.POST.get('newPassword')
         new_password_confirm = request.POST.get('new_password')
+        email = request.session['user']
 
-        user = authenticate(username=request.user.username,
+        user = authenticate(username=email,
                             password=current_password)
 
         if user is not None:
@@ -68,7 +70,7 @@ def change_password(request):
 
 
 def address_page(request):
-    if request.user.is_authenticated:
+    if 'user' in request.session:
         return render(request, 'user_side/address.html')
     else:
         return redirect('signin')
@@ -76,7 +78,10 @@ def address_page(request):
 
 # function for adding new address
 def add_address(request):
-    if request.user.is_authenticated and request.method == 'POST':
+    if 'user' in request.session and request.method == 'POST':
+        email = request.session['user']
+        user = CustomUser.objects.get(email=email)
+        
         full_name = request.POST.get('full_name')
         mobile_number = request.POST.get('mobile_number')
         address_line = request.POST.get('address_line')
@@ -87,7 +92,7 @@ def add_address(request):
 
         new_address = Address(
 
-            user=request.user,
+            user=user,
             full_name=full_name,
             mobile_number=mobile_number,
             address_line=address_line,
@@ -105,7 +110,9 @@ def add_address(request):
 
 # function for editing user address
 def update_address(request, id):
-    addresses = Address.objects.filter(user=request.user)
+    
+    email = request.session['user']
+    user = CustomUser.objects.get(email=email)
     address = Address.objects.get(id=id)
     if request.method == 'POST':
         

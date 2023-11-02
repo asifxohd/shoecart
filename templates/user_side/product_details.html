@@ -15,6 +15,18 @@
     background-color: #717FDF; 
     color: #fff;
 }
+/* Default button style */
+.size-variant-button {
+    background-color: #your-default-color;
+    color: #your-default-text-color;
+}
+
+/* Style for clicked button */
+.size-variant-button.clicked {
+    background-color: #your-clicked-color;
+    color: #your-clicked-text-color;
+}
+
 
 </style>
 
@@ -180,7 +192,7 @@
 		</div>
 	</div>
 		
-{% for d in details %}
+
 	
 	<!-- Product Detail -->
 	<section class="sec-product-detail bg0 p-t-65 p-b-60">
@@ -196,7 +208,7 @@
 								<div class="item-slick3" data-thumb={{ img.image.url }}>
 									<div class="wrap-pic-w pos-relative main-image-{{ forloop.counter0 }}">
 										<div class="product-image">
-											<img id="main-img-{{ forloop.counter0 }}" src="{{ img.image.url }}" alt="IMG-PRODUCT">
+											<img id="main-img-{{ forloop.counter0 }}" src="{{img.image.url}}" alt="IMG-PRODUCT">
 										  </div>
 										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="{{ img.image.url }}">
 											<i class="fa fa-expand"></i>
@@ -212,27 +224,39 @@
 				<div class="col-md-6 col-lg-5 p-b-30">
 					<div class="p-r-50 p-t-5 p-lr-0-lg">
 						<h4 class="mtext-105 cl2 js-name-detail p-b-14 mt-4">
-							{{ d.name }}
+							{{ k.name }}
 						</h4>
 
 						<span class="mtext-106 cl2">
-							&#8377;{{ d.sizevariant_set.first.price }}
+							&#8377;<span class="dynamic-price">{{variant.price}}
+							</span>
 						</span>
 
 						<p class="stext-102 cl3 p-t-23">
-							{{d.description }}
+							{{k.description }}
 						</p>
 						
 						<!--  -->
 						<div class="p-t-33">
 							<div class="pl-5 pl-5 pb-3 pt-3" role="group" aria-label="Basic example">
-								<button type="radio" class="btn my-button" data-number="41" onclick="changeStyle(this)">41</button>
-								<button type="radio" class="btn my-button" data-number="42" onclick="changeStyle(this)">42</button>
-								<button type="radio" class="btn my-button" data-number="43" onclick="changeStyle(this)">43</button>
-								<button type="radio" class="btn my-button" data-number="44" onclick="changeStyle(this)">44</button>
-								<button type="radio" class="btn my-button" data-number="45" onclick="changeStyle(this)">45</button>
+								{% for size_variant in k.sizevariant_set.all %}
+									{% if size_variant.quantity > 0 %}
+										<button type="button" class="btn my-button in-stock size-variant-button" 
+											data-variant-id="{{ size_variant.id }}">
+											{{ size_variant.size }}
+										</button>
+									{% else %}
+									<button type="button" class="btn my-button out-of-stock size-variant-button" 
+									style="background-color: #bcbcbc; color: black;" disabled>
+									{{ size_variant.size }}
+									</button>
+								
+									{% endif %}
+								{% endfor %}
 							</div>
-						
+							
+											
+							
 							<div class="flex-w flex-r-m p-b-10">
 								<div class="size-204 flex-w flex-m respon6-next">
 									<button class="mt-3 lex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" onclick="addToCart()">Add to cart</button>
@@ -244,7 +268,6 @@
 				</div>
 			</div>
 
-{% endfor %}
 
 			<div class="bor10 m-t-50 p-t-43 p-b-40">
 				<!-- Tab01 -->
@@ -447,22 +470,43 @@
 	<script src={% static "user_home/js/main.js" %}></script>
 	  
 
-	
 
 	<script>
-		function changeStyle(button) {
-			const radioButtons = document.querySelectorAll(".btn.my-button");
 	
-			radioButtons.forEach((btn) => {
-				btn.style.backgroundColor = "white";
-				btn.style.color = "#28282B";
+		// Handle the click event for size variant buttons
+		$('.size-variant-button.in-stock').on('click', function() {
+			var variantId = $(this).data('variant-id');
+			// Make an AJAX request to fetch the price
+			$.ajax({
+				type: 'GET',
+				url: '/get_variant_details/' + variantId + '/', // Replace with the actual URL
+				dataType: 'json',
+				success: function(data) {
+					// Update the dynamic price display with the fetched price
+					$('.dynamic-price').text(data.price);
+				},
+				error: function(xhr, status, error) {
+					console.error('Error fetching price:', error);
+				}
 			});
 	
-			button.style.backgroundColor = "#28282B";
-			button.style.color = "white";
-		}
+			// Change the color of the clicked button to black and text color to white
+			$(this).addClass('selected-variant');
+			$(this).css('background-color', 'black');
+			$(this).css('color', 'white');
+	
+			// Remove the black color and white text color from other buttons
+			$('.size-variant-button.in-stock').not(this).removeClass('selected-variant');
+			$('.size-variant-button.in-stock').not(this).css('background-color', '');
+			$('.size-variant-button.in-stock').not(this).css('color', '');
+		});
 	</script>
-
+	
+	
+	
+	
+	
+	
 	<script>
 		// Zoom 0
 {

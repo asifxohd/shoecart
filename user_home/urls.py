@@ -16,6 +16,7 @@ urlpatterns = [
     path('show_catogery/<int:id>', views.show_category, name='show_catogery'),
     path('show_price_filtering', views.show_price_filtering, name='show_price_filtering'),
     path('show_price_between', views.show_price_between, name='show_price_between'),
-    path('autocompleat', views.autocompleat, name='autocompleat'),
+    path('get_variant_details/<int:variant_id>/', views.get_variant_details, name='get_variant_details'),
 
     ]
+# path('get_size_variant_details/<int:id>/<str:size>/', views.get_size_variant_details, name='get_size_variant_details'),

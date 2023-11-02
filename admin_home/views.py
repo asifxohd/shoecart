@@ -25,6 +25,7 @@ def admin_login(request):
         if user is not None:
             if user.is_superuser:
                 login(request, user)
+                request.session['admin'] = email
                 return redirect('admin_dashboard')
             else:
                 messages.error(request, "User has No access to Admin panel")
@@ -283,8 +284,6 @@ def add_variand(request, id):
 
 
 # function for edit varint
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
 def edit_variand(request, id):
     var = SizeVariant.objects.filter(pk=id).first()
     

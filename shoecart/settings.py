@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'admin_home',
     'user_home',
     'user_profile',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'admin_home/static'),
     os.path.join(BASE_DIR, 'user_home/static'),
     os.path.join(BASE_DIR, 'user_profile/static'),
+    os.path.join(BASE_DIR, 'cart/static'),
     ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
