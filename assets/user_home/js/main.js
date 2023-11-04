@@ -214,15 +214,36 @@
 
     /*==================================================================
     [ +/- num product ]*/
-    $('.btn-num-product-down').on('click', function(){
-        var numProduct = Number($(this).next().val());
-        if(numProduct > 0) $(this).next().val(numProduct - 1);
-    });
-
-    $('.btn-num-product-up').on('click', function(){
-        var numProduct = Number($(this).prev().val());
-        $(this).prev().val(numProduct + 1);
-    });
+    // $('.btn-num-product-down').on('click', function () {
+    //     var input = $(this).next();
+    //     var numProduct = Number(input.val());
+    //     if (numProduct > 1) {
+    //         input.val(numProduct - 1);
+    //     } else {
+    //         input.val(1);
+    //     }
+    // });
+    
+    // $('.btn-num-product-up').on('click', function () {
+    //     var input = $(this).prev();
+    //     var numProduct = Number(input.val());
+    //     if (numProduct < 10) {
+    //         input.val(numProduct + 1);
+    //     } else {
+    //         input.val(10);
+    //     }
+    // });
+    
+    // // Handle input changes
+    // $('.num-product').on('input', function () {
+    //     var numProduct = Number($(this).val());
+    //     if (numProduct < 1) {
+    //         $(this).val(1);
+    //     } else if (numProduct > 10) {
+    //         $(this).val(10);
+    //     }
+    // });
+    
 
     /*==================================================================
     [ Rating ]*/

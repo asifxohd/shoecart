@@ -238,19 +238,20 @@
 						
 						<!--  -->
 						<div class="p-t-33">
+							{% csrf_token %}
 							<div class="pl-5 pl-5 pb-3 pt-3" role="group" aria-label="Basic example">
 								{% for size_variant in k.sizevariant_set.all %}
 									{% if size_variant.quantity > 0 %}
-										<button type="button" class="btn my-button in-stock size-variant-button" 
-											data-variant-id="{{ size_variant.id }}">
+										<button type="button" class="btn my-button in-stock size-variant-button"
+											data-variant-id="{{ size_variant.id }}"
+											data-variant-size="{{ size_variant.size }}">
 											{{ size_variant.size }}
 										</button>
 									{% else %}
-									<button type="button" class="btn my-button out-of-stock size-variant-button" 
-									style="background-color: #bcbcbc; color: black;" disabled>
-									{{ size_variant.size }}
-									</button>
-								
+										<button type="button" class="btn my-button out-of-stock size-variant-button"
+											style="background-color: #bcbcbc; color: black;" disabled>
+											{{ size_variant.size }}
+										</button>
 									{% endif %}
 								{% endfor %}
 							</div>
@@ -259,7 +260,7 @@
 							
 							<div class="flex-w flex-r-m p-b-10">
 								<div class="size-204 flex-w flex-m respon6-next">
-									<button class="mt-3 lex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" onclick="addToCart()">Add to cart</button>
+									<button class="mt-3 lex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">Add to cart</button>
 								</div>
 							</div>
 						</div>
@@ -470,6 +471,52 @@
 	<script src={% static "user_home/js/main.js" %}></script>
 	  
 
+	<script>
+		// Add click event listeners to size variant buttons
+		var sizeVariantButtons = document.querySelectorAll('.size-variant-button');
+		sizeVariantButtons.forEach(function(button) {
+			button.addEventListener('click', function() {
+				// Remove 'selected' class from all buttons
+				sizeVariantButtons.forEach(function(btn) {
+					btn.classList.remove('selected');
+				});
+		
+				// Add 'selected' class to the clicked button
+				button.classList.add('selected');
+			});
+		});
+		
+		// Function to handle the "Add to cart" button click
+		document.querySelector('.js-addcart-detail').addEventListener('click', function() {
+			var selectedSizeVariantButton = document.querySelector('.size-variant-button.selected');
+		
+			if (selectedSizeVariantButton) {
+				var selectedSizeVariantId = selectedSizeVariantButton.getAttribute('data-variant-id');
+				var token = $('input[name=csrfmiddlewaretoken]').val();
+		
+				// Make an AJAX request to add the selected size variant to the cart
+				$.ajax({
+					url: '../add_to_cart', // Replace with your actual backend endpoint
+					type: 'POST',
+					data: {
+						variantId: selectedSizeVariantId,
+						csrfmiddlewaretoken: token,
+						
+					},
+					success: function(response) {
+						// Handle the response from the server, e.g., show a success message
+						console.log('Product added to cart successfully');
+					},
+					error: function(error) {
+						// Handle any errors, e.g., display an error message
+						console.error('Error adding product to cart');
+					}
+				});
+			} else {
+				alert('Please select a size variant before adding to cart.');
+			}
+		});
+		</script>	
 
 	<script>
 	
@@ -662,14 +709,15 @@
 		});
 
 		
-		$('.js-addcart-detail').each(function(){
-			var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-			$(this).on('click', function(){
-				swal(nameProduct, "is added to cart !", "success");
-			});
-		});
-
+		
 	</script>
+	{% comment %} $('.js-addcart-detail').each(function(){
+		var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+		$(this).on('click', function(){
+			swal(nameProduct, "is added to cart !", "success");
+		});
+	}); {% endcomment %}
+
 </body>
 </html>
 {% endblock content %}
