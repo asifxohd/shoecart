@@ -469,7 +469,7 @@
 	<script src={% static "user_home/vendor/perfect-scrollbar/perfect-scrollbar.min.js" %}></script>
 	<script src={% static "user_home/vendor/MagnificPopup/jquery.magnific-popup.min.js" %}></script>
 	<script src={% static "user_home/js/main.js" %}></script>
-	  
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<script>
 		// Add click event listeners to size variant buttons
@@ -480,20 +480,20 @@
 				sizeVariantButtons.forEach(function(btn) {
 					btn.classList.remove('selected');
 				});
-		
+	
 				// Add 'selected' class to the clicked button
 				button.classList.add('selected');
 			});
 		});
-		
+	
 		// Function to handle the "Add to cart" button click
 		document.querySelector('.js-addcart-detail').addEventListener('click', function() {
 			var selectedSizeVariantButton = document.querySelector('.size-variant-button.selected');
-		
+	
 			if (selectedSizeVariantButton) {
 				var selectedSizeVariantId = selectedSizeVariantButton.getAttribute('data-variant-id');
 				var token = $('input[name=csrfmiddlewaretoken]').val();
-		
+	
 				// Make an AJAX request to add the selected size variant to the cart
 				$.ajax({
 					url: '../add_to_cart', // Replace with your actual backend endpoint
@@ -501,10 +501,21 @@
 					data: {
 						variantId: selectedSizeVariantId,
 						csrfmiddlewaretoken: token,
-						
 					},
 					success: function(response) {
-						// Handle the response from the server, e.g., show a success message
+						if (response.success) {
+							Swal.fire({
+							  title: 'Item Added to Cart',
+							  text: 'Your item has been added to the cart.',
+							  icon: 'success',
+							});
+						  } else {
+							Swal.fire({
+							  title: 'Error',
+							  text: 'Already in cart',
+							  icon: 'error',
+							});
+						  }
 						console.log('Product added to cart successfully');
 					},
 					error: function(error) {
@@ -516,7 +527,8 @@
 				alert('Please select a size variant before adding to cart.');
 			}
 		});
-		</script>	
+	</script>
+	
 
 	<script>
 	
@@ -711,13 +723,7 @@
 		
 		
 	</script>
-	{% comment %} $('.js-addcart-detail').each(function(){
-		var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-		$(this).on('click', function(){
-			swal(nameProduct, "is added to cart !", "success");
-		});
-	}); {% endcomment %}
-
+	
 </body>
 </html>
 {% endblock content %}

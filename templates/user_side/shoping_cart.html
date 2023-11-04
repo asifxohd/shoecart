@@ -9,6 +9,37 @@
 	<title>Shoping Cart</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		.wrapper{
+		  height: 38px;
+		  width: 130px;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  background: #FFF;
+		  border : solid #000000 0.5px;
+		  border-radius: 5px;
+		  box-shadow: 0px 5px 10px rgba(0,0,0,0.2);
+		}
+		.wrapper span{
+		  width: 100%;
+		  text-align: center;
+		  font-size: 15px;
+		  font-weight: 600;
+		  cursor: pointer;
+		  user-select: none;
+		}
+		.wrapper span.num{
+		  font-size: 15px;
+		  border-right: 2px solid rgba(0,0,0,0.2);
+		  border-left: 2px solid rgba(0,0,0,0.2);
+		  pointer-events: none;
+		}
+		.cart_3r1 .form-control{
+		  border : solid #f7ba01 1px !important;
+	  
+		}
+	  </style>
 </head>
 <body class="animsition">
 
@@ -34,46 +65,56 @@
 				<div class="col-lg-10 col-xl-8 m-lr-auto m-b-50">
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
 						<div class="wrap-table-shopping-cart">
-							<table class="table-shopping-cart">
-								<tr class="table_head">
-									<th class="column-1">Product</th>
-									<th class="column-2">Name</th>
-									<th class="column-3">Price</th>
-									<th class="column-3">Size</th>
-									<th class="column ">Quantity</th>
-									<th class="column-5">Total</th>
-									<th class="column-5">Action</th>
-								</tr>
-							{% for item in cart_items %}
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-													<img src="{{ item.product.productimage_set.first.image.url }}" alt="{{ item.product.name }}">
-												</div>
-											</td>
-											<td class="column-2">{{ item.product.name }}</td>
-											<td class="column-3">&#8377;{{ item.size_variant.price }}</td>
-											<td class="column-3">{{ item.size_variant.size }}</td>
-											
-											<td class="column-4">
-												<div class="wrap-num-product flex-w m-l-auto m-r-0">
-													<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-														<i class="fs-16 zmdi zmdi-minus"></i>
+							<form method="post">
+								{% csrf_token %}
+								<table class="table-shopping-cart">
+									<tr class="table_head">
+										<th class="column-1">Product</th>
+										<th class="column-2">Name</th>
+										<th class="column-3">Price</th>
+										<th class="column-3">Size</th>
+										<th class="column "><center>Quantity</center></th>
+										<th class="column-5">Total</th>
+										<th class="column-5">Action</th>
+									</tr>
+									{% for item in cart_items %}
+									<tr class="table_row">
+										<td class="column-1">
+											<div class="how-itemcart1">
+														<img src="{{ item.size_variant.product.productimage_set.first.image.url }}" alt="{{ item.product.name }}">
 													</div>
-
-													<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1" disabled >
-													<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-														<i class="fs-16 zmdi zmdi-plus"></i>
+												</td>
+												<td class="column-2">{{ item.size_variant.product.name }}</td>
+												<td class="column-3">&#8377;{{ item.size_variant.price }}</td>
+												<td class="column-3">{{ item.size_variant.size }}</td>
+												
+												<td class="column-4">
+													{% if item.size_variant.quantity > 1 %}
+													<div class="wrapper">
+														<span class="minus" onclick="cartQuantity(-1, '{{ item.size_variant.id }}', '{{ item.quantity }}')">-</span>
+														<span class="num-{{item.size_variant.id}}">{{ item.quantity }}</span>
+														<span class="plus" onclick="cartQuantity(1, '{{ item.size_variant.id }}', '{{ item.quantity }}')">+</span>
+													</div>												
+													
+													{% else %}
+													<div class="wrapper">
+														<div class="text-danger">stock out</div>
 													</div>
-												</div>
-											</td>
-											<td class="column-5">&#8377; {{ item.price }}</td>
-											<td class="column-5"><button class="delete-item btn-danger small p-2" data-item-id="{{ item.id }}" onclick="confirmDelete(this)">remove</button>
-											</td>
-										</tr>
-								{% endfor %}
-
-							</table>
+													{% endif %}
+												</td>
+												<td class="column-5">&#8377; {{ item.price }}</td>
+												<td class="column-5">
+													<div class="delete-item">
+													<i data-item-id="{{ item.id }}"
+													onclick="confirmDelete(this) " class="fa-solid fa-trash fa-lg" style="color: #cc0000;"></i>
+													</div>
+												</td>
+											</tr>
+									{% endfor %}
+	
+								</table>
+							</form>
+							
 						</div>
 
 						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
@@ -144,66 +185,9 @@
 		</span>
 	</div>
 	
-	<script>
-		function cartCount(productId, userId, count) {
-			consol.log("clicked")
-			const quantityElement = document.getElementById(productId);
-			const quantity = parseInt(quantityElement.innerHTML);
-			count = parseInt(count);
-		
-			if (count === -1 && quantity === 1) {
-				// Disable the "minus" button if the quantity is 1
-				return;
-			}
-		
-			$.ajax({
-				url: '/cart-quantity',
-				method: 'post',
-				encoded: true,
-				data: {
-					product: productId,
-					user: userId,
-					count: count,
-					quantity: quantity
-				}
-			}).done(data => {
-				if (data) {
-					const newQuantity = quantity + count;
-					quantityElement.innerText = newQuantity;
-		
-					// Enable the "minus" button if the quantity is greater than 0
-					const minusButton = quantityElement.previousElementSibling;
-					if (newQuantity <= 0) {
-						minusButton.style.pointerEvents = 'none';
-						minusButton.style.opacity = 0.5;
-					} else {
-						minusButton.style.pointerEvents = 'auto';
-						minusButton.style.opacity = 1;
-					}
-		
-					$('#reloadDiv').load('/cart #reloadDiv');
-				}else if(data.check){
-					swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Out of stock",
-				});
-				} 
-				
-				else {
-					swal.fire({
-					position: "center",
-					icon: "warning",
-					text: response.message,
-					timer: 1500,
-					showConfirmButton: false,
-				});
-				}
-			});
-		}
-	</script>
+	
 
-	<script>
+	{% comment %} <script>
 		$(".js-select2").each(function(){
 			$(this).select2({
 				minimumResultsForSearch: 20,
@@ -225,7 +209,99 @@
 				ps.update();
 			})
 		});
+	</script> {% endcomment %}
+
+	   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	   <script>
+		function confirmDelete(button) {
+			const itemId = button.getAttribute('data-item-id');
+		  
+			Swal.fire({
+			  title: 'Are you sure?',
+			  text: "You won't be able to revert this!",
+			  icon: 'warning',
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: 'Yes, delete it!'
+			}).then((result) => {
+			  if (result.isConfirmed) {
+				// User confirmed the deletion, proceed with the AJAX request to remove the item
+				$.ajax({
+				  type: 'POST',
+				  url: '/remove_item_from_cart/',
+				  data: {
+					item_id: itemId,
+					csrfmiddlewaretoken: getCookie('csrftoken')
+				  },
+				  success: function(data) {
+					console.log('Item removed successfully.');
+					location.reload(); // Reload the page
+				  },
+				  error: function(jqXHR, textStatus, errorThrown) {
+					console.error('Error removing item:', errorThrown);
+				  }
+				});
+			  }
+			});
+		  }
+		
+		// Function to get the CSRF token from cookies
+		function getCookie(name) {
+			const value = `; ${document.cookie}`;
+			const parts = value.split(`; ${name}=`);
+			if (parts.length === 2) return parts.pop().split(';').shift();
+		}
+		
+	   </script>
+
+
+	   <script>
+		function getCSRFToken() {
+			return document.querySelector('input[name=csrfmiddlewaretoken]').value;
+		}
+	
+		function cartQuantity(change, variantId, quantity) {
+			console.log("Change: " + change);
+			console.log("Variant ID: " + variantId);
+			console.log("Quantity: " + quantity);
+			console.log('botton clicked')
+			var c = change
+			var p = variantId
+			var e = quantity
+			$.ajax({
+				url: '/update_cart',
+				type: 'POST',
+				encocded:true,
+				data:{
+					change: c,
+					variantId: p,
+					quantity: e
+				},
+
+				headers: {
+					'X-CSRFToken': getCSRFToken() // Include the CSRF token in the request header
+				},
+				success: function(data) {
+					// Handle the response from the server
+					console.log(data);
+	
+					// Update the displayed quantity based on the server response
+					var newQuantity = data.updatedQuantity; // Replace with the actual property in the response
+	
+					// Find the <span> element with class "num" and update its content
+					$(`.num-${variantId}`).text(newQuantity);
+				},
+				error: function(error) {
+					console.error('Error:', error);
+				}
+			});
+		}
 	</script>
+	
+		
+	
+	
 </body>
 </html>
 {% endblock %}

@@ -5,8 +5,7 @@
 {% block content %}
 
 <!-- Include SweetAlert library and jQuery -->
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="{% static "your-other-javascript-file.js" %}"></script>
+
 
 <style>
     .table td,{
@@ -70,7 +69,7 @@
                                 <a href='product_varient/{{prod.id}}' type="button" class="btn btn-sm btn-secondary">View Details</a>
                             </td>
                             <td class="align-middle">
-                                <a class="badge btn btn-sm bg-danger" href="#" onclick="handleDeleteClick('{{ prod.name }}', {{ prod.id }})">
+                                <a class="badge btn btn-sm bg-danger" href="soft_delete_product/{{ prod.id }}">
                                     Unlist
                                 </a>
                             </td>
@@ -91,61 +90,9 @@
 
 <!-- Include SweetAlert library and jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="{% static "your-other-javascript-file.js" %}"></script>
 
 <script>
-    // JavaScript function to handle the delete action
-    function handleDeleteClick(productName, productId) {
-        // Show the SweetAlert dialog
-        swal({
-            title: `Are you sure you want to delete ${productName}?`,
-            text: "",
-            icon: "warning",
-            buttons: {
-                cancel: "No, cancel plx!",
-                confirm: {
-                    text: "Yes, delete it!",
-                    value: true,
-                    visible: true,
-                    className: "bg-danger",
-                    closeModal: false,
-                },
-            },
-            dangerMode: true,
-        })
-        .then((willDelete) => {
-            if (willDelete) {
-                // Handle the delete action with an AJAX request
-                $.ajax({
-                    type: 'POST',
-                    url: `/soft_delete_product/${productId}/`,
-                    data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                    },
-                    success: function (data) {
-                        swal("Deleted!", `The product ${productName} has been soft-deleted.`, {
-                            icon: "success",
-                        }).then(() => {
-                            // Redirect to a URL after successful deletion
-                            window.location.href = 'admin_products';
-                        });
-                    },
-                    error: function (error) {
-                        swal("Error", "An error occurred while deleting the product.", {
-                            icon: "error",
-                        });
-                    },
-                });
-            } else {
-                swal("Cancelled", `Your ${productName} is safe :)`, {
-                    icon: "error",
-                });
-            }
-        });
-    }
-    
-</script>
-
-
 {% endblock content %}
