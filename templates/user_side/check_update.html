@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoecart Address</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body>
+      <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 mt-5">
+                <!-- Your image can go here -->
+                <img src="{% static "user_home/images/delivery.jpeg" %}" alt="Image" class="img-fluid" style="height: 95%; width: auto;">
+            </div>
+            <div class="col-md-6 mb-3">
+                <h1 class="text-center">Edit Address</h1>
+                <form id="address-form" method="post" action="your_submit_url">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" value="{{address.full_name}}" name="full_name" class="form-control" required>
+                        <div class="error-message text-danger" id="full-name-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile-number">Mobile Number</label>
+                        <input type="tel" value="{{address.mobile_number}}" name="mobile_number" class="form-control" required>
+                        <div class="error-message text-danger" id="mobile-number-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-line-1">Address Line</label>
+                        <textarea name="address_line" class="form-control" rows="3" required>{{address.address_line}}</textarea>
+                        <div class="error-message text-danger" id="address-line-error"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="city">City</label>
+                            <input type="text" value="{{address.city}}" name="city" class="form-control" required>
+                            <div class="error-message text-danger" id="city-error"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="state">State</label>
+                            <input type="text" value="{{address.state}}" name="state" class="form-control" required>
+                            <div class "error-message text-danger" id="state-error"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="zip-code">Pin Code</label>
+                        <input type="text" value="{{address.pincode}}" name="pin_code" class="form-control" required>
+                        <div class="error-message text-danger" id="pin-code-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="landmark">Land Mark</label>
+                        <input type="text" value="{{address.landmark}}" name="land_mark" class="form-control" required>
+                        <div class="error-message text-danger" id="landmark-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-dark" onclick="validateForm()">Submit</button>
+                    </div>
+                </form>
+              
+            </div>
+        </div>
+    </div>
+    <script>
+        function validateForm() {
+            var fullNameInput = document.querySelector('[name="full_name"]');
+            var mobileNumberInput = document.querySelector('[name="mobile_number"]');
+            var addressLineInput = document.querySelector('[name="address_line"]');
+            var cityInput = document.querySelector('[name="city"]');
+            var stateInput = document.querySelector('[name="state"]');
+            var pinCodeInput = document.querySelector('[name="pin_code"]');
+            var landmarkInput = document.querySelector('[name="land_mark"]');
+
+            // Reset previous error messages
+            document.querySelectorAll('.error-message').forEach(function(element) {
+                element.textContent = '';
+            });
+
+            var isValid = true;
+
+            if (fullNameInput.value.trim() === '') {
+                document.getElementById('full-name-error').textContent = 'Full Name cannot be empty';
+                isValid = false;
+            }
+
+            if (mobileNumberInput.value.trim() === '') {
+                document.getElementById('mobile-number-error').textContent = 'Mobile Number cannot be empty';
+                isValid = false;
+            }
+
+            if (addressLineInput.value.trim() === '') {
+                document.getElementById('address-line-error').textContent = 'Address Line cannot be empty';
+                isValid = false;
+            }
+
+            if (cityInput.value.trim() === '') {
+                document.getElementById('city-error').textContent = 'City cannot be empty';
+                isValid = false;
+            }
+
+            if (stateInput.value.trim() === '') {
+                document.getElementById('state-error').textContent = 'State cannot be empty';
+                isValid = false;
+            }
+
+            if (pinCodeInput.value.trim() === '') {
+                document.getElementById('pin-code-error').textContent = 'Pin Code cannot be empty';
+                isValid = false;
+            }
+
+            if (landmarkInput.value.trim() === '') {
+                document.getElementById('landmark-error').textContent = 'Landmark cannot be empty';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                // Validation failed, do not submit the form.
+                return;
+            }
+
+            // If validation is successful, you can submit the form.
+            document.getElementById('address-form').submit();
+        }
+    </script>
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+</body>
+</html>

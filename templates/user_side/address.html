@@ -21,42 +21,49 @@
                 <img src="{% static "user_home/images/delivery.jpeg" %}" alt="Image" class="img-fluid" style="height: 95%; width: auto;">
             </div>
             <div class="col-md-6 mb-3">
-                <h1 class="text-center">Address Details</h1>
-                <form id="address-form" method='post' action='add_address/'>
+                <h1 class="text-center">Add Address</h1>
+                <form id="address-form" method="post" action="add_address/">
                     {% csrf_token %}
-                  <div class="form-group">
-                      <label for="full-name">Full Name</label>
-                      <input type="text"  name="full_name" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="mobile-number">Mobile Number</label>
-                      <input type="tel" name="mobile_number" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="address-line-1">Address Line</label>
-                      <textarea  name="address_line" class="form-control" rows="3" required></textarea>
-                  </div>
-                  <div class="form-row">
-                      <div class="form-group col-md-6">
-                          <label for="city">City</label>
-                          <input type="text"  name="city" class="form-control" required>
-                      </div>
-                      <div class="form-group col-md-6">
-                          <label for="state">State</label>
-                          <input type="text" name="state" class="form-control" required>
-                      </div>
-                  </div>
-                  <div class="form-group">
-                      <label for="zip-code">Pin Code</label>
-                      <input type="text" name="pin_code" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                      <label for="landmark">Land Mark</label>
-                      <input type="text"  name="land_mark" class="form-control" required>
-                  </div>
-                  <div class="form-group">
-                      <button type="submit" class="btn btn-dark">Submit</button>
-                  </div>
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" required>
+                        <div class="error-message text-danger" id="full-name-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile-number">Mobile Number</label>
+                        <input type="tel" name="mobile_number" class="form-control" required>
+                        <div class="error-message text-danger" id="mobile-number-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address-line-1">Address Line</label>
+                        <textarea name="address_line" class="form-control" rows="3" required></textarea>
+                        <div class="error-message text-danger" id="address-line-error"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="city">City</label>
+                            <input type="text" name="city" class="form-control" required>
+                            <div class="error-message text-danger" id="city-error"></div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="state">State</label>
+                            <input type="text" name="state" class="form-control" required>
+                            <div class="error-message text-danger" id="state-error"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="zip-code">Pin Code</label>
+                        <input type="text" name="pin_code" class="form-control" required>
+                        <div class="error-message text-danger" id="pin-code-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="landmark">Land Mark</label>
+                        <input type="text" name="land_mark" class="form-control" required>
+                        <div class="error-message text-danger" id="landmark-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-dark" onclick="validateForm()">Submit</button>
+                    </div>
                 </form>
               
             </div>
@@ -94,6 +101,56 @@
                 $(this).removeClass("is-invalid");
             });
         });
+    </script>
+    <script>
+        function validateForm() {
+            // Reset previous error messages
+            document.querySelectorAll('.error-message').forEach(function(element) {
+                element.textContent = '';
+            });
+    
+            // Validate Full Name
+            var fullNameInput = document.querySelector('[name="full_name"]');
+            if (fullNameInput.value.trim() === '') {
+                document.getElementById('full-name-error').textContent = 'Full Name cannot be empty';
+            }
+    
+            // Validate Mobile Number (you can add more specific validation here)
+            var mobileNumberInput = document.querySelector('[name="mobile_number"]');
+            if (mobileNumberInput.value.trim() === '') {
+                document.getElementById('mobile-number-error').textContent = 'Mobile Number cannot be empty';
+            }
+    
+            // Validate Address Line
+            var addressLineInput = document.querySelector('[name="address_line"]');
+            if (addressLineInput.value.trim() === '') {
+                document.getElementById('address-line-error').textContent = 'Address Line cannot be empty';
+            }
+    
+            // Validate City
+            var cityInput = document.querySelector('[name="city"]');
+            if (cityInput.value.trim() === '') {
+                document.getElementById('city-error').textContent = 'City cannot be empty';
+            }
+    
+            // Validate State
+            var stateInput = document.querySelector('[name="state"]');
+            if (stateInput.value.trim() === '') {
+                document.getElementById('state-error').textContent = 'State cannot be empty';
+            }
+    
+            // Validate Pin Code (you can add more specific validation here)
+            var pinCodeInput = document.querySelector('[name="pin_code"]');
+            if (pinCodeInput.value.trim() === '') {
+                document.getElementById('pin-code-error').textContent = 'Pin Code cannot be empty';
+            }
+    
+            // Validate Land Mark
+            var landmarkInput = document.querySelector('[name="land_mark"]');
+            if (landmarkInput.value.trim() === '') {
+                document.getElementById('landmark-error').textContent = 'Land Mark cannot be empty';
+            }
+        }
     </script>
 </body>
 </html>

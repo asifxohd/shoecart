@@ -10,7 +10,7 @@ class Address(models.Model):
     state = models.CharField(max_length=50)
     pincode = models.CharField(max_length=10)
     landmark = models.TextField()
-    is_primary = models.BooleanField(default=False)
+    is_listed = models.BooleanField(default=True)
     
     def __str__(self):
         return f"{self.user.username}'s Address"

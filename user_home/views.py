@@ -41,9 +41,14 @@ def product_page(request):
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set').filter(status=True)
+        
+        for product in products:
+            first_variant = product.sizevariant_set.first()
+            product.first_variant_price = first_variant.price if first_variant else None
+
         context = {
             "products": products,
-            'cat': cat
+            'cat': cat,
         }
         return render(request, 'user_side/products.html', context)
     else:
@@ -56,6 +61,11 @@ def products_men(request):
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set').filter(gender='Male', status=True)
+        
+        for product in products:
+            first_variant = product.sizevariant_set.first()
+            product.first_variant_price = first_variant.price if first_variant else None
+            
         context = {
             "products": products,
             'cat': cat
@@ -71,6 +81,11 @@ def products_women(request):
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set').filter(gender='Female', status=True)
+        
+        for product in products:
+            first_variant = product.sizevariant_set.first()
+            product.first_variant_price = first_variant.price if first_variant else None
+            
         context = {
             "products": products,
             'cat': cat
@@ -86,6 +101,11 @@ def unisex(request):
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set').filter(gender='Unisex', status=True)
+        
+        for product in products:
+            first_variant = product.sizevariant_set.first()
+            product.first_variant_price = first_variant.price if first_variant else None
+            
         context = {
             "products": products,
             'cat': cat
@@ -130,6 +150,7 @@ def product_details(request, id):
     if 'user' in request.session:
         k=product = Product.objects.filter(pk=id, status=True).prefetch_related(
             'productimage_set', 'sizevariant_set').first()
+        sizes = SizeVariant.objects.filter(product=product).order_by('size')
         images = product.productimage_set.all()
 
         # Check if the product has variants and get the first one
@@ -137,7 +158,7 @@ def product_details(request, id):
         # if product.sizevariant_set.exists():
         first_variant = product.sizevariant_set.first()
 
-        return render(request, "user_side/product_details.html", {'images': images, 'variant': first_variant,'k':k})
+        return render(request, "user_side/product_details.html", {'images': images, 'variant': first_variant,'k':k ,'sizes':sizes})
     else:
         return redirect('signin')
 
@@ -159,6 +180,11 @@ def get_variant_details(request, variant_id):
 def show_category(request, id):
     cat = Category.objects.filter(is_active=True)
     products = Product.objects.filter(status=True, category_id=id)
+    
+    for product in products:
+        first_variant = product.sizevariant_set.first()
+        product.first_variant_price = first_variant.price if first_variant else None
+            
     return render(request, 'user_side/products.html',{'cat': cat, 'products': products})
 
 
@@ -185,3 +211,9 @@ def show_price_between(request):
 
     return render(request, 'user_side/products.html', {'products': products, 'cat': cat})
 
+# function for search
+def search(request):
+    search_query = request.GET['search-product']
+    products_match = Product.objects.filter(name__icontains=search_query)
+    print(products_match)
+    return render(request, "user_side/products.html" , {'products': products_match})

@@ -1,0 +1,117 @@
+{% extends 'user_side/base.html' %}
+{% load static %}
+{% block title %} Order Details{% endblock title %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        
+
+        .card {
+            background-color: ##222;
+            border: 1px solid #fff;
+            border-radius: 5x;
+            margin-top: 10px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .table {
+            color: #fff;
+        }
+
+        .table th {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .table td{
+            color:#000
+        }
+
+        .btn-primary {
+            background-color: #000;
+            border: 2px solid #fff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center m-t-100">
+            <div class="col-md-12">
+                <div class="card border-0 shadow">
+                    <div class="card-body text-center">
+                        <i class="bi bi-check2-circle-fill order-icon"></i>
+                        <h1 class="order-title mt-4">Thank You For Your Purchase!</h1>
+                        <p class="card-text">We have received it and will process it shortly.</p>
+                        <p class="order-id">Your Order ID is: <strong>{{current_order.order_id}}</strong></p>
+                    </div>
+                </div>
+                <div class="card mt-4 border-0 shadow">
+                    <div class="card-body">
+                        <h2 class="mb-4">Order Details</h2>
+                        <div class="table-responsive">
+                            <table class="table table-bordered  text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Total Price</th>
+                                        <th scope="col">Expected delivery date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ord in current_order.ordersitem_set.all %}
+                                    <tr>
+                                        <td><img src="{{ord.variant.product.productimage_set.first.image.url}}" alt="Product Image" height="100px"></td>
+                                        <td class="align-middle">{{ ord.variant.product.name }}</td>
+                                        <td class="align-middle">{{ ord.price }}</td>
+                                        <td class="align-middle">{{ord.quantity}}</td>
+                                        <td class="align-middle">{{ ord.total_price }}</td>
+                                        <td class="align-middle">{{ ord.order.expected_delivery_date }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="card mt-4 border-0 shadow">
+                    <div class="card-body">
+                        <div style="margin-bottom: 10px;">
+                            <label for="address_{{ address.id }}">
+                                <span style="font-weight: bold;">Address</span><br>
+                                {{ current_order.address.full_name }} <br>
+                                {{ current_order.address.mobile_number }} <br>
+                                {{ current_order.address.address_line }}, {{ current_order.address.city }}, {{ current_order.address.state }}, {{ current_order.address.pincode }}<br>
+                            </label>
+                        </div></p>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url "homepage" %}" class="btn btn-primary continue-btn mb-4"><i class="bi bi-house-door"></i> Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+{% endblock %}

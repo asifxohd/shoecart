@@ -240,7 +240,7 @@
 						<div class="p-t-33">
 							{% csrf_token %}
 							<div class="pl-5 pl-5 pb-3 pt-3" role="group" aria-label="Basic example">
-								{% for size_variant in k.sizevariant_set.all %}
+								{% for size_variant in sizes %}
 									{% if size_variant.quantity > 0 %}
 										<button type="button" class="btn my-button in-stock size-variant-button"
 											data-variant-id="{{ size_variant.id }}"

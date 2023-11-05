@@ -24,34 +24,38 @@
             <form method="post" enctype="multipart/form-data" id="add-product-form">
                 {% csrf_token %}
                 <div class="row mb-3">
-                    <label for="id_size" class="col-sm-2 col-form-label">Variand size</label>
+                    <label for="id_size" class="col-sm-2 col-form-label">Variant size</label>
                     <div class="col-sm-10 col-md-4">
-                        <input type="text" name="size"  class="form-control">
+                        <input type="text" name="size" class="form-control" id="size">
+                        <div class="text-danger error-message" id="size-error"></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="id_quantity" class="col-sm-2 col-form-label">Quantity</label>
                     <div class="col-sm-10 col-md-4">
-                        <input type="number" name="quantity"  class="form-control">
+                        <input type="number" name="quantity" class="form-control" id="quantity">
+                        <div class="text-danger error-message" id="quantity-error"></div>
                     </div>
-                </div> 
+                </div>
                 <div class="row mb-3">
                     <label for="id_price" class="col-sm-2 col-form-label">Price</label>
                     <div class="col-sm-10 col-md-4">
-                        <input type="number" name="price" class="form-control">
+                        <input type="number" name="price" class="form-control" id="price">
+                        <div class="text-danger error-message" id="price-error"></div>
                     </div>
-                </div> 
+                </div>
                 <div class="row mb-3">
                     <label for="id_discount_percent" class="col-sm-2 col-form-label">Discount Price</label>
                     <div class="col-sm-10 col-md-4">
-                        <input type="number" name="discount_percent"  class="form-control">
+                        <input type="number" name="discount_percent" class="form-control" id="discount-percent">
+                        <div class="text-danger error-message" id="discount-percent-error"></div>
                     </div>
-                </div> 
-                
+                </div>
+            
                 <div class="row mb-3">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-10">
-                        <button type="submit" class="btn btn-dark">Add Variand</button>
+                        <button type="submit" class="btn btn-dark">Add Variant</button>
                     </div>
                 </div>
             </form>
@@ -62,134 +66,44 @@
 <!-- Add these lines in the <head> section of your HTML template -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-    <script>
-    $(document).ready(function () {
-        $.validator.addMethod("minOrEmpty", function (value, element, param) {
-            return this.optional(element) || (Number(value) === parseInt(value, 10) && parseInt(value) >= param);
-        }, "Please enter a valid quantity.");
-
-        $('#add-product-form').validate({
-            rules: {
-                name: {
-                    required: true
-                },
-                description: {
-                    required: true
-                },
-                price: {
-                    required: true,
-                    min: 1
-                },
-                discount_price: {
-                    required: true,
-                    min: 0
-                },
-                'size_41': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                'size_42': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                'size_43': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                'size_44': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                'size_45': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                // Add similar rules for other fields as needed
-            },
-            messages: {
-                name: {
-                    required: "Please enter a product name"
-                },
-                description: {
-                    required: "Please enter a product description"
-                },
-                price: {
-                    required: "Please enter a price",
-                    min: "Price must be at least 1"
-                },
-                discount_price: {
-                    required: "Please enter a discount price",
-                    min: "Discount price must be at least 0"
-                },
-                'size_41': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 41",
-                    minOrEmpty: "Enter a valid quantity for size 41"
-                },
-                'size_42': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 42",
-                    minOrEmpty: "Enter a valid quantity for size 42"
-                },
-                'size_43': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 43",
-                    minOrEmpty: "Enter a valid quantity for size 43"
-                },
-                'size_44': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 44",
-                    minOrEmpty: "Enter a valid quantity for size 44"
-                },
-                'size_45': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 45",
-                    minOrEmpty: "Enter a valid quantity for size 45"
-                },
-                // Add similar messages for other fields as needed
-            },
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.addClass("text-danger");
-                error.insertAfter(element);
-            }
-        });
-    });
-</script>
+    
 <script>
-    function handleImageUpload(files) {
-        for (const file of files) {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const image = new Image();
-                    image.src = e.target.result;
-    
-                    image.onload = () => {
-                        const minWidth = 200; // Set your minimum width
-                        const minHeight = 200; // Set your minimum height
-    
-                        if (image.width < minWidth || image.height < minHeight) {
-                            alert(`Image "${file.name}" does not meet the minimum dimensions.`);
-                        } else {
-                            // Create a new image element for Cropper.js
-                            const cropperImage = new Image();
-                            cropperImage.src = e.target.result;
-    
-                            const cropper = new Cropper(cropperImage, {
-                                aspectRatio: 1, // Set the desired aspect ratio (e.g., 1:1 for a square crop)
-                                viewMode: 1, // Set your desired view mode (e.g., 0, 1, 2, 3)
-                            });
-    
-                            // You can use the 'cropper' instance to perform cropping operations if needed
-                            // For example, cropper.getCroppedCanvas() returns the cropped image
-    
-                            // Append the cropperImage to the DOM or perform further actions as needed
-                            document.body.appendChild(cropperImage);
-                        }
-                    };
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert(`File "${file.name}" is not an image.`);
-            }
+    document.getElementById("add-product-form").addEventListener("submit", function (event) {
+        let size = document.getElementById("size").value;
+        let quantity = document.getElementById("quantity").value;
+        let price = document.getElementById("price").value;
+        let discountPercent = document.getElementById("discount-percent").value;
+
+        let sizeError = document.getElementById("size-error");
+        let quantityError = document.getElementById("quantity-error");
+        let priceError = document.getElementById("price-error");
+        let discountPercentError = document.getElementById("discount-percent-error");
+
+        sizeError.textContent = "";
+        quantityError.textContent = "";
+        priceError.textContent = "";
+        discountPercentError.textContent = "";
+
+        if (size.trim() === "") {
+            sizeError.textContent = "Size is required";
+            event.preventDefault();
         }
-    }
+
+        if (isNaN(quantity) || quantity <= 0) {
+            quantityError.textContent = "Quantity must be a positive number";
+            event.preventDefault();
+        }
+
+        if (isNaN(price) || price <= 0) {
+            priceError.textContent = "Price must be a positive number";
+            event.preventDefault();
+        }
+
+        if (isNaN(discountPercent) || discountPercent < 0 || discountPercent > 100) {
+            discountPercentError.textContent = "Discount percent must be between 0 and 100";
+            event.preventDefault();
+        }
+    });
     </script>
     
 

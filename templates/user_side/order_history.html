@@ -1,0 +1,48 @@
+{% extends 'user_side/base.html' %}
+{% load static %}
+{% block title %} Order History{% endblock title %}
+{% block content %}
+
+  <div class="top-banner p-5">
+    <h1 class="text-center text-dark py-2" style="font-size: 24px; font-weight: bold; font-family: 'Roboto', sans-serif;"><b>MY ORDERS</b></h1>
+</div>
+
+  
+    <div class="container">
+        <section id="cart_page" class="cart pt-4 pb-4">
+            <div class="container-xl">
+              <table class="table table-light ">
+                <thead> 
+                  <tr class="custom-th">
+                    <th style="text-align: center; vertical-align: middle;" scope="col">Product Image</th>
+                    <th style="text-align: center; vertical-align: middle;" scope="col">Product</th>
+                    <th style="text-align: center; vertical-align: middle;" scope="col">Price</th>
+                    <th style="text-align: center; vertical-align: middle;" scope="col">Quantity</th>
+                    <th style="text-align: center; vertical-align: middle;" scope="col">Total Price</th>
+                    {% comment %} <th style="text-align: center; vertical-align: middle;" scope="col">Order Details</th> {% endcomment %}
+                    <th style="text-align: center; vertical-align: middle;" scope="col">Order Status</th>
+                    <th style="text-align: center; vertical-align: middle;" scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ord in order_items %}
+                  <tr>
+                    <td style="text-align: center; vertical-align: middle;"><img src="{{ord.variant.product.productimage_set.first.image.url}}" height='100px'></td>
+                    <td style="text-align: center; vertical-align: middle;">{{ ord.variant.product.name }}</td>
+                    <td style="text-align: center; vertical-align: middle;">{{ ord.variant.price }}</td>
+                    <td style="text-align: center; vertical-align: middle;">{{ ord.quantity }}</td>
+                    <td style="text-align: center; vertical-align: middle;">{{ ord.total_price }}</td>
+                    {% comment %} <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-outline-secondary">View Order</a></td> {% endcomment %}
+                    <td style="text-align: center; vertical-align: middle;"><span class="badge text-warning">{{ ord.order.status }}</span></td>
+                    <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-outline-danger">Cancel Order</a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </section>
+    </div>
+
+    
+
+{% endblock %}

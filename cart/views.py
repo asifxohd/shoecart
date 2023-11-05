@@ -5,6 +5,7 @@ from .models import CartItem
 from admin_home.models import SizeVariant,Product
 from django.utils import timezone
 from django.http import HttpResponse
+from user_profile.models import Address
 # Create your views here.
 
 
@@ -13,8 +14,9 @@ def cart_page(request):
     email = request.session.get('user')
     if email:
         user = get_object_or_404(CustomUser, email=email)
-        cart_items = CartItem.objects.filter(user=user).order_by('id')
-        return render(request, 'user_side/shoping_cart.html', {'cart_items': cart_items})
+        cart_items = CartItem.objects.filter(user=user).order_by('id')  
+        subPrice = sum(cart_items.values_list('cart_price', flat=True))
+        return render(request, 'user_side/shoping_cart.html', {'cart_items': cart_items, 'subPrice':subPrice})
     else:
         return redirect('signin')
         
@@ -26,13 +28,12 @@ def add_to_cart(request):
             email = request.session['user']
             user = CustomUser.objects.get(email=email)
             variant_id = request.POST.get('variantId')
-            print(variant_id)
             variant_size = SizeVariant.objects.get(id=variant_id)
-            
+            print(variant_size.price)
             if (CartItem.objects.filter(user=user , size_variant=variant_size)):
                 return JsonResponse({'status' : "Product already in cart"})
             else:
-                CartItem.objects.create(user=user, size_variant=variant_size,created_at=timezone.now())
+                CartItem.objects.create(user=user, size_variant=variant_size,created_at=timezone.now(),cart_price=variant_size.price)
             return JsonResponse({'status' : "Product added successfully",'success':True})
 
         else:
@@ -67,22 +68,113 @@ def update_cart(request):
             change = int(request.POST.get('change'))
             variant_id = request.POST.get('variantId')
             variant_instence = SizeVariant.objects.get(id=variant_id)
-            quantity = request.POST.get('quantity')          
             cart = CartItem.objects.get(user=user, size_variant=variant_instence)
-            
+            print(variant_instence.quantity)
             if change == 1:
-                cart.quantity += 1
-                cart.save()
+                if variant_instence.quantity > cart.quantity:
+                    if cart.quantity < 10:
+                        cart.quantity += 1
+                        cart.save()
+                    else:
+                        cart.quantity = 10
+                        cart.save()
+                else:
+                    pass
             else:
                 if cart.quantity > 1:
                     cart.quantity -= 1
                     cart.save()
                 else:
                     cart.quantity = 1
+                    cart.save()
             
+            # for showing total price of the each product 
+            priceOfInstence = variant_instence.price
+            total = cart.quantity * priceOfInstence
+            cart.cart_price = total
+            cart.save()
             
-            print(type(change))
-        response_data = {'updatedQuantity': cart.quantity}
+            # for showing the subtotal
+            userCart = CartItem.objects.filter(user=user)
+            subTotal = sum(userCart.values_list('cart_price', flat=True))
+            
+        response_data = {'updatedQuantity': cart.quantity, 'total':total, 'subTotal':subTotal}
         return JsonResponse(response_data)
+    else:
+        return redirect('signin')
 
-    return HttpResponse(status=200)
+
+def checkout(request):
+    if 'user' in request.session:
+        user = request.session['user']
+        userr = CustomUser.objects.get(email=user) 
+        addresses = Address.objects.filter(user=userr.id, is_listed=True)
+        obj = CartItem.objects.filter(user=userr)
+        total = sum(obj.values_list('cart_price', flat=True))
+        
+    return render(request, 'user_side/checkout.html', {'addresses': addresses, 'obj':obj, 'total':total})
+
+
+def checkout_add_address(request):
+    if 'user' in request.session:
+        email = request.session['user']
+        user = CustomUser.objects.get(email=email)
+        
+        full_name = request.POST.get('full_name')
+        mobile_number = request.POST.get('mobile_number')
+        address_line = request.POST.get('address_line')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        pincode = request.POST.get('pin_code')
+        landmark = request.POST.get('land_mark')
+
+        new_address = Address(
+
+            user=user,
+            full_name=full_name,
+            mobile_number=mobile_number,
+            address_line=address_line,
+            city=city,
+            state=state,
+            pincode=pincode,
+            landmark=landmark
+        )
+        new_address.save()
+
+        return redirect('checkout')
+    else:
+        return redirect('signin')
+    
+    
+def checkout_update_address(request, id):
+    if 'user' in request.session:
+        email = request.session['user']
+        user = CustomUser.objects.get(email=email)
+        address = Address.objects.get(id=id)
+        print(address)
+        if request.method == 'POST':
+            
+            full_name = request.POST.get('full_name')
+            mobile_number = request.POST.get('mobile_number')
+            address_line = request.POST.get('address_line')
+            city = request.POST.get('city')
+            state = request.POST.get('state')
+            pincode = request.POST.get('pin_code')
+            landmark = request.POST.get('land_mark')
+            
+            address.full_name = full_name
+            address.mobile_number = mobile_number
+            address.address_line = address_line
+            address.city = city
+            address.state = state
+            address.pincode = pincode
+            address.landmark = landmark
+            
+            address.save()
+                
+            return redirect('checkout')
+    
+    return render(request,'user_side/check_update.html', {'address':address})
+
+def checkout_address(request):
+    return render(request,'user_side/checkout_address.html')

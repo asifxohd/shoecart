@@ -13,7 +13,7 @@ def user_profile(request):
     if 'user' in request.session:
         email = request.session['user']
         user = CustomUser.objects.get(email=email)
-        addresses = Address.objects.filter(user=user)
+        addresses = Address.objects.filter(user=user, is_listed=True)
         return render(request, "user_side/user_profile.html", {'addresses': addresses, 'user':user})
     else:
         return redirect('signin')
@@ -142,6 +142,7 @@ def update_address(request, id):
 # function for removind address
 def delete_address(request, id):
     address = Address.objects.get(id=id)
-    address.delete()
+    address.is_listed = False
+    address.save()
     return redirect('user_profile')
     

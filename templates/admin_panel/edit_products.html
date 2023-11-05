@@ -23,14 +23,17 @@
                     <label for="id_name" class="col-sm-2 col-form-label">Product Name</label>
                     <div class="col-sm-10">
                         <input type="text" name="name" id="id_name" class="form-control" value="{{ product.name }}">
+                        <div class="error-message text-danger" id="name-error"></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="id_description" class="col-sm-2 col-form-label">Description</label>
                     <div class="col-sm-10">
                         <textarea name="description" id="id_description" class="form-control">{{ product.description }}</textarea>
+                        <div class="error-message text-danger" id="description-error"></div>
                     </div>
-                </div>                                                              
+                </div>
+                
                 <div class="row mb-3">
                     <label for="id_category" class="col-sm-2 col-form-label">Category</label>
                     <div class="col-sm-10">
@@ -38,7 +41,7 @@
                             {% for item in cat %}
                             <option {% if item.id == prod.id %}selected{% endif %} value="{{item.id}}">{{item.name}}</option>
                             {% endfor %}
-                          </select>
+                        </select>
                     </div>
                 </div>
                 
@@ -56,7 +59,7 @@
                 <div class="row mb-3">
                     <label for="id_images" class="col-sm-2 col-form-label">Images</label>
                     <div class="col-sm-10">
-                        <input type="file" name="images" id="id_images" class="form-control" multiple >
+                        <input type="file" name="images" id="id_images" class="form-control" multiple>
                     </div>
                 </div>
                 <!-- New div for displaying current images -->
@@ -72,12 +75,11 @@
                         </div>
                     </div>
                 </div>
-                
             
                 <div class="row mb-3">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-10 mt-5">
-                        <button type="submit" class="btn btn-dark">Edit Product</button>
+                        <button type="button" class="btn btn-dark" onclick="validateForm()">Edit Product</button>
                     </div>
                 </div>
             </form>
@@ -86,99 +88,37 @@
         </div>
     </div>
 </main>
-<!-- Add these lines in the <head> section of your HTML template -->
- <!-- Add these lines in the <head> section of your HTML template -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-    <script>
-    $(document).ready(function () {
-        $.validator.addMethod("minOrEmpty", function (value, element, param) {
-            return this.optional(element) || (Number(value) === parseInt(value, 10) && parseInt(value) >= param);
-        }, "Please enter a valid quantity.");
+<script>
+    function validateForm() {
+        var nameInput = document.getElementById('id_name');
+        var descriptionInput = document.getElementById('id_description');
+        var nameValue = nameInput.value.trim();
+        var descriptionValue = descriptionInput.value.trim();
+        var nameError = document.getElementById('name-error');
+        var descriptionError = document.getElementById('description-error');
+        var isValid = true;
 
-        $('#edit-product-form').validate({
-            rules: {
-                name: {
-                    required: true
-                },
-                description: {
-                    required: true
-                },
-                price: {
-                    required: true,
-                    min: 1
-                },
-                discount_price: {
-                    required: true,
-                    min: 0
-                },
-                'size_41': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                'size_42': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                'size_43': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                'size_44': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                'size_45': {  // Corrected the names of size fields
-                    required: true,
-                    minOrEmpty: 0
-                },
-                // Add similar rules for other fields as needed
-            },
-            messages: {
-                name: {
-                    required: "Please enter a product name"
-                },
-                description: {
-                    required: "Please enter a product description"
-                },
-                price: {
-                    required: "Please enter a price",
-                    min: "Price must be at least 1"
-                },
-                discount_price: {
-                    required: "Please enter a discount price",
-                    min: "Discount price must be at least 0"
-                },
-                'size_41': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 41",
-                    minOrEmpty: "Enter a valid quantity for size 41"
-                },
-                'size_42': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 42",
-                    minOrEmpty: "Enter a valid quantity for size 42"
-                },
-                'size_43': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 43",
-                    minOrEmpty: "Enter a valid quantity for size 43"
-                },
-                'size_44': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 44",
-                    minOrEmpty: "Enter a valid quantity for size 44"
-                },
-                'size_45': {  // Corrected the names of size fields
-                    required: "Please enter a quantity for size 45",
-                    minOrEmpty: "Enter a valid quantity for size 45"
-                },
-                // Add similar messages for other fields as needed
-            },
-            errorElement: "div",
-            errorPlacement: function (error, element) {
-                error.addClass("text-danger");
-                error.insertAfter(element);
-            }
-        });
-    });
+        // Reset previous error messages
+        nameError.textContent = '';
+        descriptionError.textContent = '';
+
+        // Validate Product Name
+        if (nameValue === '') {
+            nameError.textContent = 'Product Name cannot be empty';
+            isValid = false;
+        }
+
+        // Validate Description
+        if (descriptionValue === '') {
+            descriptionError.textContent = 'Description cannot be empty';
+            isValid = false;
+        }
+
+        if (isValid) {
+            // If the form is valid, you can submit it here
+            document.getElementById('edit-product-form').submit();
+        }
+    }
 </script>
-
 
 {% endblock content %}

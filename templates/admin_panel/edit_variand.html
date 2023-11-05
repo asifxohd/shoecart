@@ -24,41 +24,76 @@
             <form method="post" enctype="multipart/form-data" id="add-product-form">
                 {% csrf_token %}
                 <div class="row mb-3">
-                    <label for="id_size" class="col-sm-2 col-form-label">Variand size</label>
+                    <label for="id_size" class="col-sm-2 col-form-label">Variant size</label>
                     <div class="col-sm-10 col-md-4">
-                        <input type="text" value={{var.size}} name="size"  class="form-control" disabled>
+                        <input type="text" value="{{ var.size }}" name="size" class="form-control" disabled>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="id_quantity" class="col-sm-2 col-form-label">Quantity</label>
                     <div class="col-sm-10 col-md-4">
-                        <input type="number" value={{var.quantity}} name="quantity"  class="form-control">
+                        <input type="number" value="{{ var.quantity }}" name="quantity" class="form-control" id="quantity">
+                        <div class="error-message text-danger" id="quantity-error"></div>
                     </div>
-                </div> 
+                </div>
                 <div class="row mb-3">
-                    <label for="id_price" class="col-sm-2 col-form-label">Price</label>
+                    <label for "id_price" class="col-sm-2 col-form-label">Price</label>
                     <div class="col-sm-10 col-md-4">
-                        <input type="number" value={{var.price}} name="price" class="form-control">
+                        <input type="number" value="{{ var.price }}" name="price" class="form-control" id="price">
+                        <div class="error-message text-danger" id="price-error"></div>
                     </div>
-                </div> 
+                </div>
                 <div class="row mb-3">
                     <label for="id_discount_percent" class="col-sm-2 col-form-label">Discount Price</label>
                     <div class="col-sm-10 col-md-4">
-                        <input type="number" value={{var.discount_percent}} name="discount_percent"  class="form-control">
+                        <input type="number" value="{{ var.discount_percent }}" name="discount_percent" class="form-control" id="discount-percent">
+                        <div class="error-message text-danger" id="discount-percent-error"></div>
                     </div>
-                </div> 
-                
+                </div>
                 <div class="row mb-3">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-10">
-                        <button type="submit" class="btn btn-dark">Update Variand</button>
+                        <button type="submit" class="btn btn-dark">Update Variant</button>
                     </div>
                 </div>
             </form>
             
+            
         </div>
     </div>
 </main>
+
+<script>
+    document.getElementById("add-product-form").addEventListener("submit", function (event) {
+        let quantity = document.getElementById("quantity").value.trim();
+        let price = document.getElementById("price").value.trim();
+        let discountPercent = document.getElementById("discount-percent").value.trim();
+    
+        let quantityError = document.getElementById("quantity-error");
+        let priceError = document.getElementById("price-error");
+        let discountPercentError = document.getElementById("discount-percent-error");
+    
+        quantityError.textContent = "";
+        priceError.textContent = "";
+        discountPercentError.textContent = "";
+    
+        if (quantity === "" || isNaN(quantity) || parseFloat(quantity) <= 0) {
+            quantityError.textContent = "Quantity must be a positive number";
+            event.preventDefault();
+        }
+    
+        if (price === "" || isNaN(price) || parseFloat(price) <= 0) {
+            priceError.textContent = "Price must be a positive number";
+            event.preventDefault();
+        }
+    
+        if (discountPercent === "" || isNaN(discountPercent) || parseFloat(discountPercent) < 0 || parseFloat(discountPercent) > 100) {
+            discountPercentError.textContent = "Discount percent must be between 0 and 100";
+            event.preventDefault();
+        }
+    });
+    
+</script>
 <!-- Add these lines in the <head> section of your HTML template -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>

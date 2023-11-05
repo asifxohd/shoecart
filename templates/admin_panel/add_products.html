@@ -25,26 +25,16 @@
                     <label for="id_name" class="col-sm-2 col-form-label">Product Name</label>
                     <div class="col-sm-10">
                         <input type="text" name="name" id="id_name" class="form-control">
+                        <div class="text-danger error-message" id="name-error"></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label for="id_description" class="col-sm-2 col-form-label">Description</label>
                     <div class="col-sm-10">
                         <textarea name="description" id="id_description" class="form-control"></textarea>
+                        <div class="text-danger error-message" id="description-error"></div>
                     </div>
                 </div>
-                 {% comment %} <div class="row mb-3">
-                    <label for="id_price" class="col-sm-2 col-form-label">Price</label>
-                    <div class="col-sm-10 col-md-4">
-                        <input type="number" name="price" id="id_price" class="form-control">
-                    </div>
-                </div> 
-                <div class="row mb-3">
-                    <label for="id_discount_price" class="col-sm-2 col-form-label">Discount Price</label>
-                    <div class="col-sm-10 col-md-4">
-                        <input type="number" name="discount_price" id="id_discount_price" class="form-control">
-                    </div>
-                </div> {% endcomment %}
                 <div class="row mb-3">
                     <label for="id_category" class="col-sm-2 col-form-label">Category</label>
                     <div class="col-sm-10">
@@ -69,41 +59,9 @@
                     <label for="id_images" class="col-sm-2 col-form-label">Images</label>
                     <div class="col-sm-10">
                         <input type="file" name="images" id="id_images" class="form-control" multiple required onchange="handleImageUpload(this.files)">
+                        <div class="error-message" id="images-error"></div>
                     </div>
-                </div>                
-                
-                {% comment %} <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label">Size</label>
-                    <div class="col-sm-10">
-                        <div class="size-quantity-form">
-                            <div class="row mb-3 mt-3">
-                                <div class="col-sm-6 col-md-3">
-                                    <label for="id_size_41" class="form-label">Size 41</label>
-                                    <input type="number" name="size_41" id="id_size_41" class="form-control" placeholder="Size/Quantity" value="0">
-                                </div>
-                                <div class="col-sm-6 col-md-3">
-                                    <label for="id_size_42" class="form-label">Size 42</label>
-                                    <input type="number" name="size_42" id="id_size_42" class="form-control" placeholder="Size/Quantity" value="0">
-                                </div>
-                                <div class="col-sm-6 col-md-3">
-                                    <label for="id_size_43" class="form-label">Size 43</label>
-                                    <input type="number" name="size_43" id="id_size_43" class="form-control" placeholder="Size/Quantity" value="0">
-                                </div>
-                                <div class="col-sm-6 col-md-3">
-                                    <label for="id_size_44" class="form-label">Size 44</label>
-                                    <input type="number" name="size_44" id="id_size_44" class="form-control" placeholder="Size/Quantity" value="0">
-                                </div>
-                                <div class="col-sm-6 col-md-3">
-                                    <label for="id_size_45" class="form-label">Size 45</label>
-                                    <input type="number" name="size_45" id="id_size_45" class="form-control" placeholder="Size/Quantity" value="0">
-                                </div>
-                                <!-- Repeat the same pattern for each size (41, 42, 43, etc.) -->
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div> {% endcomment %}
-                
+                </div>
                 <div class="row mb-3">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-10">
@@ -115,6 +73,45 @@
         </div>
     </div>
 </main>
+<script>
+    function handleImageUpload(files) {
+        let imagesError = document.getElementById("images-error");
+        imagesError.textContent = "";
+
+        if (files.length === 0) {
+            imagesError.textContent = "Please select at least one image";
+        }
+    }
+
+    document.getElementById("add-product-form").addEventListener("submit", function (event) {
+        let name = document.getElementById("id_name").value;
+        let description = document.getElementById("id_description").value;
+        let images = document.getElementById("id_images").files;
+
+        let nameError = document.getElementById("name-error");
+        let descriptionError = document.getElementById("description-error");
+        let imagesError = document.getElementById("images-error");
+
+        nameError.textContent = "";
+        descriptionError.textContent = "";
+        imagesError.textContent = "";
+
+        if (name.trim() === "") {
+            nameError.textContent = "Product name is required";
+            event.preventDefault();
+        }
+
+        if (description.trim() === "") {
+            descriptionError.textContent = "Description is required";
+            event.preventDefault();
+        }
+
+        if (images.length === 0) {
+            imagesError.textContent = "Please select at least one image";
+            event.preventDefault();
+        }
+    });
+</script>
 <!-- Add these lines in the <head> section of your HTML template -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>

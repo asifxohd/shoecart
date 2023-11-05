@@ -102,16 +102,17 @@
 													</div>
 													{% endif %}
 												</td>
-												<td class="column-5">&#8377; {{ item.price }}</td>
+												<td class="column-5 variant_total_price{{item.size_variant.id}}">&#8377; {{ item.cart_price }}</td>
 												<td class="column-5">
 													<div class="delete-item">
 													<i data-item-id="{{ item.id }}"
 													onclick="confirmDelete(this) " class="fa-solid fa-trash fa-lg" style="color: #cc0000;"></i>
 													</div>
 												</td>
+												
 											</tr>
 									{% endfor %}
-	
+										
 								</table>
 							</form>
 							
@@ -126,9 +127,7 @@
 								</div>
 							</div>
 
-							<div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-								Update Cart
-							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -147,8 +146,8 @@
 							</div>
 
 							<div class="size-209">
-								<span class="mtext-110 cl2">
-									$79.65
+								<span class="mtext-110 cl2 subtotal_amount">
+									{{ subPrice }}
 								</span>
 							</div>
 						</div>
@@ -163,15 +162,15 @@
 							</div>
 
 							<div class="size-209 p-t-1">
-								<span class="mtext-110 cl2">
-									$79.65
+								<span class="mtext-110 cl2 subtotal_amount">
+									{{ subPrice }}
 								</span>
 							</div>
 						</div>
 
-						<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+						<a href="{% url "checkout" %}" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
 							Proceed to Checkout
-						</button>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -287,10 +286,14 @@
 					console.log(data);
 	
 					// Update the displayed quantity based on the server response
-					var newQuantity = data.updatedQuantity; // Replace with the actual property in the response
+					var newQuantity = data.updatedQuantity;
+					var totalPrice = data.total// Replace with the actual property in the response
+					var subTotal = data.subTotal
 	
 					// Find the <span> element with class "num" and update its content
 					$(`.num-${variantId}`).text(newQuantity);
+					$(`.variant_total_price${variantId}`).text(totalPrice);
+					$(`.subtotal_amount`).text(subTotal);
 				},
 				error: function(error) {
 					console.error('Error:', error);
