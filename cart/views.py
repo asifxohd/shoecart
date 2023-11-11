@@ -6,10 +6,12 @@ from admin_home.models import SizeVariant,Product
 from django.utils import timezone
 from django.http import HttpResponse
 from user_profile.models import Address
+from django.views.decorators.cache import cache_control
 # Create your views here.
 
 
 #function for rendering cart page with cart details
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def cart_page(request):
     email = request.session.get('user')
     if email:
@@ -43,6 +45,7 @@ def add_to_cart(request):
     
 
 #function for removing the item from cart
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def remove_item_from_cart(request):
     if 'user' in request.session:
         if request.method == 'POST':
@@ -59,7 +62,8 @@ def remove_item_from_cart(request):
         return redirect('signin')
     
     
-#function for updating the cart details like price, quantity and other info    
+#function for updating the cart details like price, quantity and other info 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)   
 def update_cart(request):
     if request.method == 'POST':
         if 'user' in request.session:
@@ -78,8 +82,7 @@ def update_cart(request):
                     else:
                         cart.quantity = 10
                         cart.save()
-                else:
-                    pass
+               
             else:
                 if cart.quantity > 1:
                     cart.quantity -= 1
@@ -103,7 +106,7 @@ def update_cart(request):
     else:
         return redirect('signin')
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def checkout(request):
     if 'user' in request.session:
         user = request.session['user']

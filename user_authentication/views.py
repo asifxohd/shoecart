@@ -78,16 +78,16 @@ def signin(request):
         user = authenticate(username=email, password=password)
         if user is not None:
             if CustomUser.objects.filter(email=email).first().is_active==False:
-                messages.error("user Access denied")
+                messages.error(request,"user Access denied")
                 return redirect('signin')
             
-            
-            if CustomUser.objects.filter(email=email).first().email_verified==True:
+            elif CustomUser.objects.filter(email=email).first().email_verified==True:
                 request.session['user'] = email
                 return redirect('homepage')
             else:
                 messages.error(request, 'Email is not verified.')
                 return redirect('signin')
+            
 
     return render(request, 'user_auth/loginpage.html')
 

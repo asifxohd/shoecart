@@ -29,8 +29,20 @@
                   <div class="card col-12 my-3 mx-auto p-2" style="border: 0.2px solid #494949;">
                     <div class="card-header d-flex justify-content-between w-100">
                       <div class="d-flex flex-column">
-                        <p class="text-primary" >{{obj.status}}</p>
-                        <h6> Expected Delivery {{obj.order.expected_delivery_date}}</h6>
+                        <p style="color: 
+                        {% if obj.status == 'Order confirmed' %}blue
+                        {% elif obj.status == 'Shipped' %}blue
+                        {% elif obj.status == 'Out for delivery' %}orange
+                        {% elif obj.status == 'Delivered' %}green
+                        {% elif obj.status == 'Cancelled' %}red
+                        {% endif %};">
+                        {{ obj.status }}
+                      </p>
+                      <h4 style="color: {% if obj.order.payment_status == 'success' %}green{% else %}red{% endif %}">
+                        Payment Status: {{ obj.order.payment_status }}
+
+                    </h4>                       
+                     <h6> Expected Delivery {{obj.order.expected_delivery_date}}</h6>
                       </div>
                     </div>
                     <hr class="m-0 mb-1">
@@ -65,41 +77,56 @@
                             {{obj.order.address.landmark}},<br>
                             {{obj.order.address.pincode}}
 
-                        <p class="card-text"><b>{{obj.order.address.mobile_number}}</b></p>                      </div>
+                        <p class="card-text"><b>{{obj.order.address.mobile_number}}</b></p>   
+                        
+                        
+                        <hr>
+                        <h5 class="card-title" style="font-size: 20px;">Change Order Status</h5>
+                      <h6><b>Current Status: </b> 
+                        <span style="color: 
+                          {% if obj.status == 'Order confirmed' %}blue
+                          {% elif obj.status == 'Shipped' %}blue
+                          {% elif obj.status == 'Out for delivery' %}orange
+                          {% elif obj.status == 'Delivered' %}Green
+                          {% elif obj.status == 'Cancelled' %}red
+                          {% endif %};">
+                          {{ obj.status }}
+                        </span><br>
+
+                        {% if obj.status != 'Cancelled' %}
+                          <form method="post" action="../change_status/{{obj.id}}">
+                            {% csrf_token %}
+                            <div class="btn-group mt-3" role="group" aria-label="Status Update">
+                              <input type="radio" class="btn-check" name="statusRadio" value="Order Confirmed" id="orderConfirmedBtn" autocomplete="off" {% if obj.status == 'Order Confirmed' %}checked{% endif %}>
+                              <label class="btn btn-outline-dark me-3" for="orderConfirmedBtn">Order Confirmed</label>
+                              
+                              <input type="radio" class="btn-check" name="statusRadio" value="Shipped" id="shippedBtn" autocomplete="off" {% if obj.status == 'Shipped' %}checked{% endif %}>
+                              <label class="btn btn-outline-primary me-3" for="shippedBtn">Shipped</label>
+                              
+                              <input type="radio" class="btn-check" name="statusRadio" value="Out for Delivery" id="outForDeliveryBtn" autocomplete="off" {% if obj.status == 'Out for Delivery' %}checked{% endif %}>
+                              <label class="btn btn-outline-warning me-3" for="outForDeliveryBtn">Out for Delivery</label>
+                              
+                              <input type="radio" class="btn-check" name="statusRadio" value="Delivered" id="deliveredBtn" autocomplete="off" {% if obj.status == 'Delivered' %}checked{% endif %}>
+                              <label class="btn btn-outline-success me-3" for="deliveredBtn">Delivered</label>
+                            </div>
+                            
+                            <br><br>
+                            
+                            <button type="submit" class="btn btn-dark">Update Changes</button>
+                          </form>
+
+                  
+                        {% else %}
+                          <div class="text-danger mt-3">
+                            <h3><b> Order is Cancelled</b></h3>
+                          </div>
+                        {% endif %}
+                      </h6>
+                      </div>
                     </div>
                   </div>
                 </div>
-                {% comment %} <div class="container-fluid d-flex flex-column justify-content-center">
-                  <div class="card row col-12 my-3 mx-auto p-2" style="border: 0.2px solid #494949;">
-                    <div class="col-md-9 mx-auto">
-                      <h3 class="text-center py-4">Order Status</h3>
-                      <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 25%"></div>
-                      </div>
-                       <ul class="list-group mt-3">
-                        <li class="list-group-item active">Order placed</li>
-                        <li class="list-group-item">Shipped</li>
-                        <li class="list-group-item">Out for Delivery</li>
-                        <li class="list-group-item">Delivered</li>
-                      </ul> 
-                    </div>
-                    <hr class="bg-secondary">
-                    <h4 class="text-center py-4">Change Order Status</h4>
-                    <div class="col-md-12 mx-auto d-flex justify-content-center py-3 mb-5">
-                      <form action="/admin/order/orderManagement/changeStatus" method="post">
-                        <select name="status" class="form-control mb-3" style="width: 15rem; border-radius: 7px;" required>
-                          <option value="" disabled selected>Select Status</option>
-                          <option value="Shipped">Shipped</option>
-                          <option value="OutforDelivery">Out for Delivery</option>
-                          <option value="Delivered">Delivered</option>
-                        </select>
-                        <input type="text" name="orderId" value="12345" hidden>
-                        <input type="text" name="productId" value="67890" hidden>
-                        <button type="submit" class="btn btn-info mx-2 py-2 my-auto" style="width: 12rem;">Update Now</button>
-                      </form>
-                    </div>
-                  </div>
-                </div> {% endcomment %}
+                
               </div>
             </div>
           </div>
@@ -107,7 +134,6 @@
       </div>
     </div>
   </div>
-  
   
 
 {% endblock %}

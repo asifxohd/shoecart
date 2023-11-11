@@ -102,22 +102,22 @@
                     </div>
                     <a href="" class="d-block text-dark" for="pay1">Cash On Delivery</a>
                   </div>
-                  <!-- <div class="d-flex align-items-center">
+                  <div class="d-flex align-items-center">
                     <div class="mr-2">
                       <input required type="radio" id="payment" name="payment" value="onlinePayment" checked />
                     </div>
                     <a href="" class="d-block text-dark" for="pay2">Online Payment</a>
-                  </div> -->
-                  <!-- <div class="d-flex align-items-center">
+                  </div> 
+                 <div class="d-flex align-items-center">
                     <div class="mr-2">
                       <input required type="radio" id="wallet" name="payment" value="wallet" />
                     </div>
                     <a href="" class="d-block text-dark" for="pay3">Wallet</a>
-                  </div> -->
+                  </div> 
                   <button type="" id="placeOrderButton" class="btn btn-outline-primary-2 btn-order btn-block">
 					<span class="btn-text">Place Order</span>
 					<span class="btn-hover-text">Proceed to Checkout</span>
-				</button>
+				  </button>
 				
                 </div>
                 <!-- End .summary -->
@@ -129,60 +129,128 @@
   </main><!-- End .main -->
   <link rel="stylesheet" href="{% static "user_profile//assets/css/bootstrap.min.css" %}">
 <link rel="stylesheet" href="{% static "user_profile/assets/css/style.css" %}">
-
+{% csrf_token %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<script type="text/javascript">
-  var csrf_token = "{{ csrf_token }}";
-  $(document).ready(function () {
-      $('#placeOrderButton').click(function (event) {
-          event.preventDefault();
+<script>
+    $(document).ready(function() {
+        $("#placeOrderButton").on("click", function() {
+			console.log("Button Clicked!");
 
-          var selectedAddress = $("input[name='selected_address']:checked").val();
-          var selectedPayment = $("input[name='payment']:checked").val();
+            // Your existing code
+            console.log("clicked");
+            var address = $("input[name=selected_address]:checked").val();
+            var total = $("#total1").text();
+            var payment = $("input[name=payment]:checked").val();
+            console.log('button clicked');
+			console.log(address,"address");
 
-          if (selectedAddress && selectedPayment) {
-              var data = {
-                  csrfmiddlewaretoken: csrf_token,
-                  selected_address: selectedAddress,
-                  payment: selectedPayment
-              };
+            console.log('Before AJAX request');
+            // Get the CSRF token
+            var csrf_token = $("[name=csrfmiddlewaretoken]").val();
 
-              $.ajax({
-                  type: 'POST',
-                  url: '/place_order/',
-                  data: data,
-                  success: function (response) {
-                      // Check if the server response indicates success
-                      if (response.success) {
-                          // Show a success message to the user
-                          //alert('Order placed successfully. Your order ID is ' + response.order_id);
+            // Send the data using jQuery AJAX
+            $.ajax({
+                type: "POST",
+                url: "/place_order/",
+                data: {
+                    total: total,
+                    address: address,
+                    payment: payment,
+                    csrfmiddlewaretoken: csrf_token,  // Include the CSRF token
+                },
+                success: function(response) {
+					console.log("entered")
+                    if (response.success === true) {
+					console.log("orderPag")
 
-                          // Redirect the user to a success page
-                          window.location.href = '/order_page/';
-                      } else {
-                          // Show an error message to the user
-                          alert('Error: ' + response.message);
-                      }
-                  },
-                  error: function (xhr, textStatus, error) {
-                      // Handle any Ajax errors here, e.g., network issues or server errors
-                      console.error('Ajax request failed:', error);
+                        window.location.href = '/order_page/';
+                    } else {
+                        console.log('Order object:', response.razorpay_order);
+        				razorPayment(response.razorpay_order);
+                    }
+                }
+            });
+            console.log('After AJAX request');
+        });
+    });
 
-                      // Show a generic error message to the user
-                      alert('An error occurred while placing the order. Please try again.');
-                  }
-              });
-          } else {
-              alert("Please select an address and payment method.");
-          }
-      });
-  });
+    function razorPayment(razorpay_order) {
+		console.log("Entered razorPayment");
+		console.log("Order object:", razorpay_order);
+	
+		// Check if amount is present in the order object
+		if (razorpay_order && razorpay_order.amount !== undefined) {
+			console.log("amount is present:", razorpay_order.amount);
+	
+			var options = {
+				key: "rzp_test_F83XKwHAQwFDZG",
+				amount: razorpay_order.amount,
+				currency: "INR",
+				name: "M LIVE Pvt.Ltd",
+				description: "Test Transaction",
+				
+				order_id: razorpay_order.razorpay_order_id,
+
+				handler: function (response) {
+					console.log("Razorpay handler response:", response);
+					verifyPayment(response, razorpay_order);
+				},
+				prefill: {
+					name: " M LIVE Pvt.Ltd",
+					email: "MLIVEMARKET@example.com",
+					contact: "9230566487",
+				},
+				notes: {
+					address: "Razorpay Corporate Office",
+				},
+				theme: {
+					color: "#c96",
+				},
+			};
+	
+			var rzp1 = new Razorpay(options);
+			rzp1.open();
+		} else {
+			console.log("Complete order object:", razorpay_order); // Log the complete order object
+		}
+	}
+	
+
+    function verifyPayment(payment, razorpay_order) {
+		var csrf_token = $("[name=csrfmiddlewaretoken]").val();
+
+        const amount2 = document.getElementById("total1").innerHTML;
+		console.log("entered verifyPayment")
+        $.ajax({
+            url: "/verifyPayment/",
+            type : "POST",
+            data: {
+                payment: payment,
+                amount2: amount2,
+                razorpay_order: razorpay_order,
+				csrfmiddlewaretoken: csrf_token,  // Include the CSRF token
+
+            },
+            success: (response) => {
+                if (response.success == true) {
+                    window.location.href = '/order_page';
+                } else {
+                    swal.fire({
+                        positon: "center",
+                        icon: "error",
+                        title: "Payment failed",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                }
+            },
+        });
+    }
 </script>
 
 
-
-</script>
 
  
 {% endblock %}

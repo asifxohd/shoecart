@@ -215,5 +215,8 @@ def show_price_between(request):
 def search(request):
     search_query = request.GET['search-product']
     products_match = Product.objects.filter(name__icontains=search_query)
-    print(products_match)
+    for product in products_match:
+        first_variant = product.sizevariant_set.first()
+        product.first_variant_price = first_variant.price if first_variant else None
+   
     return render(request, "user_side/products.html" , {'products': products_match})

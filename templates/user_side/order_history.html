@@ -19,7 +19,7 @@
                     <th style="text-align: center; vertical-align: middle;" scope="col">Price</th>
                     <th style="text-align: center; vertical-align: middle;" scope="col">Quantity</th>
                     <th style="text-align: center; vertical-align: middle;" scope="col">Total Price</th>
-                    {% comment %} <th style="text-align: center; vertical-align: middle;" scope="col">Order Details</th> {% endcomment %}
+                     {% comment %} <th style="text-align: center; vertical-align: middle;" scope="col">Order Details</th>  {% endcomment %}
                     <th style="text-align: center; vertical-align: middle;" scope="col">Order Status</th>
                     <th style="text-align: center; vertical-align: middle;" scope="col">Actions</th>
                   </tr>
@@ -32,17 +32,84 @@
                     <td style="text-align: center; vertical-align: middle;">{{ ord.variant.price }}</td>
                     <td style="text-align: center; vertical-align: middle;">{{ ord.quantity }}</td>
                     <td style="text-align: center; vertical-align: middle;">{{ ord.total_price }}</td>
-                    {% comment %} <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-outline-secondary">View Order</a></td> {% endcomment %}
-                    <td style="text-align: center; vertical-align: middle;"><span class="badge text-warning">{{ ord.order.status }}</span></td>
-                    <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-outline-danger">Cancel Order</a></td>
+                     {% comment %} <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-outline-secondary">View Order</a></td>  {% endcomment %}
+                    <td style="text-align: center; vertical-align: middle;"><span class="badge text-primary">{{ ord.status }}</span></td>
+					<td style="text-align: center; vertical-align: middle;">
+						
+							<button class="btn btn-sm btn-outline-danger" onclick="prepareCancelModal({{ ord.id }})" data-toggle="modal" data-target="#cancelModal">Cancel Order</button>
+						
+					</td>                
                   </tr>
                   {% endfor %}
                 </tbody>
               </table>
+
             </div>
           </section>
-    </div>
-
-    
-
+          <!-- Modal -->
+		  <div class="modal" id="cancelModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content mar">
+					<div class="modal-header">
+						<h5 class="modal-title">Reason for Cancellation</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form method="post">
+						{% csrf_token %}
+						<div class="modal-body">
+							<!-- Include the order ID in the modal form -->
+							<input type="hidden" id="cancelOrderID" name="orderid">
+							<label for="cancelReason">Please provide a reason:</label>
+							<textarea id="cancelReason" class="form-control" rows="4" cols="50"></textarea>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-danger" onclick="submitCancelation()">Submit</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+        </div>
+		<script>
+			function prepareCancelModal(orderId) {
+				// Set the order ID in the hidden input field of the modal
+				$("#cancelOrderID").val(orderId);
+				console.log("Order ID prepared for cancellation: " + orderId);
+			}
+		
+			function submitCancelation() {
+				// Get the cancel reason from the textarea
+				var cancelReason = $("#cancelReason").val();
+				// Get the order ID from the hidden input field
+				var orderId = $("#cancelOrderID").val();
+		
+				console.log("Submitting cancellation for Order ID: " + orderId);
+				console.log("Cancel Reason: " + cancelReason);
+		
+				// Make the AJAX request
+				
+				$.ajax({
+					url: "/cancel_request",  // Replace with the actual URL of your Django endpoint
+					type: "POST",
+					data: {
+						cancel_reason: cancelReason,
+						order_id: orderId,
+						csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+					},
+					success: function (data) {
+						location.reload();
+						$("#cancelModal").modal("hide");
+					},
+					error: function (error) {
+						// Handle error response from the server
+						console.error("Error submitting cancellation", error);
+					}
+				});
+			}
+		</script>
+		
+		  
 {% endblock %}

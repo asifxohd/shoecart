@@ -157,3 +157,10 @@ EMAIL_HOST_USER = 'shoecartcalicut@gmail.com'  # Replace with your Gmail email
 EMAIL_HOST_PASSWORD = 'zmku mkfe hxvk xbrr'  # Replace with the App Password
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+
+# Razorpay API integration
+RAZORPAY_API_KEY = 'rzp_test_F83XKwHAQwFDZG'
+RAZORPAY_API_SECRET_KEY = 'etDY4jG2xDLoFngOnDsM7wqY'
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
