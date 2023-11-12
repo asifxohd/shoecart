@@ -34,7 +34,7 @@
 </div>
 </header>
 
-<!-- Cart -->
+{% comment %} <!-- Cart -->
 <div class="wrap-header-cart js-panel-cart">
 <div class="s-full js-hide-cart"></div>
 
@@ -117,7 +117,7 @@
 		</div>
 	</div>
 </div>
-</div>
+</div> {% endcomment %}
 
 
 
@@ -780,7 +780,7 @@
 </script>
 <script src={% static "user_home/vendor/isotope/isotope.pkgd.min.js" %}></script>
 <script src={% static "user_home/vendor/sweetalert/sweetalert.min.js" %}></script>
-<script>
+{% comment %} <script>
 	$('.js-addwish-b2').on('click', function(e){
 		e.preventDefault();
 	});
@@ -830,7 +830,7 @@
 			ps.update();
 		})
 	});
-</script>
+</script> {% endcomment %}
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 

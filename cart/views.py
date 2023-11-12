@@ -36,7 +36,8 @@ def add_to_cart(request):
                 return JsonResponse({'status' : "Product already in cart"})
             else:
                 CartItem.objects.create(user=user, size_variant=variant_size,created_at=timezone.now(),cart_price=variant_size.price)
-            return JsonResponse({'status' : "Product added successfully",'success':True})
+                cart_count_ajax = CartItem.objects.filter(user=user).count()
+            return JsonResponse({'status' : "Product added successfully",'success':True ,'cart_count_ajax' : cart_count_ajax})
 
         else:
             return redirect('signin')

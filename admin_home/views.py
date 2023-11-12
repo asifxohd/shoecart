@@ -124,6 +124,7 @@ def edit_category(request, id):
 
     if request.method == 'POST':
         updated_name = request.POST.get('category_name')
+        print(updated_name)
 
         if updated_name != category.name:
             if Category.objects.filter(name=updated_name).exists():
@@ -131,8 +132,9 @@ def edit_category(request, id):
                     request, "Category with this name already exists")
             else:
                 category.name = updated_name
+                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 category.save()
-                return redirect('admin_category')
+                return redirect('admin_catogeory')
 
     return render(request, 'admin_panel/editcat.html', {'category_name': category.name})
 

@@ -59,8 +59,10 @@
 		
 
 	<!-- Shoping Cart -->
-	<form class="bg0 p-t-75 p-b-85">
-		<div class="container-fluid">
+	{% if cart_items %}
+	<form class="bg0 p-t-75 ">
+		<div class="container-fluid mb-5">
+			
 			<div class="row">
 				<div class="col-lg-10 col-xl-8 m-lr-auto m-b-50">
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
@@ -174,8 +176,17 @@
 					</div>
 				</div>
 			</div>
+			{% else %}
+			<div class="text-center">
+				<img src="{% static 'user_home/images/emptycart.webp' %}" alt="Empty Cart" style="height: 18rem; margin-top: 20px;">
+				<p class="mb-5">Your cart is empty. </p>
+				<a href="{% url 'product_page' %}" class="btn btn-dark mb-5" style="margin-top: 10px;">Back to Shop</a>
+			</div>
+			
+        
 		</div>
 	</form>
+	{% endif %}
 		
 	<!-- Back to top -->
 	<div class="btn-back-to-top" id="myBtn">
@@ -183,6 +194,7 @@
 			<i class="zmdi zmdi-chevron-up"></i>
 		</span>
 	</div>
+</div>
 	
 	
 

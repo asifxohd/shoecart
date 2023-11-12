@@ -6,40 +6,68 @@
 
 <main id="main" class="main">
 
-        <div class="pagetitle">
-            <h1>Categories</h1>
-            <nav>
-                <ol class="breadcrumb mt-3 ">
-                    <li class="breadcrumb-item">Admin</li>
-                    <li class="breadcrumb-item ">Categories</li>
-                    <li class="breadcrumb-item active">Edit Categories</li>
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
+    <div class="pagetitle">
+        <h1>Categories</h1>
+        <nav>
+            <ol class="breadcrumb mt-3 ">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item ">Categories</li>
+                <li class="breadcrumb-item active">Edit Categories</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
 
-        <!-- Recent Sales -->
-        <div class="col-12">
-            <div class="card recent-sales overflow-auto">
+    <!-- Recent Sales -->
+    <div class="col-12">
+        <div class="card recent-sales overflow-auto">
 
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="form-group mt-4">
-                            <label for="categoryName mt-2">&nbsp;&nbsp;<b>Category Name</b></label> <br><br>
-                            &nbsp;&nbsp;<input type="text" id="categoryName" name="category_name" value="{{ category_name}}">
-                            {% if messages %}
+            <div class="card-body">
+                <form method="post" id="categoryForm">
+                    {% csrf_token %}
+                    <div class="form-group mt-4">
+                        <label for="categoryName"><b>Category Name</b></label> <br><br>
+                        <input type="text" id="categoryName" name="category_name" value="{{ category_name }}">
+                        <div id="categoryNameError" class="text-danger"></div>
+                        {% if messages %}
                             {% for message in messages %}
                                 <div class="text-danger">&nbsp;&nbsp;&nbsp;{{ message }}</div>
                             {% endfor %}
                         {% endif %}
-                        </div>
-                       
-                        &nbsp;&nbsp;<button type="submit" class="m1-2 btn btn-dark mt-4">Save</button>
-                    </form>
-                </div>
+                    </div>
 
+                    <button type="submit" class="m1-2 btn btn-dark mt-4">Save</button>
+                </form>
             </div>
-        </div><!-- End Recent Sales -->
 
-    </main><!-- End #main -->
+        </div>
+    </div><!-- End Recent Sales -->
+
+</main><!-- End #main -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#categoryForm").submit(function (event) {
+            var categoryNameValue = $("#categoryName").val().trim();
+            var categoryNameError = $("#categoryNameError");
+
+            // Reset error messages
+            categoryNameError.text('');
+
+            // Check if the input is empty
+            if (categoryNameValue === '') {
+                categoryNameError.text('Category Name cannot be empty');
+                event.preventDefault(); // Prevent the form from submitting
+                return;
+            }
+
+            // Check if the input contains only letters
+            if (!/^[a-zA-Z\s]+$/.test(categoryNameValue)) {
+                categoryNameError.text('Category Name can only contain letters and spaces');
+                event.preventDefault(); // Prevent the form from submitting
+            }
+        });
+    });
+</script>
+
 {% endblock content %}

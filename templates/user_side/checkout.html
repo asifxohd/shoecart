@@ -4,7 +4,7 @@
 {% block content %}
 
 <main class="main">
-    <div class="page-header text-center m-t-85">
+    <div class="page-header text-center m-t-65">
       <div class="container">
         <h1 class="page-title text-dark">Checkout</h1>
       </div><!-- End .container -->
@@ -23,31 +23,78 @@
       <div class="cart mb-5">
         <div class="container">
           <div class="row">
+           
             <div class="col-md-8 cart-item-box">
               <h5 class="text-dark mb-3">1. &nbsp; Select a delivery address</h5>
-              <a href="{% url "checkout_address" %}">
-
-                <div class="d-flex justify-content-end mr-3">
-                    <button type='button' class="btn btn-dark" id="addAddressBtn">Add New Address</button>
+          
+              {% if addresses %}
+                  <a href="{% url 'checkout_address' %}">
+                      <div class="d-flex justify-content-end mr-3">
+                          <button type='button' class="btn btn-dark" id="addAddressBtn">Add New Address</button>
+                      </div>
+                  </a>
+                  {% comment %} <form method="post" id="addressForm"> {% endcomment %}
+                  {% for address in addresses|slice:":2" %}
+                  <div class="address-container" style="border: 1px solid #333; margin: 10px; padding: 20px; color: black;">
+                      <div style="margin-bottom: 10px;">
+                          <input type="radio" name="selected_address" value="{{ address.id }}" id="address_{{ address.id }}" {% if forloop.counter == 1 %}checked{% endif %}>
+                          <label for="address_{{ address.id }}">
+                              <span style="font-weight: bold;">Address {{ forloop.counter }}:</span>
+                              {{ address.full_name }} <br>
+                              {{ address.mobile_number }} <br>
+                              {{ address.address_line }}, {{ address.city }}, {{ address.state }}, {{ address.pincode }}<br>
+                          </label>
+                      </div>
+                      <div class="d-flex justify-content-end">
+                          <a href="../checkout_update_address/{{ address.id }}" class="btn-primary" id="editAddressBtn_{{ address.id }}" style="font-size: 12px; width: 65px; margin-right: 10px; text-align: center; display: inline-block; line-height: 1.5;">Edit</a>
+                      </div>
+                  </div>
+                  {% endfor %}
+          
+                  {% if addresses|length > 2 %}
+                  <div class="text-center d-flex justify-content-end mr-3 ">
+                    <button type="button" class="btn btn-" id="chooseOtherAddressBtn" style="display: none; display: flex; justify-content: end; align-items: center;">
+                      Other
+                      <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M2 334.5c-3.8 8.8-2 19 4.6 26l136 144c4.5 4.8 10.8 7.5 17.4 7.5s12.9-2.7 17.4-7.5l136-144c6.6-7 8.4-17.2 4.6-26s-12.5-14.5-22-14.5l-72 0 0-288c0-17.7-14.3-32-32-32L128 0C110.3 0 96 14.3 96 32l0 288-72 0c-9.6 0-18.2 5.7-22 14.5z"/></svg>
+                  </button>
+                  </div>
+                  {% endif %}
+          
+                  <div id="otherAddresses" style="display: none;">
+                      {% for address in addresses|slice:"2:" %}
+                      <div class="address-container" style="border: 1px solid #333; margin: 10px; padding: 20px; color: black;">
+                          <div style="margin-bottom: 10px;">
+                              <input type="radio" name="selected_address" value="{{ address.id }}" id="address_{{ address.id }}">
+                              <label for="address_{{ address.id }}">
+                                  <span style="font-weight: bold;">Address:</span>
+                                  {{ address.full_name }} <br>
+                                  {{ address.mobile_number }} <br>
+                                  {{ address.address_line }}, {{ address.city }}, {{ address.state }}, {{ address.pincode }}<br>
+                              </label>
+                          </div>
+                          <div class="d-flex justify-content-end">
+                              <a href="../checkout_update_address/{{ address.id }}" class="btn-primary" id="editAddressBtn_{{ address.id }}" style="font-size: 12px; width: 65px; margin-right: 10px; text-align: center; display: inline-block; line-height: 1.5;">Edit</a>
+                          </div>
+                      </div>
+                      {% endfor %}
+                      <div class="d-flex justify-content-end mr-3">
+                          <button type="button" class="btn btn-secondery" id="closeOtherAddressesBtn" style="display: none;">Close Addresses<i class="fa-solid fa-x" style="color: #000000;"></i></button>
+                      </div>
+                  </div>
+          
+              {% else %}
+                  <!-- Display add address button with an image when there are no addresses -->
+                  <div class="text-center">
+                    <img src="{% static 'user_home/images/address.png' %}" alt="No Address Image" style="height: 35rem; display: block; margin: 0 auto;display: flex; justify-content: end; align-items: center;">
+                    <p>No addresses available. Add a new address.</p>
+                    <a href="{% url 'checkout_address' %}">
+                        <button type="button" class="btn btn-dark" id="addAddressBtn">Add New Address</button>
+                    </a>
                 </div>
-            </a>
-            {% comment %} <form method="post" id="addressForm"> {% endcomment %}
-                {% for address in addresses %}
-                <div class="address-container" style="border: 1px solid #333; margin: 10px; padding: 20px; color: black;">
-                    <div style="margin-bottom: 10px;">
-                        <input type="radio" name="selected_address" value="{{ address.id }}" id="address_{{ address.id }}" {% if forloop.counter == 1  %}checked{% endif %}>
-                        <label for="address_{{ address.id }}">
-                            <span style="font-weight: bold;">Address {{ forloop.counter }}:</span>
-                            {{ address.full_name }} <br>
-                            {{ address.mobile_number }} <br>
-                            {{ address.address_line }}, {{ address.city }}, {{ address.state }}, {{ address.pincode }}<br>
-                        </label>
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <a href="../checkout_update_address/{{ address.id }}" class="btn-primary" id="editAddressBtn_{{ address.id }}" style="font-size: 12px; width: 65px; margin-right: 10px; text-align: center; display: inline-block; line-height: 1.5;">Edit</a>                
-                    </div>
-                </div>
-                {% endfor %}
+                
+              {% endif %}
+          
+          
             {% comment %} </form> {% endcomment %}
             
             </div><!-- End .col-lg-9 -->
@@ -115,9 +162,9 @@
                     <a href="" class="d-block text-dark" for="pay3">Wallet</a>
                   </div> 
                   <button type="" id="placeOrderButton" class="btn btn-outline-primary-2 btn-order btn-block">
-					<span class="btn-text">Place Order</span>
-					<span class="btn-hover-text">Proceed to Checkout</span>
-				  </button>
+                    <span class="btn-text">Place Order</span>
+                    <span class="btn-hover-text">Proceed to Checkout</span>
+				          </button>
 				
                 </div>
                 <!-- End .summary -->
@@ -132,11 +179,13 @@
 {% csrf_token %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    $(document).ready(function() {
+
+      $(document).ready(function() {
         $("#placeOrderButton").on("click", function() {
-			console.log("Button Clicked!");
+            console.log("Button Clicked!");
 
             // Your existing code
             console.log("clicked");
@@ -144,7 +193,7 @@
             var total = $("#total1").text();
             var payment = $("input[name=payment]:checked").val();
             console.log('button clicked');
-			console.log(address,"address");
+            console.log(address, "address");
 
             console.log('Before AJAX request');
             // Get the CSRF token
@@ -158,23 +207,40 @@
                     total: total,
                     address: address,
                     payment: payment,
-                    csrfmiddlewaretoken: csrf_token,  // Include the CSRF token
+                    csrfmiddlewaretoken: csrf_token,
                 },
                 success: function(response) {
-					console.log("entered")
-                    if (response.success === true) {
-					console.log("orderPag")
-
+                    console.log("entered");
+                    if (response && response.success === true) {
+                        console.log("orderPag");
                         window.location.href = '/order_page/';
+						console.log("entereddddddddddddddd");
                     } else {
-                        console.log('Order object:', response.razorpay_order);
-        				razorPayment(response.razorpay_order);
+                        if (response && response.insufficient_balance === true) {
+                            // Show SweetAlert for insufficient balance
+							console.log("alerttttttttttttttt");
+                            swal.fire({
+								position: "center",
+								icon: "error",
+								title: "Insufficient balance in the wallet",
+								showConfirmButton: false,
+								timer: 1500,
+								customClass: {
+									popup: 'swal-custom-size',
+								},
+							});
+                        } else {
+                            // Show SweetAlert for other errors
+                            console.log('Order object:', response.razorpay_order);
+                            razorPayment(response.razorpay_order);
+                        }
                     }
                 }
             });
             console.log('After AJAX request');
         });
     });
+
 
     function razorPayment(razorpay_order) {
 		console.log("Entered razorPayment");
@@ -188,7 +254,7 @@
 				key: "rzp_test_F83XKwHAQwFDZG",
 				amount: razorpay_order.amount,
 				currency: "INR",
-				name: "M LIVE Pvt.Ltd",
+				name: "Shoe Cart Pvt.Ltd",
 				description: "Test Transaction",
 				
 				order_id: razorpay_order.razorpay_order_id,
@@ -198,15 +264,15 @@
 					verifyPayment(response, razorpay_order);
 				},
 				prefill: {
-					name: " M LIVE Pvt.Ltd",
-					email: "MLIVEMARKET@example.com",
+					name: "Shoe Cart Pvt.Ltd",
+					email: "shoecartcalicut@gmail.com",
 					contact: "9230566487",
 				},
 				notes: {
 					address: "Razorpay Corporate Office",
 				},
 				theme: {
-					color: "#c96",
+					color: "#2F4F4F",
 				},
 			};
 	
@@ -250,6 +316,19 @@
     }
 </script>
 
+<script>
+  document.getElementById('chooseOtherAddressBtn').addEventListener('click', function () {
+      document.getElementById('otherAddresses').style.display = 'block';
+      this.style.display = 'none';
+      document.getElementById('closeOtherAddressesBtn').style.display = 'inline-block';
+  });
+
+  document.getElementById('closeOtherAddressesBtn').addEventListener('click', function () {
+      document.getElementById('otherAddresses').style.display = 'none';
+      document.getElementById('chooseOtherAddressBtn').style.display = 'inline-block';
+      this.style.display = 'none';
+  });
+</script>
 
 
  

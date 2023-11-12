@@ -74,7 +74,7 @@
 		</div>
 	</header>
 
-	<!-- Cart -->
+	{% comment %} <!-- Cart -->
 	<div class="wrap-header-cart js-panel-cart">
 		<div class="s-full js-hide-cart"></div>
 
@@ -157,7 +157,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> {% endcomment %}
 
 
 	<!-- breadcrumb -->
@@ -496,6 +496,11 @@
 							  text: 'Your item has been added to the cart.',
 							  icon: 'success',
 							});
+							// Update the badge count
+							var cartIcon = $('.js-show-cart');
+							cartIcon.attr('data-notify', response.cart_count_ajax);
+
+
 						  } else {
 							Swal.fire({
 							  title: 'Error',
