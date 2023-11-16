@@ -8,7 +8,6 @@ from django.db import transaction
 from datetime import timedelta 
 from django.http import JsonResponse
 from admin_home.models import SizeVariant
-import uuid
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
@@ -48,6 +47,11 @@ def place_order(request):
         user_instance = CustomUser.objects.get(email=user_email)
         print("address_id")
         
+        cart_items = CartItem.objects.filter(user=user_instance)
+        for item in cart_items:
+            if item.quantity > item.size_variant.quantity :
+                print("!!!!!!!!!!!!!!!!!!!!!!!!!")
+                return JsonResponse({'empty' : True , 'message' : "Cart items Out of stock"})
         
 
         if request.method == 'POST':
@@ -61,14 +65,21 @@ def place_order(request):
                 if cart_items.exists():
                     try:
                         with transaction.atomic():
+                            if 'final_amount' in request.session:
+                                final_amount = int(request.session['final_amount'])
+                            else:
+                                total_amount = sum(cart_item.size_variant.price * cart_item.quantity for cart_item in cart_items)
+                                
                             # Create a new order instance
                             order = Orders.objects.create(
                                 user=user_instance,
                                 address=delivery_address,
                                 payment_method=payment_type,
                                 quantity=0,
-                            )
+                                total_purchase_amount= final_amount if 'final_amount' in request.session else total_amount,
 
+                            )
+                            
                             for cart_item in cart_items:
                                 # Create an order item for each cart item
                                 order_item = OrdersItem.objects.create(
@@ -125,13 +136,20 @@ def place_order(request):
                 
                 try:
                     if cart_items.exists():
+                        if 'final_amount' in request.session:
+                            final_amount = int(request.session['final_amount'])
+                        else:
+                            total_amount = sum(cart_item.size_variant.price * cart_item.quantity for cart_item in cart_items)
+                                
                         # Create a new order instance
                         order = Orders.objects.create(
                             user=user_instance,
                             address=delivery_address,
                             payment_method=payment_type,
                             quantity=0,
-                            payment_status="temp"
+                            payment_status="temp",
+                            total_purchase_amount= final_amount if 'final_amount' in request.session else total_amount
+ 
                         )
 
                         request.session['order_id'] = str(order.order_id)
@@ -150,7 +168,7 @@ def place_order(request):
 
                         order.save()
                        
-                        amount_in_paise = sum(cart_items.values_list('cart_price', flat=True))
+                        amount_in_paise = final_amount if 'final_amount' in request.session else total_amount
                         print(amount_in_paise)
                        
 
@@ -185,6 +203,11 @@ def place_order(request):
             if payment_type == "wallet":
                 
                 if cart_items.exists():
+                    if 'final_amount' in request.session:
+                        final_amount = int(request.session['final_amount'])
+                    else:
+                        total_amount = sum(cart_item.size_variant.price * cart_item.quantity for cart_item in cart_items)
+                        
                     try:
                         with transaction.atomic():
                             user_wallet = Wallet.objects.filter(user=user_instance).first()
@@ -197,7 +220,8 @@ def place_order(request):
                                     address=delivery_address,
                                     payment_method=payment_type,
                                     quantity=0,
-                                    payment_status="success"
+                                    payment_status="success",
+                                    total_purchase_amount= final_amount if 'final_amount' in request.session else total_amount
                                 )
 
                                 for cart_item in cart_items:
@@ -231,9 +255,10 @@ def place_order(request):
                                     user=user_instance,
                                     transaction_details=f'Purchased for Rs.{total_order_amount}.00',
                                     transaction_type="Debit",
-                                    transaction_amount=total_order_amount,
                                     balance=new,
-                                    date=timezone.now()
+                                    date=timezone.now(),
+                                    transaction_amount=final_amount if 'final_amount' in request.session else total_amount
+                                    
                                 )
                                 p.save()
                                
@@ -287,13 +312,13 @@ def verifyPayment(request):
     
     for order_item in order_items: 
         order_item.status = 'Order confirmed'
-        order_item.save()  # Fixed: Save the updated order_item
+        order_item.save() 
         
         qua = order_item.variant
         qua.quantity -= order_item.quantity
         qua.save()
 
-    cart_items.delete()  # Delete all associated cart_items
+    cart_items.delete()  
     
     return JsonResponse({"success": True})
 

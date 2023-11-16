@@ -77,8 +77,8 @@
         priceError.textContent = "";
         discountPercentError.textContent = "";
     
-        if (quantity === "" || isNaN(quantity) || parseFloat(quantity) <= 0) {
-            quantityError.textContent = "Quantity must be a positive number";
+        if (quantity === "" || isNaN(quantity) || parseFloat(quantity) < 0) {
+            quantityError.textContent = "Quantity must be a Greater than zero";
             event.preventDefault();
         }
     

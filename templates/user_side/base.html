@@ -107,11 +107,11 @@
 							<i class="zmdi zmdi-search"></i>
 						</div> {% endcomment %}
 
-						<a href="{% url "cart_page" %}" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="{{cart_count}}">
+						<a href="{% url "cart_page" %}" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" id="js-show-cart" data-notify="{{cart_count}}">
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</a>
 
-						<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
+						<a href="{% url "wishlist" %}" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-wishlist icon-header-noti" data-notify="{{wishlist_count}}">
 							<i class="zmdi zmdi-favorite-outline"></i>
 						</a>
 						<div class="pl-5 custom-link">

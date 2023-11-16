@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from admin_home.models import Product, ProductImage
-from .signals import contact_form_submitted
 from admin_home.models import Category
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from user_authentication.models import CustomUser
 from admin_home.models import SizeVariant
+from user_home.models import Contact
 
 
 
@@ -128,17 +128,11 @@ def shoes(request):
 # fucntion for rendering the condact page
 def contact(request):
     if 'user' in request.session:
-        success_message = None
         if request.method == 'POST':
             email = request.POST['email']
             message = request.POST['message']
-            if email and message:
-                contact_form_submitted.send(
-                    sender=request, email=email, message=message)
-                success_message = 'Form submitted successfully'
-                return render(request, 'user_side/contact.html', {'success_message': success_message})
-            else:
-                return redirect('contact')
+            Contact.objects.create(email=email, message=message)
+            return redirect('contact')
     else:
         return redirect('signin')
 

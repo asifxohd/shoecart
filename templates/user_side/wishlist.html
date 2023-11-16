@@ -1,0 +1,146 @@
+{% extends 'user_side/base.html' %}
+{% load static %}
+{% block title %}WISHLIST{% endblock title %}
+{% block content %}
+
+
+
+<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url({% static "user_home/images/walletimg.png" %});">
+    <h2 class="ltext-105 cl0 txt-center">
+       <span class="text-dark"> Wishlist</span>
+    </h2>
+</section>	
+<div class="container mt-5">
+	
+	<div class="row isotope-grid">
+        {% if products %}
+        {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 p-b-35 isotope-item women" id="product-{{product.id}}">
+            <!-- Block2 -->
+            <div class="block2">
+                <div class="block2-pic hov-img0 position-relative">
+                    <img src="{{ product.productimage_set.all.0.image.url }}" alt="IMG-PRODUCT">
+    
+                    <a href="../product_details/{{ product.id }}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                        Add to Cart
+                    </a>
+    
+                    <!-- Add the icon above the image in the top right side -->
+                    <span  class="position-absolute top-0 end-0 mt-3 me-3">
+                        <i class="fa-regular fa-circle-xmark fa-2xl" style="color: #696969; position: absolute; top: 31px; left: 225px;" onclick="showValidationModal('{{ product.name }}', '{{ product.id }}')"></i>
+                    </span>
+                    </a>
+                </div>
+    
+                <div class="block2-txt flex-w flex-t p-t-14">
+                    <div class="block2-txt-child1 flex-col-l">
+                        <a href="../product_details/{{ product.id }}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                            {{ product.name }}
+                        </a>
+    
+                        <span class="stext-105 cl3">
+                            {% if product.first_variant_price %}
+                                &#8377;{{ product.first_variant_price }}
+                            {% else %}
+                                <p class="text-danger">stockout</p>
+                            {% endif %}
+                        </span>
+                    </div>
+    
+                    <div class="block2-txt-child2 flex-r p-t-3">
+                        <!-- You can add more elements or styling here -->
+                        <a  class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                            
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    {% else %}
+    </div>
+    <!-- Show the image and button in the center of the page vertically -->
+    
+    <div class="d-flex align-items-center justify-content-center mb-5">
+        <div class="text-center">
+            <img src="{% static 'user_home/images/emptywishlist.png' %}" alt="No Wishlist Items" class="img-fluid" style="height:28rem">
+            <br><a href="{% url 'product_page' %}" class="btn btn-dark mt-3">Back to Shop</a>
+        </div>
+    </div>
+    
+
+    {% endif %}
+        
+    </div>
+	{% csrf_token %}
+</div>
+</div>
+</section>
+
+<div class="btn-back-to-top" id="myBtn">
+<span class="symbol-btn-back-to-top">
+	<i class="zmdi zmdi-chevron-up"></i>
+</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function showValidationModal(productName, productId) {
+        console.log(product.id)
+        Swal.fire({
+            title: 'Confirmation',
+            text: `Are you sure you want to remove ${productName} from your wishlist?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, remove it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '../remove_wishlist/',
+                    data: {
+                        'product_id': productId,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: `${productName} has been removed from your wishlist.`,
+                                showConfirmButton: false,
+                                timer: 1500
+                              });
+                            
+                            $('#product-' + productId).remove();
+                            var remainingItems = $('.isotope-item').length;
+                            if (remainingItems === 0) {
+                                // Reload the page when there are no more items
+                                location.reload();
+                            }
+
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Failed to remove the item from the wishlist.',
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An error occurred while processing your request.',
+                            icon: 'error'
+                        });
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+{% endblock %}

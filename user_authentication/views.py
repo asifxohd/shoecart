@@ -10,16 +10,13 @@ from .models import CustomUser
 
 
 def send_6_digit_otp_email(request):
-    # Generate a random 6-digit OTP
     otp = random.randint(100000, 999999)
     request.session['otp'] = str(otp)
-
     # Calculate the OTP expiration time (36 seconds from now)
     expiration_time = datetime.now() + timedelta(seconds=36)
     request.session['otp_expiration_time'] = expiration_time.strftime(
         "%Y-%m-%d %H:%M:%S")
 
-    # Calculate remaining time in seconds
     remaining_time_seconds = max(
         0, (expiration_time - datetime.now()).total_seconds())
 
@@ -87,7 +84,8 @@ def signin(request):
             else:
                 messages.error(request, 'Email is not verified.')
                 return redirect('signin')
-            
+        else:
+            messages.error(request,"Username or Password in Incorrect")
 
     return render(request, 'user_auth/loginpage.html')
 

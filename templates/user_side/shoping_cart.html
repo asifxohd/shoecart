@@ -80,7 +80,7 @@
 										<th class="column-5">Action</th>
 									</tr>
 									{% for item in cart_items %}
-									<tr class="table_row">
+									<tr class="table_row" id ="cart-{{item.id}}">
 										<td class="column-1">
 											<div class="how-itemcart1">
 														<img src="{{ item.size_variant.product.productimage_set.first.image.url }}" alt="{{ item.product.name }}">
@@ -91,7 +91,7 @@
 												<td class="column-3">{{ item.size_variant.size }}</td>
 												
 												<td class="column-4">
-													{% if item.size_variant.quantity > 1 %}
+													{% if item.size_variant.quantity >= 1 %}
 													<div class="wrapper">
 														<span class="minus" onclick="cartQuantity(-1, '{{ item.size_variant.id }}', '{{ item.quantity }}')">-</span>
 														<span class="num-{{item.size_variant.id}}">{{ item.quantity }}</span>
@@ -120,17 +120,17 @@
 							
 						</div>
 
-						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+						{% comment %} <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
 							<div class="flex-w flex-m m-r-20 m-tb-5">
 								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5" type="text" name="coupon" placeholder="Coupon Code">
 									
-								<div class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
+								<div class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5" id="applyCouponBtn">
 									Apply coupon
 								</div>
 							</div>
 
 							
-						</div>
+						</div> {% endcomment %}
 					</div>
 				</div>
 
@@ -223,6 +223,8 @@
 	</script> {% endcomment %}
 
 	   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 	   <script>
 		function confirmDelete(button) {
 			const itemId = button.getAttribute('data-item-id');
@@ -247,7 +249,17 @@
 				  },
 				  success: function(data) {
 					console.log('Item removed successfully.');
-					location.reload(); // Reload the page
+					$('#cart-' + itemId).remove();
+					const remainingItems = $('.table_row').length;
+					if (remainingItems === 0) {
+                        location.reload();
+                    }
+					$('#js-show-cart').attr('data-notify', data.cartCount);
+
+					$('.col-sm-10.col-lg-7.col-xl-4.m-lr-auto.m-b-50').load(location.href + ' .col-sm-10.col-lg-7.col-xl-4.m-lr-auto.m-b-50>*', function () {
+						// Callback function after the content is reloaded (if needed)
+					});		
+
 				  },
 				  error: function(jqXHR, textStatus, errorThrown) {
 					console.error('Error removing item:', errorThrown);
@@ -312,6 +324,7 @@
 				}
 			});
 		}
+
 	</script>
 	
 		

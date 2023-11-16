@@ -2,7 +2,34 @@
 {% load static %}
 {% block title %}Checkout{% endblock title %}
 {% block content %}
+<style>
 
+/* CSS */
+.button-31 {
+  background-color: #222;
+  border-style: none;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Farfetch Basis","Helvetica Neue",Arial,sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0;
+  max-width: none;
+  min-width: 10px;
+  outline: none;
+  overflow: hidden;
+  padding: 9px 20px 8px;
+  position: relative;
+  text-align: center;
+}
+
+.button-31:hover,
+.button-31:focus {
+  opacity: .75;
+}
+
+
+</style>
 <main class="main">
     <div class="page-header text-center m-t-65">
       <div class="container">
@@ -23,11 +50,13 @@
       <div class="cart mb-5">
         <div class="container">
           <div class="row">
+            
            
             <div class="col-md-8 cart-item-box">
               <h5 class="text-dark mb-3">1. &nbsp; Select a delivery address</h5>
-          
+                  
               {% if addresses %}
+              
                   <a href="{% url 'checkout_address' %}">
                       <div class="d-flex justify-content-end mr-3">
                           <button type='button' class="btn btn-dark" id="addAddressBtn">Add New Address</button>
@@ -76,6 +105,7 @@
                               <a href="../checkout_update_address/{{ address.id }}" class="btn-primary" id="editAddressBtn_{{ address.id }}" style="font-size: 12px; width: 65px; margin-right: 10px; text-align: center; display: inline-block; line-height: 1.5;">Edit</a>
                           </div>
                       </div>
+                      
                       {% endfor %}
                       <div class="d-flex justify-content-end mr-3">
                           <button type="button" class="btn btn-secondery" id="closeOtherAddressesBtn" style="display: none;">Close Addresses<i class="fa-solid fa-x" style="color: #000000;"></i></button>
@@ -98,8 +128,51 @@
             {% comment %} </form> {% endcomment %}
             
             </div><!-- End .col-lg-9 -->
-  
+              
             <aside class="col-lg-3">
+              <div class="coupon">
+                <input type="text" class="form-control m-2" id="couponCode" placeholder="Enter coupon code">
+                <div class="d-flex justify-content-end mb-3" >
+                  <button style="margin-right: 7px;" class="btn btn-light" data-toggle="modal" data-target="#couponModal">Available Coupons</button>
+                    <button id="applyCouponBtn" style="margin-right: 7px;" class="button-31" role="button">Applay</button>
+                  <button class="bg-danger button-31 removeCouponBtn" role="button">Remove</button>
+                  
+                </div>
+              </div> 
+
+
+                                <!-- Bootstrap Modal -->
+                  <div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content p-5 mar">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="couponModalLabel">Available Coupons</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <!-- Dummy Data for Coupons -->
+                          <ul>
+                            {% for c in coupons %}
+                            <li style="display: flex; flex-direction: column; background-color: #fffff0; padding: 10px; margin-bottom: 15px;">
+                              <span style="font-weight: bold; color: #ff9900; font-size: 18px;">{{ c.coupon_title }}</span>
+                              <span style="font-weight: bold; color: #ff9900; font-size: 16px;"> Coupon Code :   {{ c.coupon_code }}</span>
+                              <span style="color: #666; font-size: 14px;">Minimum Purchase: &#8377;{{ c.minimum_order_amount }}</span>
+                              <span style="color: #666; font-size: 14px;">Expiry Date: {{ c.valid_to }}</span>
+                              
+                            </li>
+                            {% endfor %}
+                          </ul>
+                          
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+
+
+
                 <div class="summary">
                   <h3 class="summary-title">Your Order</h3>
                   <!-- End .summary-title -->
@@ -135,9 +208,13 @@
                       <td>Shipping:</td>
                       <td>Free shipping</td>
                     </tr>
+                    <tr>
+                      <td>Coupon Discount:</td>
+                      <td class="discound">0</td>
+                    </tr>
                     <tr class="summary-total">
                       <td>Total:</td>
-                      <td id="total1">
+                      <td class="subtotal_amount">
                        {{ total }}
                       </td>
                     </tr>
@@ -214,22 +291,33 @@
                     if (response && response.success === true) {
                         console.log("orderPag");
                         window.location.href = '/order_page/';
-						console.log("entereddddddddddddddd");
                     } else {
                         if (response && response.insufficient_balance === true) {
                             // Show SweetAlert for insufficient balance
-							console.log("alerttttttttttttttt");
                             swal.fire({
-								position: "center",
-								icon: "error",
-								title: "Insufficient balance in the wallet",
-								showConfirmButton: false,
-								timer: 1500,
-								customClass: {
-									popup: 'swal-custom-size',
-								},
-							});
-                        } else {
+                                position: "center",
+                                icon: "error",
+                                title: "Insufficient balance in the wallet",
+                                showConfirmButton: false,
+                                timer: 1500,
+                                customClass: {
+                                  popup: 'swal-custom-size',
+                                },
+                              });
+                        }
+                          else if (response && response.empty === true) {
+                            // Show SweetAlert for out-of-stock cart items
+                            swal.fire({
+                                position: "center",
+                                icon: "error",
+                                title: "Cart items out of stock",
+                                showConfirmButton: false,
+                                timer: 1500,
+                                customClass: {
+                                    popup: 'swal-custom-size',
+                                },
+                            });
+                      } else {
                             // Show SweetAlert for other errors
                             console.log('Order object:', response.razorpay_order);
                             razorPayment(response.razorpay_order);
@@ -315,6 +403,105 @@
         });
     }
 </script>
+
+<script>
+
+    $(document).ready(function() {
+        $('#applyCouponBtn').on('click', function() {
+            var couponCode = $('#couponCode').val();
+            var token = $('input[name=csrfmiddlewaretoken]').val();
+
+            if (couponCode.trim() !== "") {
+                $.ajax({
+                    url: '/apply_coupon', // Replace with the actual URL for applying the coupon
+                    type: 'POST',
+                    data: {
+                        couponCode: couponCode,
+                        csrfmiddlewaretoken: token,
+                    },
+                    success: function(response) {
+                        console.log('Coupon applied successfully:', response);
+
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Coupon Applied',
+                                text: 'Coupon applied successfully!',
+                                icon: 'success',
+                            });
+                            $('.subtotal_amount').text(response.updated_total_amount);
+                            $('.discound').text(response.discount_amount);
+                            
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response.message,
+                                icon: 'error',
+                            });
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error applying coupon:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Error applying coupon. Please try again.',
+                            icon: 'error',
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: 'Warning',
+                    text: 'Please enter a valid coupon code.',
+                    icon: 'warning',
+                });
+            }
+        });
+    });
+
+
+    $('.removeCouponBtn').on('click', function() {
+      // You can add additional logic here if needed before sending the AJAX request
+      var token = $('input[name=csrfmiddlewaretoken]').val();
+  
+      $.ajax({
+          url: '/remove_coupon',
+          type: 'POST',
+          data: {
+              csrfmiddlewaretoken: token,
+          },
+          success: function(response) {  // Change 'data' to 'response' here
+              console.log('Coupon removed successfully:', response);
+  
+              if ('error' in response) {
+                  Swal.fire({
+                      title: 'Error',
+                      text: response.error,
+                      icon: 'error',
+                  });
+              } else {
+                  Swal.fire({
+                      title: 'Coupon Removed',
+                      text: 'Coupon removed successfully!',
+                      icon: 'success',
+                  });
+                  $('.subtotal_amount').text(response.updated_total_amount);
+                  $('.discound').text(response.discount_amount);
+                  console.log(response.discount_amount);
+                  console.log(response.updated_total_amount);
+              }
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+              console.error('Error removing coupon:', errorThrown);
+              Swal.fire({
+                  title: 'Error',
+                  text: 'Error removing coupon. Please try again.',
+                  icon: 'error',
+              });
+          }
+      });
+  });
+</script>
+
 
 <script>
   document.getElementById('chooseOtherAddressBtn').addEventListener('click', function () {

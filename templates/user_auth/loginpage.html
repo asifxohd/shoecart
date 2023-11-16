@@ -37,12 +37,11 @@
                             </a>
                         </div>
                         {% if messages %} 
-                        {% for message in messages %}
                         <div class="text-danger mt-3">
-                            {{message}}
+                            {% for message in messages %}{{message}}{% endfor %}
                         </div>
-                        {% endfor %}
                         {% endif %}
+
                         <p class="text-center text-dark small">Dont't Have An account? <a class="text-dark"
                                 href="{% url "signup" %}">
                             Signup Here!</a></p>

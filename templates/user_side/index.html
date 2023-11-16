@@ -443,19 +443,21 @@
 						</div>
 	
 						<div class="block2-txt-child2 flex-r p-t-3">
-							<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+							<span class="btn-addwish-b2 dis-block pos-relative js-addwish-b2" 
+								data-product-name="{{ product.name }}" 
+								data-product-id="{{ product.id }}">
 								<img class="icon-heart1 dis-block trans-04" src="{% static 'user_home/images/icon-heart-01.png' %}" alt="ICON">
 								<img class="icon-heart2 dis-block trans-04 ab-t-l" src="{% static 'user_home/images/icon-heart-02.png' %}" alt="ICON">
-							</a>
+							</span>
 						</div>
 					</div>
 				</div>
 			</div>
-		
+		{% csrf_token %}
 	
 	{% endfor %}</div>
 	<!-- do the pagination here  -->
-	<div class="flex-c-m flex-w w-full p-t-45 mt-3">
+	{% comment %} <div class="flex-c-m flex-w w-full p-t-45 mt-3">
 		<nav aria-label="Page navigation example">
 			<ul class="pagination" style="background-color: #333333;">
 			  <li class="page-item" style="color: #333333;">
@@ -487,7 +489,7 @@
 			  </li>
 			</ul>
 		</nav>
-	</div>
+	</div> {% endcomment %}
 </div>
 </section>
 
@@ -831,6 +833,57 @@
 		})
 	});
 </script> {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+	$(document).ready(function() {
+		$('.js-addwish-b2').on('click', function () {
+			var token = $('input[name=csrfmiddlewaretoken]').val();
+			var productName = $(this).data('product-name');
+			var productId = $(this).data('product-id');
+			var heartIcon = $(this).find('.icon-heart2');
+	
+			$.ajax({
+				url: '../add_to_wishlist',
+				type: 'POST',
+				data: {
+					productId: productId,
+					csrfmiddlewaretoken: token,
+				},
+				success: function(response) {
+					if (response.success) {
+						Swal.fire({
+							title: 'Item Added to wishlist',
+							text: 'Your item has been added to the wishlist.',
+							icon: 'success',
+						});
+						// Update the badge count
+						var cartIcon = $('.js-show-wishlist');
+						cartIcon.attr('data-notify', response.wishlist_count);
+						// Change the src attribute to show the second heart icon
+						heartIcon.attr('src', '{% static 'user_home/images/icon-heart-02.png' %}');
+					} else {
+						Swal.fire({
+							title: 'Error',
+							text: 'Already in wishlist',
+							icon: 'error',
+						});
+					}
+					// Log the result
+					console.log('Product added to wishlist successfully');
+				},
+				error: function(error) {
+					console.error('Error adding product to wishlist');
+				}
+			});
+		});
+	});
+	
+
+
+</script>
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 

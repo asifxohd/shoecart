@@ -1,12 +1,14 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import JsonResponse
 from user_authentication.models import CustomUser
-from .models import CartItem
+from .models import CartItem,Wishlist
 from admin_home.models import SizeVariant,Product
 from django.utils import timezone
 from django.http import HttpResponse
 from user_profile.models import Address
 from django.views.decorators.cache import cache_control
+from admin_home.models import Category
+from coupons.models import Coupons
 # Create your views here.
 
 
@@ -31,7 +33,6 @@ def add_to_cart(request):
             user = CustomUser.objects.get(email=email)
             variant_id = request.POST.get('variantId')
             variant_size = SizeVariant.objects.get(id=variant_id)
-            print(variant_size.price)
             if (CartItem.objects.filter(user=user , size_variant=variant_size)):
                 return JsonResponse({'status' : "Product already in cart"})
             else:
@@ -50,11 +51,14 @@ def add_to_cart(request):
 def remove_item_from_cart(request):
     if 'user' in request.session:
         if request.method == 'POST':
+            user_emil = request.session['user']
+            user = CustomUser.objects.filter(email=user_emil).first()
             item_id = request.POST.get('item_id') 
             try:
                 cart_item = CartItem.objects.get(id=item_id)
                 cart_item.delete()
-                return JsonResponse({'message': 'Item removed successfully'})
+                cart_count = CartItem.objects.filter(user=user).count()
+                return JsonResponse({'cartCount': cart_count, 'message': 'Item removed successfully'})
             except CartItem.DoesNotExist:
                 return JsonResponse({'message': 'Item not found'}, status=400)
         else:
@@ -77,20 +81,13 @@ def update_cart(request):
             print(variant_instence.quantity)
             if change == 1:
                 if variant_instence.quantity > cart.quantity:
-                    if cart.quantity < 10:
-                        cart.quantity += 1
-                        cart.save()
-                    else:
-                        cart.quantity = 10
-                        cart.save()
-               
+                    cart.quantity += 1
+                    cart.save()           
             else:
                 if cart.quantity > 1:
                     cart.quantity -= 1
                     cart.save()
-                else:
-                    cart.quantity = 1
-                    cart.save()
+                
             
             # for showing total price of the each product 
             priceOfInstence = variant_instence.price
@@ -115,8 +112,10 @@ def checkout(request):
         addresses = Address.objects.filter(user=userr.id, is_listed=True)
         obj = CartItem.objects.filter(user=userr)
         total = sum(obj.values_list('cart_price', flat=True))
+        coupons = Coupons.objects.filter(active=True)
+        print(coupons)
         
-    return render(request, 'user_side/checkout.html', {'addresses': addresses, 'obj':obj, 'total':total})
+    return render(request, 'user_side/checkout.html', {'addresses': addresses, 'obj':obj, 'total':total,'coupons':coupons})
 
 
 def checkout_add_address(request):
@@ -182,3 +181,66 @@ def checkout_update_address(request, id):
 
 def checkout_address(request):
     return render(request,'user_side/checkout_address.html')
+
+
+def wishlist(request):
+    if 'user' in request.session:
+        user = get_object_or_404(CustomUser, email=request.session['user'])
+        
+        wishlist_products = Wishlist.objects.filter(user=user)
+        product_ids = [wishlist.product_id for wishlist in wishlist_products]
+
+        products = Product.objects.prefetch_related('productimage_set', 'sizevariant_set').filter(id__in=product_ids)
+
+        for product in products:
+            first_variant = product.sizevariant_set.first()
+            product.first_variant_price = first_variant.price if first_variant else None
+
+        context = {
+            "products": products,
+        }
+        
+        return render(request, 'user_side/wishlist.html', context)
+
+    return HttpResponse("User not logged in")
+
+
+def add_to_wishlist(request):
+    if request.method == 'POST':
+        if 'user' in request.session:
+            email = request.session['user']
+            user = CustomUser.objects.get(email=email)
+
+            try:
+                product_id = int(request.POST.get('productId'))
+                product = Product.objects.get(id=product_id)
+
+                if Wishlist.objects.filter(user=user, product=product).exists():
+                    return JsonResponse({'success': False, 'message': 'Already in wishlist'})
+
+                Wishlist.objects.create(user=user, product=product)
+                wishlist_count = Wishlist.objects.filter(user=user).count()
+
+                return JsonResponse({'success': True, 'wishlist_count': wishlist_count})
+
+            except Product.DoesNotExist:
+                return JsonResponse({'success': False, 'message': 'Product not found'})
+                
+    return JsonResponse({'success': False, 'message': 'Invalid request'})
+
+
+def remove_wishlist(request):
+    print("Removing Wishlist")
+
+    if 'user' in request.session:
+        print("Removing Wishlist")
+        if request.method == 'POST':
+            user = get_object_or_404(CustomUser, email=request.session['user'])
+            prod_id = request.POST.get('product_id')
+            wishlist_item = get_object_or_404(Wishlist, user=user, product_id=prod_id)
+            wishlist_item.delete()
+            response_data = {'success': True, 'message': 'Product removed from wishlist successfully'}
+            return JsonResponse(response_data)
+
+    response_data = {'success': False, 'message': 'Invalid request'}
+    return JsonResponse(response_data)

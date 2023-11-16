@@ -15,7 +15,8 @@ class Orders(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
     expected_delivery_date = models.DateField(null=True, blank=True)
     delivered_date = models.DateField(null=True, blank=True)
-    quantity = models.PositiveIntegerField()    
+    quantity = models.PositiveIntegerField()
+    total_purchase_amount = models.PositiveIntegerField(default=1)
     def __str__(self):
         return f"{self.user}'s order details"
 
