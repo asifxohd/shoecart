@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,8 +47,14 @@ INSTALLED_APPS = [
     'cart',
     'orders', 
     'payments',
-    'coupons'
+    'coupons',
+    'chat',
+    
 ]
+
+ASGI_APPLICATION = 'shoecart.asgi.application'
+# WSGI_APPLICATION = 'shoecart.wsgi.application'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,7 +86,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'shoecart.wsgi.application'
 
 
 # Database
@@ -168,3 +175,14 @@ RAZORPAY_API_KEY = 'rzp_test_F83XKwHAQwFDZG'
 RAZORPAY_API_SECRET_KEY = 'etDY4jG2xDLoFngOnDsM7wqY'
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
+CHANNEL_LAYERS = {
+    'default':{
+        'BACKEND':'channels.layers.InMemoryChannelLayer'
+    }
+}
+
+# for the procuction level we need 
+# 'CONFIG':{
+#     'hosts' : [('127.0.0.1', 6379)]
+# }

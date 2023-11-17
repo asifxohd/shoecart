@@ -1,0 +1,107 @@
+{% extends 'user_side/base.html' %}
+{% load static %}
+{% block title %}Chat{% endblock title %}
+{% block content %}
+<style>
+
+    .chat-container {
+        max-width: 600px;
+        margin: 50px auto;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 150px;
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: #fff;
+       
+    }
+
+    .chat-box {
+        height: 300px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 15px;
+        background-color: #fff;
+    }
+
+    .message {
+        margin-bottom: 15px;
+    }
+
+    .user-message {
+        background-color: #d4edda;
+        padding: 10px;
+        color: #155724;
+    }
+
+    .admin-message {
+        background-color: #cce5ff;
+        border-radius: 10px;
+        padding: 10px;
+        color: #004085;
+    }
+
+    .input-group {
+        border: 1px solid #ccc;
+        margin-top: 15px;
+    }
+
+    .input-group input {
+        border: none;
+    }
+
+    
+</style>
+    <section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url({% static "user_home/images/walletimg.png" %});">
+        <h2 class="ltext-105 cl0 txt-center">
+           <span class="text-dark">Help</span>
+        </h2>
+    </section>	
+    <input id="logged-in-user" type="hidden" value={{user.id}} ></input>
+    <div class="container mt-5 mb-5">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0">Help!</h5>
+            </div>
+            <div class="card-body chat-box" id="chat-box">
+                <div class="d-flex mb-4 replied justify-content-end">
+                    <div class="msg_cotainer_send">
+                        Hello, this is a message from the user. <br>
+                        <span class="msg_time_send" style="font-size: 10px;">8:55 AM, Today</span>
+                    </div>
+                </div>
+    
+                <!-- Dummy message from admin -->
+                <div class="d-flex mb-4 replied justify-content-start">
+                    <div class="msg_cotainer_admin">
+                        Hi there! This is a message from the admin. <br>
+                        <span class="msg_time_send" style="font-size: 10px;">9:00 AM, Today</span>
+                    </div>
+                </div>
+                <!-- Dummy message -->
+                <div class="mb-4 replied">
+                    <div class="msg_card_body">
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="card-footer">
+                <form class="message-form" id="send-message-form">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="input-message" name="message" placeholder="Type your message...">
+                        <div class="input-group-append">
+                            <button class="btn btn-dark" type="submit">Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="{% static "chat_js/chat.js" %}"></script>
+{% endblock %}
