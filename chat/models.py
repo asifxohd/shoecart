@@ -7,7 +7,7 @@ class ThreadManager(models.Manager):
     def by_user(self, **kwargs):
         user = kwargs.get('user')
         lookup = Q(first_person=user) | Q(admin=user)
-        qs = self.get_queryset().filter(lookup).distinct()
+        return self.get_queryset().filter(lookup).distinct()
 
 class Thread(models.Model):
     first_person = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='first_person_threads')

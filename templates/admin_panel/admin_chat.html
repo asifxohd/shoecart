@@ -1,59 +1,31 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
-{% block title %} Enquires{% endblock title %}
+{% block title %} Enquiries{% endblock title %}
 {% block products %}{% endblock products %}
 {% block content %}
+
 <main id="main" class="main">
-    <!-- End Page Title -->
-    <div class="card">
-        <div class="card-body">
-          <section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url({% static "user_home/images/walletimg.png" %});">
-           <h1> logged in as: admin </h1>	
-        <input id="logged-in-user" type="hidden" value="2" ></input>
-        <div class="container mt-5 mb-5">
-          <div class="card">
-              <div class="card-header bg-dark">
-                  <h5 class="mb-0">Help!</h5>
-              </div>
-              <div class="card-body chat-box" id="chat-box">
-                  <div class="d-flex mb-4 replied justify-content-end">
-                      <div class="msg_cotainer_send">
-                          Hello, this is a message from the user. <br>
-                          <span class="msg_time_send" style="font-size: 10px;">8:55 AM, Today</span>
-                      </div>
-                  </div>
-      
-                  <!-- Dummy message from admin -->
-                  <div class="d-flex mb-4 replied justify-content-start">
-                      <div class="msg_cotainer_admin">
-                          Hi there! This is a message from the admin. <br>
-                          <span class="msg_time_send" style="font-size: 10px;">9:00 AM, Today</span>
-                      </div>
-                  </div>
-                  <!-- Dummy message -->
-                  <div class="mb-4 replied">
-                    <div class="msg_card_body">
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            {% if user.is_authenticated %}
+                <h4 style="text-align: end; padding-right: 10px">Logged in as: {{ user.username }}</h4>
+                <input type="hidden" id="logged-in-user" value="{{ user.id }}">
+            {% endif %}
+            {% for thread in Threads %}
+                <div class="card">
+                    <div class="card-body p-4">
+                        <b>{{ thread.first_person }}</b>
+                        <input class="thread-id-input" type="hidden" value="{{ thread.id }}">
+                        <a href="{% url 'admin_chat' id=thread.id %}" class="view-chat-link" data-thread-id="{{ thread.id }}">View Chat</a>
                     </div>
-                    
                 </div>
-              </div>
-              <div class="card-footer">
-                  <form class="message-form" id="send-message-form">
-                      <div class="input-group">
-                          <input type="text" class="form-control" id="input-message" name="message" placeholder="Type your message...">
-                          <div class="input-group-append">
-                              <button class="btn btn-dark" type="submit">Send</button>
-                          </div>
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
+            {% endfor %}
+
         </div>
     </div>
 </main>
 
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="{% static "chat_js/chat.js" %}"></script>
-    
-{% endblock content %}
+{% endblock content %} 

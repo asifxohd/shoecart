@@ -62,29 +62,35 @@
         </h2>
     </section>	
     <input id="logged-in-user" type="hidden" value={{user.id}} ></input>
+    <input class="thread-id-input" type="hidden" value="{{ thread.id }}">
     <div class="container mt-5 mb-5">
         <div class="card">
             <div class="card-header bg-dark">
                 <h5 class="mb-0">Help!</h5>
             </div>
             <div class="card-body chat-box" id="chat-box">
-                <div class="d-flex mb-4 replied justify-content-end">
-                    <div class="msg_cotainer_send">
-                        Hello, this is a message from the user. <br>
-                        <span class="msg_time_send" style="font-size: 10px;">8:55 AM, Today</span>
-                    </div>
-                </div>
-    
-                <!-- Dummy message from admin -->
-                <div class="d-flex mb-4 replied justify-content-start">
-                    <div class="msg_cotainer_admin">
-                        Hi there! This is a message from the admin. <br>
-                        <span class="msg_time_send" style="font-size: 10px;">9:00 AM, Today</span>
-                    </div>
-                </div>
+                
                 <!-- Dummy message -->
                 <div class="mb-4 replied">
                     <div class="msg_card_body">
+                        {% for chat in thread.chatmessage_thread.all %}
+                            {% if chat.user == user %}
+                                <div class="d-flex mb-4 replied">
+                                    <div class="msg_cotainer_send">
+                                        {{ chat.message }}
+                                        <span class="msg_time_send">{{ chat.timestamp|date:"d D" }}, {{ chat.timestamp|time:"H:i" }}</span>
+                                    </div>
+                            </div>
+                            {% else %}
+                                <div class="d-flex mb-4 received">
+                                
+                                <div class="msg_cotainer">
+                                    {{ chat.message }}
+                                    <span class="msg_time">{{ chat.timestamp|date:"d D" }}, {{ chat.timestamp|time:"H:i" }}</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                     
                 </div>

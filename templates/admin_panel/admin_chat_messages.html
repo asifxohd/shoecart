@@ -1,0 +1,49 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Enquiries{% endblock title %}
+{% block products %}{% endblock products %}
+{% block content %}
+
+<main id="main" class="main">
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            
+            <input id="logged-in-user" type="hidden" value={{user.id}} ></input>
+            <div class="container mt-5 mb-5">
+                <div class="card">
+                    <div class="card-header bg-dark">
+                        <h5 class="mb-0">Help!</h5>
+                    </div>
+                    <div class="card-body chat-box" id="chat-box">
+                        
+                        <!-- Dummy message -->
+                        <div class="mb-4 replied">
+                            <div class="msg_card_body">
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <form class="message-form" id="send-message-form">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="input-message" name="message" placeholder="Type your message...">
+                                <div class="input-group-append">
+                                    <button class="btn btn-dark" type="submit">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="{% static "chat_js/chat.js" %}"></script>
+        </div>
+    </div>
+</main>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="{% static "chat_js/chat.js" %}"></script>
+{% endblock content %} 
