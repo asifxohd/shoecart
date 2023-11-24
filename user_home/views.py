@@ -6,6 +6,10 @@ from django.http import JsonResponse
 from user_authentication.models import CustomUser
 from admin_home.models import SizeVariant
 from user_home.models import Contact
+from django.core.paginator import Paginator
+from django.http import HttpResponseBadRequest
+from django.db.models import Max
+from django.db.models import OuterRef, Subquery
 
 
 
@@ -26,7 +30,7 @@ def homepage(request):
 
         context = {
             "products": products,
-            'cat': cat
+            'cat': cat,
         }
         return render(request, 'user_side/index.html', context)
     else:
@@ -46,9 +50,14 @@ def product_page(request):
             first_variant = product.sizevariant_set.first()
             product.first_variant_price = first_variant.price if first_variant else None
 
+        paginator = Paginator(products,12)
+        page_number = request.GET.get('page')
+        page_obj = Paginator.get_page(paginator,page_number)
+        page_count = page_obj.paginator.num_pages
         context = {
-            "products": products,
+            "products": page_obj,
             'cat': cat,
+            'page_count':range(page_count)
         }
         return render(request, 'user_side/products.html', context)
     else:
@@ -65,6 +74,11 @@ def products_men(request):
         for product in products:
             first_variant = product.sizevariant_set.first()
             product.first_variant_price = first_variant.price if first_variant else None
+        
+        paginator = Paginator(products,12)
+        page_number = request.GET.get('page')
+        page_obj = Paginator.get_page(paginator,page_number)
+        page_count = page_obj.paginator.num_pages
             
         context = {
             "products": products,
@@ -196,14 +210,31 @@ def show_price_filtering(request):
         
     return render(request,'user_side/products.html',{'cat': cat, 'products': products} )
 
+
 # function for the showing the products between the price range on the user interface
 def show_price_between(request):
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-    cat = Category.objects.filter(is_active=True)
-    products = Product.objects.filter(price__gte=min_price, price__lte=max_price, status=True)
+    sort_by = request.GET.get('sort_by', 'default')
 
-    return render(request, 'user_side/products.html', {'products': products, 'cat': cat})
+    try:
+        min_price = float(min_price)
+        max_price = float(max_price)
+    except (TypeError, ValueError):
+        return HttpResponseBadRequest("Invalid min_price or max_price")
+
+    cat = Category.objects.filter(is_active=True)
+
+    product_ids = SizeVariant.objects.filter(price__gte=min_price, price__lte=max_price).values('product').annotate(max_price=Max('price')).values_list('product', flat=True)
+
+    products = Product.objects.filter(id__in=product_ids, status=True)
+
+    for product in products:
+        first_variant = product.sizevariant_set.first()
+        product.first_variant_price = first_variant.price if first_variant else None
+
+    return render(request, 'user_side/products.html', {'products': products, 'cat': cat, 'sort_by': sort_by})
+
 
 # function for search
 def search(request):
@@ -214,3 +245,33 @@ def search(request):
         product.first_variant_price = first_variant.price if first_variant else None
    
     return render(request, "user_side/products.html" , {'products': products_match})
+
+
+
+def sorting_products(request):
+    sort_by = request.GET.get('sort_by', 'default')
+
+    cat = Category.objects.filter(is_active=True)
+
+    # Subquery to get the latest size variant for each product
+    latest_size_variant = SizeVariant.objects.filter(
+        product=OuterRef('pk')
+    ).order_by('-id').values('price')[:1]
+
+    if sort_by == 'low_to_high':
+        products = Product.objects.filter(status=True).annotate(
+            first_variant_price=Subquery(latest_size_variant)
+        ).order_by('first_variant_price')
+    elif sort_by == 'high_to_low':
+        products = Product.objects.filter(status=True).annotate(
+            first_variant_price=Subquery(latest_size_variant)
+        ).order_by('-first_variant_price')
+    else:
+        products = Product.objects.filter(status=True)
+
+    context = {
+        'products': products,
+        'cat':cat
+    }
+
+    return render(request, "user_side/products.html", context)

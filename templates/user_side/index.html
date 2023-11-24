@@ -2,7 +2,25 @@
 {% load static %}
 {% block title %} HOME{% endblock title %}
 {% block content %}
-
+<style>
+	.pagination {
+	  display: inline-block;
+	}
+	
+	.pagination a {
+	  color: black;
+	  float: left;
+	  padding: 6px 12px;
+	  text-decoration: none;
+	}
+	
+	.pagination a.active {
+	  background-color: #28282B;
+	  color: white;
+	}
+	
+	.pagination a:hover:not(.active) {background-color: #ddd;}
+	</style>
 <div class="wrap-header-mobile">
 	<!-- Logo moblie -->		
 	<div class="logo-mobile">
@@ -301,21 +319,25 @@
 					</div>
 
 					<ul>
-						<ul>
-							<li class="p-b-6">
-							  <a href="?sort=default" class="filter-link stext-106 trans-04">Default</a>
-							</li>
-							<li class="p-b-6">
-							  <a href="?sort=popularity" class="filter-link stext-106 trans-04">Popularity</a>
-							</li>
-							<li class="p-b-6">
-							  <a href="?sort=price_low_to_high" class="filter-link stext-106 trans-04">Price: Low to High</a>
-							</li>
-							<li class="p-b-6">
-							  <a href="?sort=price_high_to_low" class="filter-link stext-106 trans-04">Price: High to Low</a>
-							</li>
-						  </ul>
+						<li class="p-b-6">
+							<a href="{% url "product_page" %}" class="filter-link stext-106 trans-04">
+								Default
+							</a>
+						</li>
+					
+						<li class="p-b-6">
+							<a href="{% url 'sorting_products' %}?sort_by=low_to_high" class="filter-link stext-106 trans-04">
+								Price: Low to High
+							</a>
+						</li>
+						
+						<li class="p-b-6">
+							<a href="{% url 'sorting_products' %}?sort_by=high_to_low" class="filter-link stext-106 trans-04">
+								Price: High to Low
+							</a>
+						</li>
 					</ul>
+					
 				</div>
 
 				<div class="filter-col2 p-r-15 p-b-27">
@@ -363,18 +385,21 @@
 					</div>
 
 					<ul>
-						{% for c in cat %}
-							<li class="p-b-6">
-								<span class="fs-15 lh-12 m-r-6" style="color: #222;">
-									<i class="zmdi zmdi-circle"></i>
-								</span>
-								<a href='show_category/{{c.id}}' class="filter-link stext-106 trans-04">
-									{{ c.name }}
-								</a>
-							</li>
+						{% for c in cat  %}
+						<li class="p-b-6">
+							<span class="fs-15 lh-12 m-r-6" style="color: #222;">
+								<i class="zmdi zmdi-circle"></i>
+							</span>
+							
+							<a href="../show_catogery/{{c.id}}" class="filter-link stext-106 trans-04">
+								{{ c.name }}
+							</a>
+						</li>
 						{% endfor %}
+
+						
+
 					</ul>
-					
 				</div>
 
 				<div class="filter-col4 p-b-27">
@@ -456,40 +481,9 @@
 		{% csrf_token %}
 	
 	{% endfor %}</div>
-	<!-- do the pagination here  -->
-	{% comment %} <div class="flex-c-m flex-w w-full p-t-45 mt-3">
-		<nav aria-label="Page navigation example">
-			<ul class="pagination" style="background-color: #333333;">
-			  <li class="page-item" style="color: #333333;">
-				<a class="page-link" href="#" aria-label="Previous" style="color: white !important; background-color: #333333; border-color: #000;">
-				  <span aria-hidden="true">&laquo;</span>
-				  <span class="sr-only">Previous</span>
-				</a>
-			  </li>
-			  <li class="page-item" style="color: #333333;">
-				<a class="page-link" href="#" style="color: white !important; background-color: #333333; border-color: #000;">1</a>
-			  </li>
-			  <li class="page-item" style="color: #333333;">
-				<a class="page-link" href="#" style="color: white !important; background-color: #333333; border-color: #000;">2</a>
-			  </li>
-			  <li class="page-item" style="color: #333333;">
-				<a class="page-link" href="#" style="color: white !important; background-color: #333333; border-color: #000;">3</a>
-			  </li>
-			  <li class="page-item" style="color: #333333;">
-				<a class="page-link" href="#" style="color: white !important; background-color: #333333; border-color: #000;">4</a>
-			  </li>
-			  <li class="page-item" style="color: #333333;">
-				<a class="page-link" href="#" style="color: white !important; background-color: #333333; border-color: #000;">5</a>
-			  </li>
-			  <li class="page-item" style="color: #333333;">
-				<a class="page-link" href="#" aria-label="Next" style="color: white !important; background-color: #333333; border-color: #000;">
-				  <span aria-hidden="true">&raquo;</span>
-				  <span class="sr-only">Next</span>
-				</a>
-			  </li>
-			</ul>
-		</nav>
-	</div> {% endcomment %}
+
+
+	
 </div>
 </section>
 

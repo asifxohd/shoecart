@@ -1,7 +1,7 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
 {% block title %} Enquiries{% endblock title %}
-{% block products %}{% endblock products %}
+{% block chats %}{% endblock chats %}
 {% block content %}
 
 <main id="main" class="main">
@@ -9,21 +9,38 @@
         <div class="row">
             
             <input id="logged-in-user" type="hidden" value={{user.id}} ></input>
+            <input id="recipient-user-id" type="hidden" value="{{ RecipientUser.id }}"
             <div class="container mt-5 mb-5">
                 <div class="card">
                     <div class="card-header bg-dark">
                         <h5 class="mb-0">Help!</h5>
                     </div>
-                    <div class="card-body chat-box" id="chat-box">
-                        
+                    <div class="card-body mt-2 chat-box" id="chat-box" style="max-height: 400px; overflow-y: auto;">
+                        {% for chat in old_messages %}
+                            {% if chat.user == user %}
+                                <div class="d-flex mb-4 replied justify-content-start">
+                                    <div class="msg_cotainer_send alert alert-primary">
+                                        {{ chat.message }} <br>
+                                        <span class="msg_time_send" style="font-size: 10px;">{{ chat.timestamp|date:"d D" }}, {{ chat.timestamp|time:"H:i" }}</span>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="d-flex mb-4 replied justify-content-end">
+                                    <div class="msg_cotainer_admin alert alert-dark">
+                                        {{ chat.message }} <br>
+                                        <span class="msg_time_send" style="font-size: 10px;">{{ chat.timestamp|date:"d D" }}, {{ chat.timestamp|time:"H:i" }}</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                         <!-- Dummy message -->
                         <div class="mb-4 replied">
                             <div class="msg_card_body">
                                 
                             </div>
-                            
                         </div>
                     </div>
+                    
                     <div class="card-footer">
                         <form class="message-form" id="send-message-form">
                             <div class="input-group">

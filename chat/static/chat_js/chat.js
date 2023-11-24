@@ -2,6 +2,7 @@ let loc = window.location
 let wsStart = loc.protocol === 'https:' ? 'wss://' : 'ws://'
 let endpoint = wsStart + loc.host + '/ws/chat/chatpage/';  
 const USER_ID = $('#logged-in-user').val();
+const recipient_user = $('#recipient-user-id').val();
 
 let input_message = $('#input-message')
 let message_body = $('.msg_card_body')
@@ -15,10 +16,12 @@ socket.onopen = async function (e){
         let send_to;
         let thread_id = get_active_thread_id();
 
-        if (USER_ID){
-            send_to = 2
+        if (USER_ID && recipient_user){
+            send_to = recipient_user
+            console.log(recipient_user)
         }else{
-            send_to = 2
+            send_to = recipient_user
+            console.log(recipient_user)
         }
 
         let data = {
@@ -49,6 +52,7 @@ socket.onclose = async function (e){
     console.log('close', e)
 }
 
+message_body.find('.alert').removeClass('alert-primary alert-dark');
 
 function newMessage(message,send_by_id) {
     if($.trim(message) === '') {
@@ -58,7 +62,7 @@ function newMessage(message,send_by_id) {
         // Message sent by the user (align to the right)
         message_element = `
             <div class="d-flex mb-4 replied justify-content-start ">
-                <div class="msg_cotainer_send text-primary">
+                <div class="msg_cotainer_send alert alert-primary">
                     ${message} <br>
                     <span class="msg_time_send" style="font-size: 10px;">8:55 AM, Today</span>
                 </div>
@@ -68,7 +72,7 @@ function newMessage(message,send_by_id) {
         // Message received (align to the left)
         message_element = `
         <div class="d-flex mb-4 replied justify-content-end">
-                    <div class="msg_cotainer_admin text-danger">
+                    <div class="msg_cotainer_admin alert alert-dark">
                     ${message} <br>
                         <span class="msg_time_send" style="font-size: 10px;">9:00 AM, Today</span>
                     </div>

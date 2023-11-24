@@ -36,13 +36,6 @@ def admin_login(request):
     return render(request, 'admin_panel/admin_login.html')
 
 
-# function for admin DashBoard
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
-def admin_dash(request):
-    return render(request, "admin_panel/admin_dash.html", )
-
-
 # function for showing the all users on the admin side
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url='admin_login')

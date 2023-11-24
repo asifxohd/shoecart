@@ -45,12 +45,10 @@ def place_order(request):
     if 'user' in request.session:
         user_email = request.session['user']
         user_instance = CustomUser.objects.get(email=user_email)
-        print("address_id")
         
         cart_items = CartItem.objects.filter(user=user_instance)
         for item in cart_items:
             if item.quantity > item.size_variant.quantity :
-                print("!!!!!!!!!!!!!!!!!!!!!!!!!")
                 return JsonResponse({'empty' : True , 'message' : "Cart items Out of stock"})
         
 
@@ -58,7 +56,6 @@ def place_order(request):
             address_id = request.POST.get('address')
             payment_type = request.POST.get('payment')
             cart_items = CartItem.objects.filter(user=user_instance)
-            print(payment_type)
             delivery_address = Address.objects.filter(id=address_id).first() 
                        
             if payment_type == "COD":
@@ -169,7 +166,6 @@ def place_order(request):
                         order.save()
                        
                         amount_in_paise = final_amount if 'final_amount' in request.session else total_amount
-                        print(amount_in_paise)
                        
 
                         # Create a Razorpay order
@@ -329,7 +325,6 @@ def verifyPayment(request):
 def admin_orders(request):
     ite = OrdersItem.objects.exclude(order__payment_status="temp")
     items = ite.exclude(status="Cancellation request sent")
-    print(items)
     return render(request,'admin_panel/admin_orders.html',{'items':items})
 
 
@@ -349,12 +344,19 @@ def view_order_details(request, id):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
-def change_status(request,id):
+def change_status(request, id):
     obj = OrdersItem.objects.get(id=id)
     status = request.POST.get('statusRadio')
+
+    # Update order status
     obj.status = status
+    if status == "Delivered":
+        obj.order.payment_status = "success"
+        obj.order.save()
+
     obj.save()
-    return redirect('view_order_details',id=obj.id)
+
+    return redirect('view_order_details', id=obj.id)
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -368,11 +370,8 @@ def cancel_request(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         cancel_reason = request.POST.get('cancel_reason')
-        print(order_id)
-        print(cancel_reason)
 
         order = OrdersItem.objects.filter(id=order_id).first()
-        print(order)
         if order:
             order.status = "Cancellation request sent"
             order.save()

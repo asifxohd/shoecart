@@ -23,6 +23,7 @@ class Orders(models.Model):
 class OrdersItem(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
     variant = models.ForeignKey(SizeVariant, on_delete=models.CASCADE)
+    updated_time = models.DateTimeField(auto_now=True)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     ORDER_STATUS_CHOICES = (

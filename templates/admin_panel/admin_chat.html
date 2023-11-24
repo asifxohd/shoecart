@@ -1,7 +1,7 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
-{% block title %} Enquiries{% endblock title %}
-{% block products %}{% endblock products %}
+{% block title %} Chats{% endblock title %}
+{% block chats %}{% endblock chats %}
 {% block content %}
 
 <main id="main" class="main">
@@ -16,7 +16,7 @@
                     <div class="card-body p-4">
                         <b>{{ thread.first_person }}</b>
                         <input class="thread-id-input" type="hidden" value="{{ thread.id }}">
-                        <a href="{% url 'admin_chat' id=thread.id %}" class="view-chat-link" data-thread-id="{{ thread.id }}">View Chat</a>
+                        <a href="{% url 'admin_chat' thread_id=thread.id recipient_id=thread.first_person %}">View Chat</a>
                     </div>
                 </div>
             {% endfor %}

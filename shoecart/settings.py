@@ -49,11 +49,12 @@ INSTALLED_APPS = [
     'payments',
     'coupons',
     'chat',
+    'dashboard',
     
 ]
 
 ASGI_APPLICATION = 'shoecart.asgi.application'
-# WSGI_APPLICATION = 'shoecart.wsgi.application'
+WSGI_APPLICATION = 'shoecart.wsgi.application'
 
 
 MIDDLEWARE = [

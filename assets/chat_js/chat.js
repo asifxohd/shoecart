@@ -1,9 +1,8 @@
 let loc = window.location
 let wsStart = loc.protocol === 'https:' ? 'wss://' : 'ws://'
 let endpoint = wsStart + loc.host + '/ws/chat/chatpage/';  
-var socket = new WebSocket(endpoint);
 const USER_ID = $('#logged-in-user').val();
-console.log(USER_ID)   
+const recipient_user = $('#recipient-user-id').val();
 
 let input_message = $('#input-message')
 let message_body = $('.msg_card_body')
@@ -15,17 +14,19 @@ socket.onopen = async function (e){
         e.preventDefault();
         let message = input_message.val();
         let send_to;
+        let thread_id = get_active_thread_id();
 
-        if (USER_ID == 16){
-            send_to = 2
+        if (USER_ID && recipient_user){
+            send_to = recipient_user
         }else{
-            send_to = null;
+            send_to = recipient_user
         }
 
         let data = {
             'message': message,
             'send_by':USER_ID,
-            'send_to':send_to
+            'send_to':send_to,
+            'thread_id':thread_id
         }
 
         data = JSON.stringify(data);
@@ -84,14 +85,10 @@ function newMessage(message,send_by_id) {
 
     
 }
-
-$('.list-unstyled .contact-li').on('click', function(){
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    $('.list-unstyled .active').removeClass('active');
-    $(this).addClass('active');
-
-    let chat_id = $(this).data('chat-id');
-    $('.msg_card_body').removeClass('is_active');
-
-    // Perform additional actions or AJAX requests using chat_id if needed
-});
+function get_active_thread_id() {
+    let thread_id = $('.thread-id-input').val();
+    if (!thread_id) {
+        return null;
+    }
+    return thread_id;
+}

@@ -133,17 +133,17 @@
 
       <li class="nav-item">
         <a class="nav-link {% block chats %}collapsed{% endblock chats %}" href="{% url "admin_chatpage" %}">
-          <i class="bi bi-percent"></i>
-          <span>Enquires</span>
+          <i class="bi bi-chat"></i>
+          <span>Order Issues</span>
         </a>
       </li><!-- End Offers Page Nav -->
 
-      <li class="nav-item">
+      {% comment %} <li class="nav-item">
         <a class="nav-link {% block payments %}collapsed{% endblock payments %}" href="#">
           <i class="bi bi-credit-card-fill"></i>
           <span>Payments</span>
         </a>
-      </li><!-- End Payments Page Nav -->
+      </li><!-- End Payments Page Nav --> {% endcomment %}
 
       <li class="nav-item">
         <a class="nav-link {% block trash %}collapsed{% endblock trash %}" href="{% url 'admin_trash' %}">

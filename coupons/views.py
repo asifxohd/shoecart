@@ -78,13 +78,11 @@ def edit_coupons(request, id):
 @user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
 def delete_coupons(request, id):
     coupon = get_object_or_404(Coupons, id=id)
-    if coupon.active:
-        coupon.active = True
-        coupon.save()
-    else:
-        coupon.active = False
-        coupon.save()
-        
+
+    # Toggle the state of coupon.active
+    coupon.active = not coupon.active
+    coupon.save()
+
     return redirect('coupons_page')
 
 

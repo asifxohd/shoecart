@@ -62,6 +62,7 @@
         </h2>
     </section>	
     <input id="logged-in-user" type="hidden" value={{user.id}} ></input>
+    <input id="recipient-user-id" type="hidden" value="2"
     <input class="thread-id-input" type="hidden" value="{{ thread.id }}">
     <div class="container mt-5 mb-5">
         <div class="card">
@@ -69,31 +70,33 @@
                 <h5 class="mb-0">Help!</h5>
             </div>
             <div class="card-body chat-box" id="chat-box">
-                
-                <!-- Dummy message -->
-                <div class="mb-4 replied">
-                    <div class="msg_card_body">
-                        {% for chat in thread.chatmessage_thread.all %}
-                            {% if chat.user == user %}
-                                <div class="d-flex mb-4 replied">
-                                    <div class="msg_cotainer_send">
-                                        {{ chat.message }}
-                                        <span class="msg_time_send">{{ chat.timestamp|date:"d D" }}, {{ chat.timestamp|time:"H:i" }}</span>
-                                    </div>
-                            </div>
-                            {% else %}
-                                <div class="d-flex mb-4 received">
-                                
-                                <div class="msg_cotainer">
-                                    {{ chat.message }}
-                                    <span class="msg_time">{{ chat.timestamp|date:"d D" }}, {{ chat.timestamp|time:"H:i" }}</span>
+    
+                <!-- Display old messages from the server -->
+                    {% for chat in old_messages %}
+                        {% if chat.user == user %}
+                            <div class="d-flex mb-4 replied justify-content-start">
+                                <div class="msg_cotainer_send alert alert-primary">
+                                    {{ chat.message }} <br>
+                                    <span class="msg_time_send" style="font-size: 10px;">{{ chat.timestamp|date:"d D" }}, {{ chat.timestamp|time:"H:i" }}</span>
                                 </div>
                             </div>
-                            {% endif %}
-                        {% endfor %}
+                        {% else %}
+                            <div class="d-flex mb-4 replied justify-content-end">
+                                <div class="msg_cotainer_admin alert alert-dark">
+                                    {{ chat.message }} <br>
+                                    <span class="msg_time_send" style="font-size: 10px;">{{ chat.timestamp|date:"d D" }}, {{ chat.timestamp|time:"H:i" }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+    
+                <!-- Dummy message (if needed) -->
+                <div class="mb-4 replied">
+                    <div class="msg_card_body">
+                        <!-- Add dummy message content here if needed -->
                     </div>
-                    
                 </div>
+    
             </div>
             <div class="card-footer">
                 <form class="message-form" id="send-message-form">
@@ -107,6 +110,22 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // Your existing JavaScript code
+    
+        // Function to display old messages
+        function displayOldMessages(oldMessages) {
+            oldMessages.forEach(message => {
+                newMessage(message.message, message.user);  // Adjust based on your model fields
+            });
+        }
+    
+        // Pass the old messages directly to the JavaScript function
+        var oldMessages = {{ old_messages|safe }};
+        displayOldMessages(oldMessages);
+    </script>
+    
     
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="{% static "chat_js/chat.js" %}"></script>

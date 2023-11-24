@@ -18,5 +18,6 @@ urlpatterns = [
     path('show_price_between', views.show_price_between, name='show_price_between'),
     path('get_variant_details/<int:variant_id>/', views.get_variant_details, name='get_variant_details'),
     path('search/',views.search, name='search'),
+    path('sorting-products/', views.sorting_products, name='sorting_products'),
+
     ]
-# path('get_size_variant_details/<int:id>/<str:size>/', views.get_size_variant_details, name='get_size_variant_details'),

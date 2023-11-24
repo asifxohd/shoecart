@@ -6,30 +6,47 @@ from django.shortcuts import render, get_object_or_404
 
 
 def chatpage(request):
-    if 'user' in request.session:
-        email = request.session['user']
-        user =  CustomUser.objects.get(email=email)
-        
+    
+    email = request.session['user']
+    user = CustomUser.objects.get(email=email)
+    admin = CustomUser.objects.get(username='admin')
+    print(admin)
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+    thread = Thread.objects.filter(first_person=user, admin=admin).first()
+    print(thread)
+    if thread:
+        old_messages = ChatMessage.objects.filter(thread=thread).order_by('timestamp')
+    else:
+        old_messages = None
+
     context = {
-        'user': user  
+        'user': user,
+        'old_messages': old_messages,
     }
-    return render(request, 'chatss/chatpage.html',context)
+    return render(request, 'chatss/chatpage.html', context)
+
+
 
 def admin_chatpage(request):
-    print(request.user)
     threads = Thread.objects.by_user(user=request.user).prefetch_related('chatmessage_thread')
-    print(request.user)
     context = {
         'Threads': threads,    
     }
     return render(request, 'admin_panel/admin_chat.html', context)
 
 
-def admin_chat(request, id):
-    thread = get_object_or_404(Thread, id=id, admin=request.user)
-
+def admin_chat(request, thread_id, recipient_id):
+    thread = get_object_or_404(Thread, id=thread_id, admin=request.user)
+    recipient_user = get_object_or_404(CustomUser, username=recipient_id)
+    old_messages = ChatMessage.objects.filter(thread=thread).order_by('timestamp')
+    print(old_messages)
+    
     context = {
         'Thread': thread,
+        'RecipientUser': recipient_user,
+        'old_messages': old_messages,
+        
     }
 
     return render(request, 'admin_panel/admin_chat_messages.html', context)
