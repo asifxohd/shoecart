@@ -7,24 +7,27 @@ from django.shortcuts import render, get_object_or_404
 
 def chatpage(request):
     
-    email = request.session['user']
-    user = CustomUser.objects.get(email=email)
-    admin = CustomUser.objects.get(username='admin')
-    print(admin)
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    if 'user' in request.session:
+        email = request.session['user']
+        user = CustomUser.objects.get(email=email)
+        admin = CustomUser.objects.get(username='admin')
+        print(admin)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-    thread = Thread.objects.filter(first_person=user, admin=admin).first()
-    print(thread)
-    if thread:
-        old_messages = ChatMessage.objects.filter(thread=thread).order_by('timestamp')
+        thread = Thread.objects.filter(first_person=user, admin=admin).first()
+        print(thread)
+        if thread:
+            old_messages = ChatMessage.objects.filter(thread=thread).order_by('timestamp')
+        else:
+            old_messages = None
+
+        context = {
+            'user': user,
+            'old_messages': old_messages,
+        }
+        return render(request, 'chatss/chatpage.html', context)
     else:
-        old_messages = None
-
-    context = {
-        'user': user,
-        'old_messages': old_messages,
-    }
-    return render(request, 'chatss/chatpage.html', context)
+        return redirect('signin')
 
 
 

@@ -21,7 +21,7 @@ urlpatterns = [
     path('edit_product/<str:id>/', views.edit_product, name='edit_product'),
     path('add_variand/<str:id>/', views.add_variand, name="add_variand"),
     path('edit_variand/<str:id>/', views.edit_variand, name="edit_variand"),
-    
+    path('banner', views.admin_banner, name="banner_page"),
     ]
     
     

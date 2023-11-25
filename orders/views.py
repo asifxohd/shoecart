@@ -395,7 +395,7 @@ def cancell_product(request, id):
     email=request.session.get('user')
     user = CustomUser.objects.get(email=email)
     order =OrdersItem.objects.get(id=id)
-    
+        
     if order.order.payment_method == "COD":
         order.status = 'Cancelled'
         order.variant.quantity += order.quantity
@@ -406,7 +406,8 @@ def cancell_product(request, id):
     elif order.order.payment_method == "onlinePayment" or order.order.payment_method == "wallet":
         amount = order.price * order.quantity 
         user_wallet = Wallet.objects.filter(user=user).order_by("-id").first()
-        
+        order.order.payment_status = "Delivered"
+        order.order.save()
         if not user_wallet:
             balance = 0
         else:

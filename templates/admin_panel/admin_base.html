@@ -88,6 +88,13 @@
         </a>
       </li><!-- End Dashboard Nav -->
 
+      <li class="nav-item ">
+        <a class="nav-link {% block sales %}collapsed{% endblock sales %}" href="{% url 'admin_dashboard' %} ">
+          <i class="bi bi-grid"></i>
+          <span>Sales Report</span>
+        </a>
+      </li>
+
       <li class="nav-item">
         <a class="nav-link {% block users %}collapsed{% endblock users %}" href="{% url 'admin_users' %}">
           <i class="bi bi-person"></i>
@@ -125,7 +132,7 @@
       </li><!-- End Coupons Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link {% block banners %}collapsed{% endblock banners %}" href="#">
+        <a class="nav-link {% block banners %}collapsed{% endblock banners %}" href="{% url "banner_page" %}">
           <i class="bi bi-card-image"></i>
           <span>Banners</span>
         </a>

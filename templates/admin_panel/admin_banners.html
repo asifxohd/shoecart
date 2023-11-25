@@ -1,0 +1,42 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Banners{% endblock title %}
+{% block banners %}{% endblock banners %}
+{% block content %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Banners</h1>
+            </div>
+            <div class="col-md-6 text-end">
+                <div class="addproductbutton">
+                    <a href="#" class="btn btn-dark mt-2">Add Banners</a>
+                </div>
+            </div>
+        </div>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item active">Banners</li>
+            </ol>
+        </nav>
+    </div>
+       
+        <!-- Recent Sales -->
+        <div class="col-12">
+            <div class="card recent-sales overflow-auto">
+                
+
+                <div class="card-body">
+                    
+
+                </div>
+
+            </div>
+        </div><!-- End Recent Sales -->
+
+    </main><!-- End #main -->
+{% endblock content %}

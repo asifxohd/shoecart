@@ -22,7 +22,7 @@ def homepage(request):
         cat = Category.objects.filter(is_active=True)
         products = Product.objects.prefetch_related(
             'productimage_set', 'sizevariant_set'
-        ).filter(status=True)
+        ).filter(status=True)[:8]
         
         for product in products:
             first_variant = product.sizevariant_set.first()
@@ -35,8 +35,6 @@ def homepage(request):
         return render(request, 'user_side/index.html', context)
     else:
         return redirect('signin')
-
-
 
 
 # function for rendering product page with products
