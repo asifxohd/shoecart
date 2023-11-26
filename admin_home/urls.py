@@ -23,7 +23,6 @@ urlpatterns = [
     path('edit_variand/<str:id>/', views.edit_variand, name="edit_variand"),
     path('banner', views.admin_banner, name="banner_page"),
     path('add_banner', views.add_banner, name="add_banner"),
-    path('sales', views.admin_sales, name="sales_report"),
     ]
     
     

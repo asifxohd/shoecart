@@ -8,8 +8,22 @@
 
     <div class="pagetitle">
         <div class="row align-items-center">
-            <div class="col-md-9">
+            <div class="col-md-4">
                 <h1>Sales Report</h1>
+            </div>
+            <div class="col-md-8 d-flex justify-content-end" >
+                <form method="post" action="{% url "sales_report_filter" %}" class="d-flex ms-auto">
+                    {% csrf_token %}
+                    <div class="me-3">
+                        <input type="date" name="from_date" class="form-control">
+                    </div>
+                    <div class="me-3">
+                        <input type="date" name="to_date" class="form-control">
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-sm mt-1 btn-dark">Filter</button>
+                    </div>
+                </form>
             </div>
             
         </div>
@@ -21,75 +35,107 @@
         </nav>
     </div>
     
+    
        
-        <!-- Recent Sales -->
+    {% if recent_orders %}<!-- Recent Sales -->
         <div class="col-12">
             <div class="card recent-sales overflow-auto">
-                
-
+               
                 <div class="card-body">
-                    <div class="col-12">
-                        <div class="card recent-sales overflow-auto">
-                            <div class="card-body">
-                              <div class="d-flex justify-content-between align-items-center">
-                                <h5 style="font-size:25px;" class="card-title">Sales Report</h5>
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><span class="btn btn-outline-dark">Download</span></a>
-                                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                  <li class="dropdown-header text-start">
-                                    <h6>Download</h6>
-                                  </li>
-      
-                                  {% comment %} <li><a class="dropdown-item" href="{% url "pdf_download" %}">Download As PDF</a></li>
-                                  <li><a class="dropdown-item" href="{% url "download_exel" %}">Download As EXEL</a></li>
-                                  <li><a class="dropdown-item" href="{% url "download_csv" %}">Download As CSV</a></li> {% endcomment %}
-                                </ul>                       
-                              </div>
-                                <table class="table table-border datatable mt-3">
-                                    <thead>
-                                        <tr>
-                                            <th>SI NO.</th>
-                                            <th>Order ID</th>
-                                            <th>User</th>
-                                            <th>Date</th>
-                                            <th>Time</th>
-                                            <th>Products</th>
-                                            <th>quantity</th>
-                                            <th>Total</th>
-                                            <th>Payment Method</th>
-                                            <th>Payment Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                        
-                                    {% for ord in recent_orders %}
-                                        <tr>
-                                            <td class="sales_table">{{forloop.counter}}</td>
-                                            <td class="sales_table">{{ord.pk|upper}}</td>
-                                            <td class="sales_table">{{ord.user.first_name}}</td>
-                                            <td class="sales_table">{{ord.order_date.date}}</td>
-                                            <td class="sales_table">{{ord.order_date.time}}</td>
-                                            <td class="sales_table" style="min-width: 200px; word-wrap: break-word;">{% for item in ord.ordersitem_set.all %}{{item.variant.product.name}}-{{item.variant.size}}<br>{% endfor %}</td>
-                                            <td class="sales_table">{% for item in ord.ordersitem_set.all %}{{item.quantity}}<br>{% endfor %}</td>                                      
-                                            <td class="sales_table">&#8377;{{ord.total_purchase_amount}}</td>
-                                            <td class="sales_table">{{ord.payment_method}}</td>
-                                            <td class="sales_table">{{ord.payment_status}}</td>
-                                         
-                                        </tr>
-                                    {% endfor %}
-                                    <hr>
-            
-                                    </tbody>
-                                </table>
-            
-                            </div>
-            
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <h5 style="font-size:25px;" class="card-title">Sales Report</h5>
+                      <a class="icon" href="#" data-bs-toggle="dropdown"><span class="btn btn-outline-dark">Download</span></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                          <h6>Download</h6>
+                        </li>
+                        <li><a class="icon" href="#" onclick="exportReportToExcel()">
+                            <span class="btn">Convert To excel</span>
+                        </a></li>
+                      </ul>                       
                     </div>
-
-                </div>
+                      <table class="table table-border datatable mt-3">
+                          <thead>
+                              <tr>
+                                  <th>SI NO.</th>
+                                  <th>Order ID</th>
+                                  <th>User</th>
+                                  <th>Date</th>
+                                  <th>Time</th>
+                                  <th>Products</th>
+                                  <th>quantity</th>
+                                  <th>Total</th>
+                                  <th>Payment Method</th>
+                                  <th>Payment Status</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+              
+                          {% for ord in recent_orders %}
+                              <tr>
+                                  <td class="sales_table">{{forloop.counter}}</td>
+                                  <td class="sales_table">{{ord.pk|upper}}</td>
+                                  <td class="sales_table">{{ord.user.first_name}}</td>
+                                  <td class="sales_table">{{ord.order_date.date}}</td>
+                                  <td class="sales_table">{{ord.order_date.time}}</td>
+                                  <td class="sales_table" style="min-width: 200px; word-wrap: break-word;">{% for item in ord.ordersitem_set.all %}{{item.variant.product.name}}-{{item.variant.size}}<br>{% endfor %}</td>
+                                  <td class="sales_table">{% for item in ord.ordersitem_set.all %}{{item.quantity}}<br>{% endfor %}</td>                                      
+                                  <td class="sales_table">&#8377;{{ord.total_purchase_amount}}</td>
+                                  <td class="sales_table">{{ord.payment_method}}</td>
+                                  <td class="sales_table">{{ord.payment_status}}</td>
+                               
+                              </tr>
+                          {% endfor %}
+                          <hr>
+  
+                          </tbody>
+                      </table>
+  
+                  </div>
+                  
 
             </div>
         </div><!-- End Recent Sales -->
+        {% else %}
+        <div class="d-flex justify-content-center align-items-center">  
+            <img style="height:20rem; width:20rem;" src="{% static 'user_home/images/noorder.png' %}" alt="IMG-No-Order">
+            <h2 class="text-center" >No Orders Found</h2>
+        </div>
+        {% endif %}
 
     </main><!-- End #main -->
+    <!-- Add this in your HTML file, before your script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script>
+        function exportReportToExcel() {
+            // Get the table element
+            const table = document.querySelector(".datatable");
+    
+            // Convert the table to a workbook
+            const workbook = XLSX.utils.table_to_book(table);
+    
+            // Convert the workbook to a binary Excel file
+            const excelBinary = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+    
+            // Create a Blob object with the correct content type
+            const blob = new Blob([s2ab(excelBinary)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    
+            // Create a download link and trigger the download
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "salesReport.xlsx";
+            link.click();
+    
+            // Utility function to convert a string to an ArrayBuffer
+            function s2ab(s) {
+                const buf = new ArrayBuffer(s.length);
+                const view = new Uint8Array(buf);
+                for (let i = 0; i < s.length; i++) {
+                    view[i] = s.charCodeAt(i) & 0xff;
+                }
+                return buf;
+            }
+        }
+    </script>
 {% endblock content %}

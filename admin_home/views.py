@@ -333,18 +333,4 @@ def add_banner(request):
     return render(request, 'admin_panel/main_banner.html')
 
 
-# function for rendering the admin side sales report page
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
-def admin_sales(request):
-    delivered_orders = Orders.objects.filter(payment_status='success').order_by('-order_date').distinct()
-    print(delivered_orders)
-    
-
-    context = {
-        'recent_orders': delivered_orders
-    }
-
-
-    return render(request, 'admin_panel/sales_report.html', context)
 
