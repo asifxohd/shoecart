@@ -8,14 +8,14 @@
 
     <div class="pagetitle">
         <div class="row align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-9">
                 <h1>Banners</h1>
             </div>
-            <div class="col-md-6 text-end">
-                <div class="addproductbutton">
-                    <a href="#" class="btn btn-dark mt-2">Add Banners</a>
-                </div>
+            <div class="col-md-3 d-flex justify-content-end mt-3 btn-group ml-auto" role="group" aria-label="Basic example">
+                <a href="{% url 'add_banner' %}" type="button" class="btn btn-outline-dark mr-1">Add Banners</a>
+                
             </div>
+            
         </div>
         <nav>
             <ol class="breadcrumb">
@@ -24,6 +24,7 @@
             </ol>
         </nav>
     </div>
+    
        
         <!-- Recent Sales -->
         <div class="col-12">

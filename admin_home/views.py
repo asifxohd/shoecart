@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from user_authentication.models import CustomUser
-from admin_home.models import Category, Product, SizeVariant, ProductImage
+from admin_home.models import Category, Product, SizeVariant, ProductImage,Banner
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login
+from orders.models import Orders, OrdersItem
+from datetime import datetime,timedelta
 
 
 # function for loading the Admin Base Template
@@ -125,7 +127,6 @@ def edit_category(request, id):
                     request, "Category with this name already exists")
             else:
                 category.name = updated_name
-                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 category.save()
                 return redirect('admin_catogeory')
 
@@ -154,7 +155,6 @@ def add_category(request):
 def show_product_varient(request, id):
     product = Product.objects.filter(pk=id, status=True).prefetch_related(
         'productimage_set', 'sizevariant_set').first()
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     print(product)
     return render(request, 'admin_panel/product_varient.html', {'product': product})
 
@@ -299,7 +299,52 @@ def edit_variand(request, id):
     return render(request,'admin_panel/edit_variand.html', {'var':var})
 
 
+# function for rendering the admin side banner page
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
 def admin_banner(request):
+    
     return render(request, 'admin_panel/admin_banners.html')
+
+
+
+# function for adding new banners 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
+def add_banner(request):
+    if request.method == 'POST':
+        # Retrieve data from the POST request
+        main_title = request.POST.get('mainTitleInput')
+        subtitle = request.POST.get('subtitleInput')
+        file_input = request.FILES.get('fileInput')
+        banner_type = request.POST.get('bannerTypeSelect')
+        print(file_input)
+
+        # Save the banner to the database
+        banner = Banner(
+            main_title=main_title,
+            subtitle=subtitle,
+            file_input=file_input,
+            banner_type=banner_type,
+        )
+        banner.save()
+
+        return redirect('banner_page')  
+    return render(request, 'admin_panel/main_banner.html')
+
+
+# function for rendering the admin side sales report page
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
+def admin_sales(request):
+    delivered_orders = Orders.objects.filter(payment_status='success').order_by('-order_date').distinct()
+    print(delivered_orders)
+    
+
+    context = {
+        'recent_orders': delivered_orders
+    }
+
+
+    return render(request, 'admin_panel/sales_report.html', context)
+

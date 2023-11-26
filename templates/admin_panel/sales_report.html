@@ -1,0 +1,95 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Sales Report{% endblock title %}
+{% block sales %}{% endblock sales %}
+{% block content %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <div class="row align-items-center">
+            <div class="col-md-9">
+                <h1>Sales Report</h1>
+            </div>
+            
+        </div>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item active">Sales Report</li>
+            </ol>
+        </nav>
+    </div>
+    
+       
+        <!-- Recent Sales -->
+        <div class="col-12">
+            <div class="card recent-sales overflow-auto">
+                
+
+                <div class="card-body">
+                    <div class="col-12">
+                        <div class="card recent-sales overflow-auto">
+                            <div class="card-body">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <h5 style="font-size:25px;" class="card-title">Sales Report</h5>
+                                <a class="icon" href="#" data-bs-toggle="dropdown"><span class="btn btn-outline-dark">Download</span></a>
+                                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                  <li class="dropdown-header text-start">
+                                    <h6>Download</h6>
+                                  </li>
+      
+                                  {% comment %} <li><a class="dropdown-item" href="{% url "pdf_download" %}">Download As PDF</a></li>
+                                  <li><a class="dropdown-item" href="{% url "download_exel" %}">Download As EXEL</a></li>
+                                  <li><a class="dropdown-item" href="{% url "download_csv" %}">Download As CSV</a></li> {% endcomment %}
+                                </ul>                       
+                              </div>
+                                <table class="table table-border datatable mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>SI NO.</th>
+                                            <th>Order ID</th>
+                                            <th>User</th>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Products</th>
+                                            <th>quantity</th>
+                                            <th>Total</th>
+                                            <th>Payment Method</th>
+                                            <th>Payment Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                        
+                                    {% for ord in recent_orders %}
+                                        <tr>
+                                            <td class="sales_table">{{forloop.counter}}</td>
+                                            <td class="sales_table">{{ord.pk|upper}}</td>
+                                            <td class="sales_table">{{ord.user.first_name}}</td>
+                                            <td class="sales_table">{{ord.order_date.date}}</td>
+                                            <td class="sales_table">{{ord.order_date.time}}</td>
+                                            <td class="sales_table" style="min-width: 200px; word-wrap: break-word;">{% for item in ord.ordersitem_set.all %}{{item.variant.product.name}}-{{item.variant.size}}<br>{% endfor %}</td>
+                                            <td class="sales_table">{% for item in ord.ordersitem_set.all %}{{item.quantity}}<br>{% endfor %}</td>                                      
+                                            <td class="sales_table">&#8377;{{ord.total_purchase_amount}}</td>
+                                            <td class="sales_table">{{ord.payment_method}}</td>
+                                            <td class="sales_table">{{ord.payment_status}}</td>
+                                         
+                                        </tr>
+                                    {% endfor %}
+                                    <hr>
+            
+                                    </tbody>
+                                </table>
+            
+                            </div>
+            
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div><!-- End Recent Sales -->
+
+    </main><!-- End #main -->
+{% endblock content %}

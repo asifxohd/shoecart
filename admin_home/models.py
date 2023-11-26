@@ -47,4 +47,20 @@ class SizeVariant(models.Model):
     def __str__(self):
         return f"{self.product.name} - {self.size}"
 
+
+class Banner(models.Model):
+    BANNER_TYPES = (
+        ('main_banner', 'Main Banner'),
+        ('mini_banner_left', 'Mini Banner Left'),
+        ('mini_banner_center', 'Mini Banner Center'),
+        ('mini_banner_right', 'Mini Banner Right'),
+    )
+
+    main_title = models.CharField(max_length=250, null=False)
+    subtitle = models.CharField(max_length=250, default='03', blank=True,)
+    file_input = models.ImageField(upload_to='banners/',default='0', null=False)
+    banner_type = models.CharField(max_length=20, choices=BANNER_TYPES, default='main_banner', null=False)
+
+    def __str__(self):
+        return self.main_title
     

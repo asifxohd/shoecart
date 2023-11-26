@@ -89,7 +89,7 @@
       </li><!-- End Dashboard Nav -->
 
       <li class="nav-item ">
-        <a class="nav-link {% block sales %}collapsed{% endblock sales %}" href="{% url 'admin_dashboard' %} ">
+        <a class="nav-link {% block sales %}collapsed{% endblock sales %}" href="{% url 'sales_report' %} ">
           <i class="bi bi-grid"></i>
           <span>Sales Report</span>
         </a>
@@ -144,13 +144,6 @@
           <span>Order Issues</span>
         </a>
       </li><!-- End Offers Page Nav -->
-
-      {% comment %} <li class="nav-item">
-        <a class="nav-link {% block payments %}collapsed{% endblock payments %}" href="#">
-          <i class="bi bi-credit-card-fill"></i>
-          <span>Payments</span>
-        </a>
-      </li><!-- End Payments Page Nav --> {% endcomment %}
 
       <li class="nav-item">
         <a class="nav-link {% block trash %}collapsed{% endblock trash %}" href="{% url 'admin_trash' %}">

@@ -3,13 +3,8 @@
 {% block title %}Orders{% endblock title %}
 {% block orders %}{% endblock orders %}
 {% block content %}
-<style>
-    .table td,{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-</style>
+
+
 
 <main id="main" class="main">
     <div class="pagetitle">
@@ -36,7 +31,7 @@
     <div class="col-12">
         <div class="card recent-sales overflow-auto">
             <div class="card-body">
-                <table class="table datatable table-borderless mt-3">
+                <table class="table table-border datatable  mt-3">
                     <thead>
                         <tr>
                             <th>Order ID</th>
@@ -53,7 +48,7 @@
                         {% for item in items %}
                         <tr class="align-middle">
                             <td  class="align-middle">
-                                {{item.order.order_id}}
+                                {{item.order.order_id|upper}}
                             </td> 
                             <td class="align-middle">
                                 {{item.order.order_date}}

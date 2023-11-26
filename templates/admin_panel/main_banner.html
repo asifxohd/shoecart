@@ -1,0 +1,116 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+{% block title %} Banners{% endblock title %}
+{% block banners %}{% endblock banners %}
+{% block content %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Banners</h1>
+            </div>   
+        </div>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item">Banners</li>
+                <li class="breadcrumb-item active">Add Banners</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-12">
+        <div class="card recent-sales">
+            <div class="card-body">
+                <form method="post" id="miniBanner3Form" action="{% url "add_banner" %}" class="mt-4 mx-auto">
+                    {% csrf_token %}
+                    <div class="col-md-9 form-group">
+                        <label for="bannerTypeSelect">Banner Type:</label>
+                        <select id="bannerTypeSelect" name="bannerTypeSelect" class="form-control">
+                            <option value="main_banner" selected>Main Banner</option>
+                            <option value="mini_banner_left">Mini Banner Left</option>
+                            <option value="mini_banner_center">Mini Banner Center</option>
+                            <option value="mini_banner_right">Mini Banner Right</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-9 mt-4 form-group">
+                        <label for="mainTitleInput">Main Title:</label>
+                        <input type="text" id="mainTitleInput" name="mainTitleInput" class="form-control" required>
+                        <span id="mainTitleError" class="error-message"></span>
+                    </div>
+            
+                    <div class="col-md-9 mt-4 form-group">
+                        <label for="subtitleInput">Subtitle:</label>
+                        <input type="text" id="subtitleInput" name="subtitleInput" class="form-control">
+                        <span id="subtitleError" class="error-message"></span>
+                    </div>
+                    <div class="col-md-9 mt-4 form-group">
+                        <label for="fileInput">Upload File:</label>
+                        <input type="file" id="fileInput" name="fileInput" class="form-control">
+                        <span id="fileError" class="error-message"></span>
+                    </div>
+            
+                    <button type="submit" class="btn btn-dark mt-3">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#miniBanner3Form").validate({
+            rules: {
+                mainTitleInput: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100,
+                    noConsecutiveSpaces: true,
+                },
+                subtitleInput: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100,
+                    noConsecutiveSpaces: true,
+                },
+                fileInput: {
+                    required: true,
+                }
+            },
+            messages: {
+                mainTitleInput: {
+                    required: "Please enter the main title",
+                    minlength: "Main title should be at least 3 characters",
+                    maxlength: "Main title should not exceed 250 characters",
+                    noConsecutiveSpaces: "Main title should not contain 2 consecutive spaces",
+                },
+                subtitleInput: {
+                    required: "Please enter the main title",
+                    minlength: "Main title should be at least 3 characters",
+                    maxlength: "Main title should not exceed 250 characters",
+                    noConsecutiveSpaces: "Main title should not contain 2 consecutive spaces",
+                },
+                fileInput: {
+                    required: "Please select a image file",
+                }
+            },
+            errorClass: "is-invalid",
+            errorPlacement: function (error, element) {
+                error.addClass("invalid-feedback");
+                error.insertAfter(element);
+            }
+        });
+
+        // Custom validation methods
+        $.validator.addMethod("noConsecutiveSpaces", function (value, element) {
+            return !/\s{2,}/.test(value);
+        }, "This field should not contain 2 consecutive spaces");
+    });
+</script>
+
+{% endblock content %}
