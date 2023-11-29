@@ -1,10 +1,7 @@
 from django.shortcuts import render, redirect
-from admin_home.models import Product, ProductImage
-from admin_home.models import Category
+from admin_home.models import Product,Banner,Category,SizeVariant
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from user_authentication.models import CustomUser
-from admin_home.models import SizeVariant
 from user_home.models import Contact
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
@@ -27,11 +24,20 @@ def homepage(request):
         for product in products:
             first_variant = product.sizevariant_set.first()
             product.first_variant_price = first_variant.price if first_variant else None
-
+            
+        ban1 = Banner.objects.filter(banner_type="main_banner",is_active=True).first()
+        ban2 = Banner.objects.filter(banner_type="mini_banner_left",is_active=True).first()
+        ban3 = Banner.objects.filter(banner_type="mini_banner_center",is_active=True).first()
+        ban4 = Banner.objects.filter(banner_type="mini_banner_right",is_active=True).first()
         context = {
             "products": products,
             'cat': cat,
+            'ban1':ban1,
+            'ban2':ban2,
+            'ban3':ban3,
+            'ban4':ban4
         }
+        
         return render(request, 'user_side/index.html', context)
     else:
         return redirect('signin')

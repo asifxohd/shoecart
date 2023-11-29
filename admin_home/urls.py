@@ -23,6 +23,8 @@ urlpatterns = [
     path('edit_variand/<str:id>/', views.edit_variand, name="edit_variand"),
     path('banner', views.admin_banner, name="banner_page"),
     path('add_banner', views.add_banner, name="add_banner"),
+    path('edit_banner/<str:id>/', views.admin_edit_banner, name="edit_banner"),
+    path('delete_banner/<str:id>/', views.delete_banner, name="delete_banner"),
     ]
     
     

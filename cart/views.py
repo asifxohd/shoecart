@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.http import HttpResponse
 from user_profile.models import Address
 from django.views.decorators.cache import cache_control
-from admin_home.models import Category
+from datetime import date
 from coupons.models import Coupons
 # Create your views here.
 
@@ -112,7 +112,7 @@ def checkout(request):
         addresses = Address.objects.filter(user=userr.id, is_listed=True)
         obj = CartItem.objects.filter(user=userr)
         total = sum(obj.values_list('cart_price', flat=True))
-        coupons = Coupons.objects.filter(active=True)
+        coupons = Coupons.objects.filter(active=True, valid_to__gte=date.today()).order_by('-id')
         print(coupons)
         
     return render(request, 'user_side/checkout.html', {'addresses': addresses, 'obj':obj, 'total':total,'coupons':coupons})

@@ -60,6 +60,7 @@ class Banner(models.Model):
     subtitle = models.CharField(max_length=250, default='03', blank=True,)
     file_input = models.ImageField(upload_to='banners/',default='0', null=False)
     banner_type = models.CharField(max_length=20, choices=BANNER_TYPES, default='main_banner', null=False)
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.main_title

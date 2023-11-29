@@ -12,5 +12,6 @@ urlpatterns = [
     path('cancel_request', views.cancel_request, name='cancel_request'),
     path('cancell_product/<str:id>', views.cancell_product, name='cancell_product'),
     path('verifyPayment/', views.verifyPayment, name="verifyPayment"),
-    path('return_product/<str:id>' , views.return_product, name="return_product")
+    path('return_product/<str:id>' , views.return_product, name="return_product"),
+    path('show_invoice/<str:id>/', views.show_invoice, name="show_invoice")
 ]

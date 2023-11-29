@@ -5,8 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login
-from orders.models import Orders, OrdersItem
-from datetime import datetime,timedelta
+from django.shortcuts import get_object_or_404
 
 
 # function for loading the Admin Base Template
@@ -303,8 +302,11 @@ def edit_variand(request, id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
 def admin_banner(request):
-    
-    return render(request, 'admin_panel/admin_banners.html')
+    banners = Banner.objects.all().order_by('id')
+    context = {
+        'banners':banners
+    }
+    return render(request, 'admin_panel/admin_banners.html',context)
 
 
 
@@ -318,14 +320,13 @@ def add_banner(request):
         subtitle = request.POST.get('subtitleInput')
         file_input = request.FILES.get('fileInput')
         banner_type = request.POST.get('bannerTypeSelect')
-        print(file_input)
-
         # Save the banner to the database
         banner = Banner(
             main_title=main_title,
             subtitle=subtitle,
             file_input=file_input,
             banner_type=banner_type,
+            is_active=False,
         )
         banner.save()
 
@@ -334,3 +335,36 @@ def add_banner(request):
 
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
+def admin_edit_banner(request , id):
+    banner = get_object_or_404(Banner, id=id)
+    if request.method == 'POST':
+        main_title = request.POST.get('mainTitleInput')
+        subtitle = request.POST.get('subtitleInput')
+        file_input = request.FILES.get('fileInput')
+        banner_type = request.POST.get('bannerTypeSelect')
+        banner.main_title = main_title
+        banner.subtitle = subtitle
+        if file_input:
+            banner.file_input = file_input
+        banner.banner_type = banner_type
+
+        # Save the updated banner to the database
+        banner.save()
+
+        return redirect('banner_page')
+    
+    return render(request, 'admin_panel/edit_banner.html', {'banner': banner})
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
+def delete_banner(request, id):
+    
+    banner = get_object_or_404(Banner, id=id)
+    banner.is_active = not banner.is_active
+    banner.save()
+    
+    return redirect('banner_page')

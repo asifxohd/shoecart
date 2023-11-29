@@ -122,7 +122,7 @@
         }
     
         // Pass the old messages directly to the JavaScript function
-        var oldMessages = {{ old_messages|safe }};
+        var oldMessages = {% if old_messages %} {{ old_messages|safe }} {% else %} null {% endif %};
         displayOldMessages(oldMessages);
     </script>
     

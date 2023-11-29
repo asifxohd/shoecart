@@ -7,9 +7,7 @@ from .models import Orders,OrdersItem,CancelledOrderItem
 from django.db import transaction
 from datetime import timedelta 
 from django.http import JsonResponse
-from admin_home.models import SizeVariant
 from django.contrib.auth.decorators import user_passes_test
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_control
 import razorpay
 from payments.models import Wallet
@@ -34,9 +32,8 @@ def order_history(request):
     if 'user' in request.session:
         email = request.session['user']
         user = CustomUser.objects.get(email=email)
-        orders = Orders.objects.filter(user=user).order_by('order_date').exclude(payment_status="temp")
-        order_items = OrdersItem.objects.filter(order__in=orders).order_by('order')
-
+        orders = Orders.objects.filter(user=user).order_by('order_date')
+        order_items = OrdersItem.objects.filter(order__in=orders).exclude(payment_status="temp").order_by('-order__order_date')
     return render(request, 'user_side/order_history.html', {'order_items':order_items})
 
 
@@ -144,7 +141,6 @@ def place_order(request):
                             address=delivery_address,
                             payment_method=payment_type,
                             quantity=0,
-                            payment_status="temp",
                             total_purchase_amount= final_amount if 'final_amount' in request.session else total_amount
  
                         )
@@ -158,6 +154,7 @@ def place_order(request):
                                 quantity=cart_item.quantity,
                                 price=cart_item.size_variant.price,
                                 status='Pending',
+                                payment_status="temp",
                             )
 
                         # Calculate the expected delivery date
@@ -206,9 +203,10 @@ def place_order(request):
                         
                     try:
                         with transaction.atomic():
-                            user_wallet = Wallet.objects.filter(user=user_instance).first()
+                            user_wallet = Wallet.objects.filter(user=user_instance).last()
                             last = user_wallet.balance
                             total_order_amount = sum(cart_item.size_variant.price * cart_item.quantity for cart_item in cart_items)
+                            
 
                             if user_wallet.balance >= total_order_amount:
                                 order = Orders.objects.create(
@@ -216,7 +214,7 @@ def place_order(request):
                                     address=delivery_address,
                                     payment_method=payment_type,
                                     quantity=0,
-                                    payment_status="success",
+                                    
                                     total_purchase_amount= final_amount if 'final_amount' in request.session else total_amount
                                 )
 
@@ -227,6 +225,7 @@ def place_order(request):
                                         quantity=cart_item.quantity,
                                         price=cart_item.size_variant.price,
                                         status='Order confirmed',
+                                        payment_status="success",
                                     )
 
                                     qua = cart_item.size_variant
@@ -265,6 +264,7 @@ def place_order(request):
                                     'insufficient_balance': False,
                                 }
                             else:
+                                print(user_wallet.balance)
                                 response_data = {
                                     'success': False,
                                     'message': 'Insufficient balance in the wallet',
@@ -302,12 +302,12 @@ def verifyPayment(request):
     cart_items = CartItem.objects.filter(user=user)
     ord_id = request.session['order_id']
     order = Orders.objects.get(order_id=ord_id)
-    order.payment_status = "success"
     order.save() 
     order_items = OrdersItem.objects.filter(order=order) 
     
     for order_item in order_items: 
         order_item.status = 'Order confirmed'
+        order_item.payment_status = "success"
         order_item.save() 
         
         qua = order_item.variant
@@ -323,7 +323,7 @@ def verifyPayment(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
 def admin_orders(request):
-    ite = OrdersItem.objects.exclude(order__payment_status="temp")
+    ite = OrdersItem.objects.exclude(payment_status="temp")
     items = ite.exclude(status="Cancellation request sent")
     return render(request,'admin_panel/admin_orders.html',{'items':items})
 
@@ -351,7 +351,7 @@ def change_status(request, id):
     # Update order status
     obj.status = status
     if status == "Delivered":
-        obj.order.payment_status = "success"
+        obj.payment_status = "success"
         obj.order.save()
 
     obj.save()
@@ -406,8 +406,8 @@ def cancell_product(request, id):
     elif order.order.payment_method == "onlinePayment" or order.order.payment_method == "wallet":
         amount = order.price * order.quantity 
         user_wallet = Wallet.objects.filter(user=user).order_by("-id").first()
-        order.order.payment_status = "Delivered"
-        order.order.save()
+        order.payment_status = "Delivered"
+        order.save()
         if not user_wallet:
             balance = 0
         else:
@@ -423,7 +423,7 @@ def cancell_product(request, id):
             balance = new
             
         )
-        order.order.payment_status = "Refunded"
+        order.payment_status = "Refunded"
         order.order.save()
         order.status = 'Cancelled'
         order.save()
@@ -441,8 +441,8 @@ def return_product(request,id):
     order.status = 'Returned'
     order.variant.quantity += order.quantity
     
-    order.order.payment_status = "Refunded"
-    order.order.save()
+    order.payment_status = "Refunded"
+    order.save()
     
     amount = order.price
     wallet = Wallet.objects.filter(user=user).order_by('-id').first()
@@ -464,3 +464,13 @@ def return_product(request,id):
     order.save()
     order.variant.save()
     return redirect('order_history')
+
+
+
+def show_invoice (request , id):
+    order = Orders.objects.filter(order_id=id).first()
+    context = {
+        'order':order
+    }
+    print(order.order_id)
+    return render(request, 'user_side/invoice.html', context)

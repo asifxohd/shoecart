@@ -4,6 +4,12 @@
 {% block banners %}{% endblock banners %}
 {% block content %}
 
+<style>
+   th,td{
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+</style>
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -32,7 +38,38 @@
                 
 
                 <div class="card-body">
-                    
+                    <table class="table table-responsive datatable mt-5">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Banner Type</th>
+                                <th>Main Title</th>
+                                <th>Sub Title</th>
+                                <th>Action</th>
+                                <th>Edit</th>  
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in banners %}
+                            <tr>
+                                <td>{{b.id}} </td>
+                                <td><img src="{{ b.file_input.url }}" height="100" width="200"></td>
+                                <td>{{ b.banner_type }}</td>
+                                <td>{{ b.main_title }}</td>
+                                <td>{{ b.subtitle }}</td>
+                                <td> {% if b.is_active %}
+                                    <a href="delete_banner/{{ b.id }}" type="button" class="btn btn-danger">Deactivate</a>
+                                {% else %}
+                                    <a href="delete_banner/{{ b.id }}" type="button" class="btn btn-success">Activate</a>
+                                {% endif %}
+                                </td>
+                                <td><a href="edit_banner/{{b.id}}" type="button" class="btn btn-light">Edit</a>
+                                </td>                               
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
                 </div>
 

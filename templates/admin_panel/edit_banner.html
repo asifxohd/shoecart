@@ -16,7 +16,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">Admin</li>
                 <li class="breadcrumb-item">Banners</li>
-                <li class="breadcrumb-item active">Add Banners</li>
+                <li class="breadcrumb-item active">Edit Banners</li>
             </ol>
         </nav>
     </div>
@@ -24,37 +24,39 @@
     <div class="col-12">
         <div class="card recent-sales">
             <div class="card-body">
-                <form method="post" id="miniBanner3Form" action="{% url "add_banner" %}" class="mt-4 mx-auto" enctype="multipart/form-data">
+                <form method="post" id="miniBanner3Form"  class="mt-4 mx-auto" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="col-md-9 form-group">
                         <label for="bannerTypeSelect">Banner Type:</label>
                         <select id="bannerTypeSelect" name="bannerTypeSelect" class="form-control">
-                            <option value="main_banner" selected>Main Banner</option>
-                            <option value="mini_banner_left">Mini Banner Left</option>
-                            <option value="mini_banner_center">Mini Banner Center</option>
-                            <option value="mini_banner_right">Mini Banner Right</option>
+                            <option value="main_banner" {% if banner_type == 'main_banner' %}selected{% endif %}>Main Banner</option>
+                            <option value="mini_banner_left" {% if banner_type == 'mini_banner_left' %}selected{% endif %}>Mini Banner Left</option>
+                            <option value="mini_banner_center" {% if banner_type == 'mini_banner_center' %}selected{% endif %}>Mini Banner Center</option>
+                            <option value="mini_banner_right" {% if banner_type == 'mini_banner_right' %}selected{% endif %}>Mini Banner Right</option>
                         </select>
                     </div>
 
                     <div class="col-md-9 mt-4 form-group">
                         <label for="mainTitleInput">Main Title:</label>
-                        <input type="text" id="mainTitleInput" name="mainTitleInput" class="form-control" required>
+                        <input type="text" id="mainTitleInput" name="mainTitleInput" class="form-control" value="{{banner.main_title}}" required>
                         <span id="mainTitleError" class="error-message"></span>
                     </div>
             
                     <div class="col-md-9 mt-4 form-group">
                         <label for="subtitleInput">Subtitle:</label>
-                        <input type="text" id="subtitleInput" name="subtitleInput" class="form-control">
+                        <input type="text" id="subtitleInput" name="subtitleInput" value="{{banner.subtitle}}" class="form-control">
                         <span id="subtitleError" class="error-message"></span>
                     </div>
                     <div class="col-md-9 mt-4 form-group">
                         <label for="fileInput">Upload File:</label>
-                        <input type="file" id="fileInput" name="fileInput" class="form-control">
+                        <input type="file" id="fileInput" name="fileInput" value="{{banner.file_input}}" class="form-control">
                         <span id="fileError" class="error-message"></span>
                     </div>
             
                     <button type="submit" class="btn btn-dark mt-3">Submit</button>
                 </form>
+                <br>
+                <img src= "{{ banner.file_input.url }}" height="100" width="200">
             </div>
         </div>
     </div>
@@ -78,9 +80,7 @@
                     maxlength: 100,
                     noConsecutiveSpaces: true,
                 },
-                fileInput: {
-                    required: true,
-                }
+                
             },
             messages: {
                 mainTitleInput: {
@@ -95,9 +95,7 @@
                     maxlength: "Main title should not exceed 250 characters",
                     noConsecutiveSpaces: "Main title should not contain 2 consecutive spaces",
                 },
-                fileInput: {
-                    required: "Please select a image file",
-                }
+               
             },
             errorClass: "is-invalid",
             errorPlacement: function (error, element) {

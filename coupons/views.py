@@ -12,7 +12,7 @@ from cart.models import CartItem
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
 def render_coupons(request):
-    coupons = Coupons.objects.all().order_by('id')
+    coupons = Coupons.objects.all().order_by('-id')
     return render(request,"admin_panel/coupons.html",{"coupons": coupons})
 
 

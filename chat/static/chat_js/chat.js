@@ -6,7 +6,15 @@ const recipient_user = $('#recipient-user-id').val();
 
 let input_message = $('#input-message')
 let message_body = $('.msg_card_body')
+console.log(endpoint)
 var socket = new WebSocket(endpoint);
+
+function getCurrentTime() {
+    const now = new Date();
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${date}, ${time}`;
+}
 
 socket.onopen = async function (e){
     console.log('open', e)
@@ -64,19 +72,20 @@ function newMessage(message,send_by_id) {
             <div class="d-flex mb-4 replied justify-content-start ">
                 <div class="msg_cotainer_send alert alert-primary">
                     ${message} <br>
-                    <span class="msg_time_send" style="font-size: 10px;">8:55 AM, Today</span>
+                    <span class="msg_time_send" style="font-size: 10px;">${getCurrentTime()}</span>
                 </div>
             </div>
         `;
+
     } else {
         // Message received (align to the left)
         message_element = `
-        <div class="d-flex mb-4 replied justify-content-end">
-                    <div class="msg_cotainer_admin alert alert-dark">
+            <div class="d-flex mb-4 replied justify-content-end">
+                <div class="msg_cotainer_admin alert alert-dark">
                     ${message} <br>
-                        <span class="msg_time_send" style="font-size: 10px;">9:00 AM, Today</span>
-                    </div>
+                    <span class="msg_time_send" style="font-size: 10px;">${getCurrentTime()}</span>
                 </div>
+            </div>
         `;
     }
     

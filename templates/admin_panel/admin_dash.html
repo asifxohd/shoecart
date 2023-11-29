@@ -7,7 +7,26 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Dashboard</h1>
+      <div class="row align-items-center">
+        <div class="col-md-4">
+            <h1>Dashboard</h1> 
+        </div>
+        <div class="col-md-8 d-flex justify-content-end" >
+          <form id="dateForm" class="d-flex ms-auto">
+            {% csrf_token %}
+              <div class="me-3">
+                  <button type="button" name="day" class="btn mt-1 btn-outline-dark">Day</button>
+              </div>
+              <div class="me-3">
+                  <button type="button" name="week" class="btn mt-1 btn-outline-dark">Week</button>
+              </div>
+              <div>
+                  <button type="button" name="year" class="btn mt-1 btn-outline-dark">Yearly</button>
+              </div>
+        </form>
+        </div>
+        
+    </div>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item">Admin</li>
@@ -28,16 +47,7 @@
               <div class="card info-card sales-card">
 
                 <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
+                  
                 </div>
 
                 <div class="card-body">
@@ -48,7 +58,7 @@
                       <i class="bi bi-cart"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>{{ no_of_orders }}</h6>
+                      <h6 class="orderss" >{{ no_of_orders }}</h6>
 
                     </div>
                   </div>
@@ -62,16 +72,7 @@
               <div class="card info-card revenue-card">
 
                 <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
+                  
                 </div>
 
                 <div class="card-body">
@@ -79,10 +80,10 @@
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-currency-dollar"></i>
+                      <i class="bi bi-currency-rupee"></i>
                     </div>
                     <div class="ps-2">
-                      <h6>&#8377;{{ total_revenue }}</h6>
+                      <h6 class="revenuee" >&#8377;{{ total_revenue }}</h6>
 
                     </div>
                   </div>
@@ -97,16 +98,7 @@
               <div class="card info-card customers-card">
 
                 <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
+                  
                 </div>
 
                 <div class="card-body">
@@ -130,107 +122,28 @@
             <!-- Reports -->
             <div class="col-12">
               <div class="card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
                 <div class="card-body">
-                  <h5 class="card-title">Reports <span>/Today</span></h5>
-
-                  <!-- Line Chart -->
-                  <div id="reportsChart"></div>
-
-                  <script>
-                    document.addEventListener("DOMContentLoaded", () => {
-                        // Extracted data from Django context
-                        const orderData = {{ order_counts|safe }}
-                        const revenueData = {{ revenue_counts|safe }}
-                        const customerData = {{ customer_counts|safe }}
-                        const dates = {{ dates|safe }};
-                        console.log(orderData, revenueData, customerData);
-                
-                        new ApexCharts(document.querySelector("#reportsChart"), {
-                            series: [
-                                {
-                                    name: 'Orders',
-                                    data: orderData,
-                                },
-                                {
-                                    name: 'Revenue',
-                                    data: revenueData,
-                                },
-                                {
-                                    name: 'Customers',
-                                    data: customerData,
-                                },
-                            ],
-                            chart: {
-                                height: 350,
-                                type: 'area',
-                                toolbar: {
-                                    show: false
-                                },
-                            },
-                            markers: {
-                                size: 4
-                            },
-                            colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                            fill: {
-                                type: "gradient",
-                                gradient: {
-                                    shadeIntensity: 1,
-                                    opacityFrom: 0.3,
-                                    opacityTo: 0.4,
-                                    stops: [0, 90, 100]
-                                }
-                            },
-                            dataLabels: {
-                                enabled: false
-                            },
-                            stroke: {
-                                curve: 'smooth',
-                                width: 2
-                            },
-                            xaxis: {
-                                type: 'datetime',
-                                categories: dates,
-                            },
-                            tooltip: {
-                                x: {
-                                    format: 'dd/MM/yy HH:mm'
-                                },
-                            }
-                        }).render();
-                    });
-                </script>
-                
-                  <!-- End Line Chart -->
-
-                </div>
-
-              </div>
-            </div><!-- End Reports -->
+                  <h2 class="card-title"><b>Total Profit</b></h2>
             
-
-
-
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-primary text-white">
+                      <i class="bi bi-currency-rupee"></i>
+                    </div>
+                    <div class="ps-3 mt-2">
+                      <h2 ><b class="profit_total" >&#8377;{{ profit }}</b></h2> <!-- Increased the font size -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            
               <!-- Top Selling -->
             <div class="col-12">
               <div class="card top-selling overflow-auto">
 
                   <div class="card-body">
-                    <h5 class="card-title">Sales By Catogeries
-                    </h5>
+                    <h5 class="card-title">Sales By Catogeries<span>| All time</span></h5>
 
                     <!-- Bar Chart -->
                     <canvas id="barChart" style="max-height: 400px;"></canvas>
@@ -286,98 +199,16 @@
 
                   </div>
 
-
               </div>
             </div><!-- End Top Selling -->
 
-
-
-            {% comment %} <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Recent Sales <span>| Today</span></h5>
-
-                  <table class="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row"><a href="#">#2457</a></th>
-                        <td>Brandon Jacob</td>
-                        <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                        <td>$64</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2147</a></th>
-                        <td>Bridie Kessler</td>
-                        <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                        <td>$47</td>
-                        <td><span class="badge bg-warning">Pending</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2049</a></th>
-                        <td>Ashleigh Langosh</td>
-                        <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                        <td>$147</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Angus Grady</td>
-                        <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                        <td>$67</td>
-                        <td><span class="badge bg-danger">Rejected</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Raheem Lehner</td>
-                        <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                        <td>$165</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                </div>
-
-              </div>
-            </div>{% endcomment %}
-           
           </div>
         </div><!-- End Left side columns -->
 
         <!-- Right side columns -->
         <div class="col-lg-4">
-
-          <!-- Budget Report -->
-          <!-- End Budget Report -->
-
-          <!-- Website Traffic -->
           <div class="card">
             <div class="filter">
-              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                 <li class="dropdown-header text-start">
                   <h6>Filter</h6>
@@ -390,7 +221,7 @@
             </div>
 
             <div class="card-body pb-0">
-              <h5 class="card-title">Website Traffic</h5>
+              <h5 class="card-title">Payments<span>| All time</span></h5>
 
               <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
 
@@ -443,84 +274,79 @@
 
             </div>
           </div><!-- End Website Traffic -->
-          <div class="card">
-            <div class="filter">
-              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <li class="dropdown-header text-start">
-                  <h6>Filter</h6>
-                </li>
+          
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Most Sold Products<span>| All time</span></h5>
 
-                <li><a class="dropdown-item" href="#">Today</a></li>
-                <li><a class="dropdown-item" href="#">This Month</a></li>
-                <li><a class="dropdown-item" href="#">This Year</a></li>
-              </ul>
-            </div>
+          <!-- Pie Chart -->
+          <canvas id="pieChart" style="max-height: 400px;"></canvas>
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              new Chart(document.querySelector('#pieChart'), {
+                type: 'pie',
+                data: {
+                  labels: [
+                    {% for i in most_sold %}
+                    '{{ i.0 }}' ,
+                    {% endfor %}
+                  ],
+                  datasets: [{
+                    label: 'My First Dataset',
+                    data: [
+                    {% for i in most_sold %}
+                    {{ i.1 }} ,
+                    {% endfor %}
+                    ],
+                    backgroundColor: [
+                      'rgb(255, 99, 132)',
+                      'rgb(54, 162, 235)',
+                      'rgb(255, 205, 86)'
+                    ],
+                    hoverOffset: 4
+                  }]
+                }
+              });
+            });
+          </script>
+          <!-- End Pie CHart -->
 
-            <div class="card-body pb-0">
-              <h5 class="card-title">Budget Report <span>| This Month</span></h5>
-
-              <div id="budgetChart" style="min-height: 400px;" class="echart"></div>
-
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  var budgetChart = echarts.init(document.querySelector("#budgetChart")).setOption({
-                    legend: {
-                      data: ['Allocated Budget', 'Actual Spending']
-                    },
-                    radar: {
-                      // shape: 'circle',
-                      indicator: [{
-                          name: 'Sales',
-                          max: 6500
-                        },
-                        {
-                          name: 'Administration',
-                          max: 16000
-                        },
-                        {
-                          name: 'Information Technology',
-                          max: 30000
-                        },
-                        {
-                          name: 'Customer Support',
-                          max: 38000
-                        },
-                        {
-                          name: 'Development',
-                          max: 52000
-                        },
-                        {
-                          name: 'Marketing',
-                          max: 25000
-                        }
-                      ]
-                    },
-                    series: [{
-                      name: 'Budget vs spending',
-                      type: 'radar',
-                      data: [{
-                          value: [4200, 3000, 20000, 35000, 50000, 18000],
-                          name: 'Allocated Budget'
-                        },
-                        {
-                          value: [5000, 14000, 28000, 26000, 42000, 21000],
-                          name: 'Actual Spending'
-                        }
-                      ]
-                    }]
-                  });
-                });
-              </script>
-
-            </div>
-          </div>
-
-        </div><!-- End Right side columns -->
-
+        </div>
       </div>
+    </div>
+        
     </section>
 
   </main><!-- End #main -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $('#dateForm button').click(function() {
+            var clickedButton = $(this).attr('name');
+            
+            // Find the CSRF token input within the form
+            var csrfToken = $('#dateForm').find('input[name="csrfmiddlewaretoken"]').val();
+            
+            $.ajax({
+                type: 'POST',
+                url: 'datefilter_dashboard/',  
+                data: {
+                    csrfmiddlewaretoken: csrfToken,
+                    button: clickedButton
+                },
+                success: function(response) {
+                  $('.orderss').text(response.no_of_orders);
+                  $('.revenuee').html('&#8377;' + response.total_revenue);
+                  $('.profit_total').html('&#8377;<b>' + response.total_profit + '</b>');
+                    console.log(response);
+                },
+                error: function(error) {
+                    alert('haalloowwwwwwwwwwwww')
+                }
+            });
+        });
+    });
+</script>
+
 
   {% endblock content %}

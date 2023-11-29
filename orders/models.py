@@ -11,7 +11,6 @@ class Orders(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=255)
-    payment_status = models.CharField(max_length=255, default='Pending')
     order_date = models.DateTimeField(auto_now_add=True)
     expected_delivery_date = models.DateField(null=True, blank=True)
     delivered_date = models.DateField(null=True, blank=True)
@@ -30,6 +29,7 @@ class Orders(models.Model):
 
 class OrdersItem(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    payment_status = models.CharField(max_length=255, default='Pending')
     variant = models.ForeignKey(SizeVariant, on_delete=models.CASCADE)
     updated_time = models.DateTimeField(auto_now=True)
     quantity = models.PositiveIntegerField()

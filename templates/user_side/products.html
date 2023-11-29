@@ -356,6 +356,7 @@
 	
 	{% endfor %}
 </div>
+{% if products.number %}
 <div class="container text-center">
     <div class="pagination">
         <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
@@ -365,6 +366,7 @@
         <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
     </div>
 </div>
+{% endif %}
 	<!-- do the pagination here  -->
 	{% comment %} <div class="flex-c-m flex-w w-full p-t-45 mt-3">
 		<nav aria-label="Page navigation example">

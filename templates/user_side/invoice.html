@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <!-- Include Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .invoice-header h2 {
+            color: #343a40;
+        }
+
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+
+        .invoice-details strong {
+            color: #6c757d;
+        }
+
+        .table th, .table td {
+            border: none;
+        }
+
+        .btn-pay-now {
+            background-color: #343a40;
+            color: #ffffff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-6 mb-7 pdf-container invoice-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="invoice-header">
+                <h1>Invoice</h1>
+                <hr>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="invoice-details">
+                <div class="text-muted mb-2">Order ID</div>
+                <strong>{{ order.order_id|upper }}</strong>
+            </div>
+            <div class="invoice-details">
+                <div class="text-muted mb-2">Order Date</div>
+                <strong>{{ order.order_date }}</strong>
+            </div>
+            <div class="invoice-details">
+                <div class="text-muted mb-2">{{ order.user.email }}</div>
+                <strong>{{order.user.first_name |upper}}{{ order.user.last_name |upper }}</strong>
+                <p class=" mt-4 fs-sm">
+                    <span style="font-weight: bold;">Address</span><br>
+                        {{ order.address.full_name }} <br>
+                        {{ order.address.mobile_number }} <br>
+                        {{ order.address.address_line }}, {{ order.address.city }}, {{ order.address.state }}, {{ order.address.pincode }}<br>
+                    <br>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <div class="invoice-details">
+                <a href="#" style="display: block; height: 50px;"> <!-- Set your desired height -->
+                    <img src="{% static 'user_home/images/shoecart.png' %}" alt="IMG-LOGO" style="height: 100%;">
+                </a>
+                <div class="text-muted mb-2">From</div>
+                <strong>SHOECART</strong>
+                <p class="fs-sm">
+                    9th Avenue, Calicut 676551
+                    <br>
+                    <a class="text-dark">shoecartcalicut@email.com</a>
+                </p>
+            </div>
+        </div>
+        
+    </div>
+
+    <table class="table border-bottom border-gray-200 mt-3">
+        <thead>
+        <tr>
+            <th scope="col" class="fs-sm text-dark text-uppercase-bold-sm">Product Name </th>
+            <th scope="col" class="fs-sm text-dark text-uppercase-bold-sm text-end">Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for prod in order.ordersitem_set.all %}
+        <tr>
+            <td>{{ prod.variant.product.name }} - {{prod.variant.size}}</td>
+            <td class="text-end">&#8377;{{ prod.variant.price }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-5">
+        {% comment %} <div class="d-flex justify-content-end">
+            <p class="text-muted me-3">Subtotal:</p>
+            <span>{{  }}</span>
+        </div>
+        <div class="d-flex justify-content-end">
+            <p class="text-muted me-3">Discount:</p>
+            <span>-$40.00</span>
+        </div> {% endcomment %}
+        <div class="d-flex justify-content-end mt-3">
+            <h5 class="me-3">Total:</h5>
+            <h5 class="text-success">&#8377;{{ order.total_purchase_amount }}</h5>
+        </div>
+    </div>
+    <div class="mt-5 text-end" >
+      <a onclick= "window.print()" >
+        <svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 512 512"><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg>
+      </a>
+    </div>
+</div>
+
+
+<!-- Include Bootstrap 5 JS (optional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    
+</script>
+
+</body>
+</html>
