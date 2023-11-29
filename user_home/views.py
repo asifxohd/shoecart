@@ -20,6 +20,7 @@ def homepage(request):
         products = Product.objects.prefetch_related(
             'productimage_set', 'sizevariant_set'
         ).filter(status=True)[:8]
+        print(request.user)
         
         for product in products:
             first_variant = product.sizevariant_set.first()

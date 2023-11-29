@@ -207,7 +207,7 @@ def restore_product(request, id):
     if product:
         product.status = True
         product.save()
-        return render(request, "admin_panel/trash.html")
+        return redirect('admin_trash')
     else:
         return redirect('admin_trash')
 

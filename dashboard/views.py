@@ -29,7 +29,7 @@ def admin_dash(request):
     )
 
     # Count of all orders excluding temporary and refunded orders
-    no_of_orders = Orders.objects.filter(ordersitem__payment_status='success').distinct().count()
+    no_of_orders = Orders.objects.exclude(ordersitem__payment_status="temp").distinct().count()
 
     # Calculate total revenue
     total_revenue = OrdersItem.objects.filter(payment_status='success').aggregate(
@@ -147,7 +147,7 @@ def datefilter_dashboard(request):
     )
 
     # Calculate the number of successful orders within the specified date range
-    no_of_orders = Orders.objects.filter(ordersitem__payment_status='success', order_date__gte=start_date).distinct().count()
+    no_of_orders = Orders.objects.filter(order_date__gte=start_date).distinct().count()
 
     # Extract the total revenue value or set it to 0 if None
     total_revenue_value = total_revenue['total_revenue'] if total_revenue['total_revenue'] is not None else 0
