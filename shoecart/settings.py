@@ -102,7 +102,7 @@ DATABASES = {
         "NAME": "shoecart",
         "USER": "postgres",
         "PASSWORD": "Asif@123",
-        "HOST": "18.212.58.180",
+        "HOST": "172.31.82.128",
         "PORT": "5432",
     }
 }
@@ -189,5 +189,5 @@ CHANNEL_LAYERS = {
 
 # for the procuction level we need 
 # 'CONFIG':{
-#     'hosts' : [('127.0.0.1', 6379)]
+#     'hosts' : [('18.212.58.180', 6379)]
 # }
