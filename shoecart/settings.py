@@ -28,9 +28,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['172.31.82.128']
+ALLOWED_HOSTS = [ ]
 
 
 # Application definition
@@ -102,7 +102,7 @@ DATABASES = {
         "NAME": "shoecart",
         "USER": "postgres",
         "PASSWORD": "Asif@123",
-        "HOST": "172.31.82.128",
+        "HOST": "18.212.58.180",
         "PORT": "5432",
     }
 }
