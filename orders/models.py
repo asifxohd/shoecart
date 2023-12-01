@@ -16,6 +16,8 @@ class Orders(models.Model):
     delivered_date = models.DateField(null=True, blank=True)
     quantity = models.PositiveIntegerField()
     total_purchase_amount = models.PositiveIntegerField(default=1)
+    
+    
     def save(self, *args, **kwargs):
         if not self.order_id:
             self.order_id = self.generate_order_id()

@@ -120,7 +120,7 @@
                 $('#password').next('.error').html('Password is required.');
             } else if (!isValidPassword(password)) {
                 isValid = false;
-                $('#password').next('.error').html('Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.');
+                $('#password').next('.error').html('8 characters and 1 digit should be in password.');
             }
     
             if (confirm_password === '') {
@@ -152,7 +152,7 @@
     
         function isValidPassword(password) {
             // Use a regular expression to check for a high-secure password
-            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            var passwordRegex = /^(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
             return passwordRegex.test(password);
         }
     });

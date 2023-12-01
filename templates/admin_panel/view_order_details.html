@@ -78,8 +78,8 @@
                       {% endif %};">
                       {{ obj.status }}
                     </p>
-                    <h4 style="color: {% if obj.order.payment_status == 'success' %}green{% else %}red{% endif %}">
-                      Payment Status: {{ obj.order.payment_status }}
+                    <h4 style="color: {% if obj.payment_status == 'success' %}green{% else %}red{% endif %}">
+                      Payment Status: {{ obj.payment_status }}
 
                   </h4>                       
                    <h6> Expected Delivery {{obj.order.expected_delivery_date}}</h6>
@@ -151,6 +151,9 @@
 
                               <input type="radio" name="statusRadio" id="statusRadio5" value="Returned" {% if obj.status == "Returned" %}checked{% endif %}>
                               <label for="statusRadio5">Returned</label>
+
+                              <input type="radio" name="statusRadio" id="statusRadio6" value="Cancell" {% if obj.status == "Cancell" %}checked{% endif %}>
+                              <label for="statusRadio6">Cancell</label>
                           </div>
                           <br><br>
                           <button class="btn btn-dark border-0">Change Status</button>

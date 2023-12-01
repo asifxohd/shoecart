@@ -12,9 +12,10 @@ from django.views.decorators.cache import cache_control
 import razorpay
 from payments.models import Wallet
 from django.utils import timezone
+from decouple import config
 
 # for the Razorpay
-client = razorpay.Client(auth=('rzp_test_F83XKwHAQwFDZG', 'etDY4jG2xDLoFngOnDsM7wqY'))
+client = razorpay.Client(auth=(config('RAZORPAY_API_KEY'), config('RAZORPAY_API_SECRET_KEY')))
 
 # Create your views here.
 def load_order_page(request):
@@ -345,18 +346,45 @@ def view_order_details(request, id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(lambda u: u.is_superuser, login_url='admin_login')
 def change_status(request, id):
-    obj = OrdersItem.objects.get(id=id)
+    email=request.session.get('user')
+    user = CustomUser.objects.get(email=email)
+    order = OrdersItem.objects.get(id=id)
     status = request.POST.get('statusRadio')
-
+    
+    if order.order.payment_method == "onlinePayment" or order.order.payment_method == "wallet":
+        amount = order.price * order.quantity 
+        user_wallet = Wallet.objects.filter(user=user).order_by("-id").first()
+        order.payment_status = "Delivered"
+        order.save()
+        if not user_wallet:
+            balance = 0
+        else:
+            balance = user_wallet.balance
+            
+        new = balance + amount
+        
+        Wallet.objects.create(
+            user=user,
+            transaction_details=f'Order Cancelled Refund  Rs.{amount}.00',
+            transaction_type = "Credit",
+            transaction_amount = amount,
+            balance = new
+            
+        )
+        order.payment_status = "Refunded"
+        order.order.save()
+        order.status = 'Cancelled'
+        order.save()
+        
     # Update order status
-    obj.status = status
+    order.status = status
     if status == "Delivered":
-        obj.payment_status = "success"
-        obj.order.save()
+        order.payment_status = "success"
+        order.order.save()
 
-    obj.save()
+    order.save()
 
-    return redirect('view_order_details', id=obj.id)
+    return redirect('view_order_details', id=order.id)
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
