@@ -114,7 +114,7 @@ DATABASES = {
         'USER': os.getenv('DJANGO_DB_USER', 'postgres'),
         'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'Asif@123'),
         'HOST': '127.0.0.1',  
-        'PORT': os.getenv('DJANGO_DB_PORT', '5433'),
+        'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
     }
 }
 
