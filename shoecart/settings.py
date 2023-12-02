@@ -96,14 +96,26 @@ TEMPLATES = [
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "shoecart",
+#         "USER": "postgres",
+#         "PASSWORD": "Asif@123",
+#         "HOST": "127.0.0.1",
+#         "PORT": "5433",
+#     }
+# }
+
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "shoecart",
-        "USER": "postgres",
-        "PASSWORD": "Asif@123",
-        "HOST": "127.0.0.1",
-        "PORT": "5433",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DJANGO_DB_NAME', 'shoecart'),
+        'USER': os.getenv('DJANGO_DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'Asif@123'),
+        'HOST': '127.0.0.1',  
+        'PORT': os.getenv('DJANGO_DB_PORT', '5433'),
     }
 }
 
