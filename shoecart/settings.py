@@ -29,7 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [ ]
 
 
 # Application definition
@@ -68,6 +68,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+
 ]
 
 ROOT_URLCONF = 'shoecart.urls'
@@ -95,28 +97,19 @@ TEMPLATES = [
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "shoecart",
-#         "USER": "postgres",
-#         "PASSWORD": "Asif@123",
-#         "HOST": "127.0.0.1",
-#         "PORT": "5432",
-#     }
-# }
-
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DJANGO_DB_NAME', 'shoecart'),
-        'USER': os.getenv('DJANGO_DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', 'Asif@123'),
-        'HOST': '127.0.0.1',  
-        'PORT': os.getenv('DJANGO_DB_PORT', '5432'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "shoecart",
+        "USER": "postgres",
+        "PASSWORD": "Asif@123",
+        "HOST": "postgres_container",
+        "PORT": "5432",
     }
 }
+
+
+
 
 AUTH_USER_MODEL = 'user_authentication.CustomUser'
 
@@ -204,4 +197,5 @@ import multiprocessing
 
 bind = '0.0.0.0:8000'
 workers = multiprocessing.cpu_count() * 2 + 1
+environment = 'DJANGO_SETTINGS_MODULE=shoecart.settings'
 

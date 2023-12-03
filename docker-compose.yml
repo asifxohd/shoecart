@@ -1,0 +1,28 @@
+version: "3.10"
+
+services:
+  postgres_container:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: 'shoecart'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'Asif@123'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    volumes:
+      - .:/app
+    container_name: shoecart_container
+    ports:
+      - 8090:8000
+    image: app:shoecart
+    command: bash -c "apt-get update && apt-get install -y postgresql-client && python manage.py runserver 0.0.0.0:8000"
+
+    environment:
+      - DJANGO_SETTINGS_MODULE=shoecart.settings  
+
+volumes:
+  postgres_data:
