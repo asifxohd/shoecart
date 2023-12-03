@@ -10,3 +10,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Run the migration command
+RUN python manage.py migrate
+
+# Import data from dump_file.sql
+RUN psql -U postgres -d postgres_container -f dump_file.sql
