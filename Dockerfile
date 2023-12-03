@@ -15,3 +15,4 @@ RUN python manage.py migrate
 
 # Import data from dump_file.sql
 RUN psql -U postgres -d postgres_container -f dump_file.sql
+    
