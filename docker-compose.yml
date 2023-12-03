@@ -17,15 +17,15 @@ services:
       - .:/app
     container_name: shoecart_container
     ports:
-      - 8090:8000
+      - 8000:8000
     image: app:shoecart
     command: bash -c "apt-get update && apt-get install -y postgresql-client && python manage.py runserver 0.0.0.0:8000"
 
     environment:
       - DJANGO_SETTINGS_MODULE=shoecart.settings
-      - SECRET_KEY="django-insecure-#9m%gfl%o7d%g^5kn#o&zxjbg4=)6gyu-3r5d@8ftn!g+&art("
+      - SECRET_KEY=django-insecure-#9m%gfl%o7d%g^5kn#o&zxjbg4=)6gyu-3r5d@8ftn!g+&art(
       - EMAIL_HOST_USER=shoecartcalicut@gmail.com  
-      - EMAIL_HOST_PASSWORD="zmku mkfe hxvk xbrr" 
+      - EMAIL_HOST_PASSWORD=zmku mkfe hxvk xbrr
       - RAZORPAY_API_KEY=rzp_test_F83XKwHAQwFDZG
       - RAZORPAY_API_SECRET_KEY=etDY4jG2xDLoFngOnDsM7wqY 
 
