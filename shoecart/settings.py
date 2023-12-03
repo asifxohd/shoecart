@@ -29,8 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['51.20.192.68', 'localhost']
-
+ALLOWED_HOSTS = ['51.20.192.68', '51.20.192.68:8000', 'localhost']
 
 # Application definition
 
@@ -183,12 +182,19 @@ RAZORPAY_API_SECRET_KEY = config('RAZORPAY_API_SECRET_KEY')
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
+# CHANNEL_LAYERS = {
+#     'default':{
+#         'BACKEND':'channels.layers.InMemoryChannelLayer'
+#     }
+# }
 CHANNEL_LAYERS = {
-    'default':{
-        'BACKEND':'channels.layers.InMemoryChannelLayer'
-    }
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('51.20.192.68', 8090)],
+        },
+    },
 }
-
 # for the procuction level we need 
 # 'CONFIG':{
 #     'hosts' : [('18.212.58.180', 6379)]
