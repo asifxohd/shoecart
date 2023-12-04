@@ -35,7 +35,7 @@ def send_6_digit_otp_email(request):
 
 # Handle user registration
 def signup(request):
-    if request.user.is_authenticated:
+    if 'user' in request.session:
         return redirect('homepage')
 
     if request.method == 'POST':
