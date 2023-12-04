@@ -189,12 +189,11 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 # }
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        # 'CONFIG': {
-        #     "hosts": [('51.20.192.68', 8000)],
-        # },
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
+
+
 # for the procuction level we need 
 # 'CONFIG':{
 #     'hosts' : [('18.212.58.180', 6379)]
