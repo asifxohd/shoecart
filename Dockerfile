@@ -1,12 +1,20 @@
-FROM python:3.10
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim
 
-ENV PYTHONUNBUFFERED=1
-RUN apt-get update -q && apt-get install -yq libpq-dev && apt-get install -y postgresql-client
+# Set the working directory to /app
+WORKDIR /app
 
-WORKDIR /app 
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Make port 8000 available to the world outside this container
+EXPOSE 8000
 
-COPY . .    
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -19,8 +19,11 @@ services:
     ports:
       - 8000:8000
     image: app:shoecart
-    command: bash -c "apt-get update && apt-get install -y postgresql-client && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "apt-get update && apt-get install -y postgresql-client && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     env_file:
       - .env
+    depends_on:
+      - postgres_container
+
 volumes:
   postgres_data:
