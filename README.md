@@ -59,7 +59,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 
-onfigure Database:
+Configure Database:
 Ensure you have PostgreSQL installed.
 
 Create a new database for SHOE CART.
