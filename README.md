@@ -75,8 +75,7 @@ DATABASES = {
 5. Create .env file:
 Create a file named .env in the project root and add the following:
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY=d
+SECRET_KEY=
 EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 RAZORPAY_API_KEY=
