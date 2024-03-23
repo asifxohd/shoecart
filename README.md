@@ -48,11 +48,6 @@ Welcome to SHOE CART, where style meets innovation in the world of footwear e-co
 git clone https://github.com/asifxohd/SHOECART.git
 cd SHOECART
 
-# On Windows
-python -m venv venv
-venv\Scripts\activate
-
-# On Unix or MacOS
 python3 -m venv venv
 source venv/bin/activate
 
